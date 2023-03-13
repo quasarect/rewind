@@ -2,3 +2,6 @@ node_modules
 
 ## Typescript compiled folder
 dist
+
+## Environment file
+nodemon.json
