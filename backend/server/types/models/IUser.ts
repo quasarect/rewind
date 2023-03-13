@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
-import { ISpotify } from "./ISpotify";
 
 export interface IUser {
 	name: string;
 	username: string;
+	userId: string;
 	email: string;
 	password: string;
 	profileUrl: string;
@@ -15,7 +15,7 @@ export interface IUser {
 	artist: boolean;
 	followerCount: number;
 	followingCount: number;
-	spotifyData: ISpotify;
+	spotifyData: Types.ObjectId;
 	conversations: Array<Types.ObjectId>;
 	followers: Array<Types.ObjectId>;
 	following: Array<Types.ObjectId>;

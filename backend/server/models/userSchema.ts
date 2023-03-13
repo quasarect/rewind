@@ -1,5 +1,5 @@
 import { IUser } from "../types/models/IUser";
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const userSchema = new Schema<IUser>({
 	name: {
@@ -7,6 +7,11 @@ const userSchema = new Schema<IUser>({
 		required: true,
 	},
 	username: {
+		type: String,
+		required: true,
+		unique: true,
+	},
+	userId: {
 		type: String,
 		required: true,
 		unique: true,
@@ -53,6 +58,34 @@ const userSchema = new Schema<IUser>({
 		type: Number,
 		default: 0,
 	},
+	spotifyData: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "keyModel",
+	},
+	conversations: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "",
+		},
+	],
+	followers: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "",
+		},
+	],
+	following: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "",
+		},
+	],
+	musists: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "",
+		},
+	],
 });
 const userModel = model<IUser>("User", userSchema);
 export default userModel;

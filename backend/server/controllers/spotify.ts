@@ -3,9 +3,9 @@ import { Spotify } from "../enums/spotifyEnums";
 import { IError } from "../types/basic/IError";
 import axios from "axios";
 import qs from "qs";
-import keyModel from "../models/keySchema";
+// import keyModel from "../models/keySchema";
 
-export const handleOauth: RequestHandler = async (req, res, next) => {
+export const handleOauth: RequestHandler = (req, res, next) => {
 	if (req.query.error) {
 		throw new IError(req.params.error, 403);
 	}
@@ -33,13 +33,26 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 		},
 		data: body,
 	};
-	await axios(config)
+	axios(config)
 		.then((response) => {
-			const keys = new keyModel({
-				accessToken: response.data.access_token,
-				refreshToken: response.data.refresh_token,
-			});
-			keys.save();
+			axios
+				.get(Spotify.ME, {
+					headers: {
+						Authorization: "Bearer " + response.data.access_token,
+					},
+				})
+				.then((response) => {
+					console.log(response.data);
+					res.json({data:response.data});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+			// const keys = new keyModel({
+			// 	accessToken: response.data.access_token,
+			// 	refreshToken: response.data.refresh_token,
+			// });
+			// keys.save();
 		})
 		.catch((err) => {
 			throw new IError("Spotify auth unsuccessfull", 400);

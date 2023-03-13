@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
+import querystring from "querystring";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -10,6 +11,19 @@ const port = process.env.PORT || 3000;
 app.use("/test", (req, res, next) => {
 	console.log("Recieved the request");
 	res.json({ message: "Recieved" });
+});
+
+app.get("/authUrl", (req, res) => {
+	const scope = "user-read-private user-read-email";
+	res.redirect(
+		"https://accounts.spotify.com/authorize?" +
+			querystring.stringify({
+				response_type: "code",
+				client_id: process.env.SPOTIFY_CLIENT_ID,
+				scope: scope,
+				redirect_uri: process.env.REDIRECT_URL,
+			})
+	);
 });
 
 app.use("/spotify", spotifyRouter);
