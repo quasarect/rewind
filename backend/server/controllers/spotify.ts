@@ -14,7 +14,7 @@ export const handleOauth: RequestHandler = (req, res, next) => {
 	// if (state !== "fsdd") {
 	// 	res.redirect("/login");
 	// }
-	let body = qs.stringify({
+	const body = qs.stringify({
 		grant_type: "authorization_code",
 		code: code,
 		redirect_uri: process.env.REDIRECT_URL,
@@ -43,7 +43,7 @@ export const handleOauth: RequestHandler = (req, res, next) => {
 				})
 				.then((response) => {
 					console.log(response.data);
-					res.json({data:response.data});
+					res.json({ data: response.data });
 				})
 				.catch((err) => {
 					console.log(err);
