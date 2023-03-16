@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
+import postRouter from "./routes/postRouter";
 import querystring from "querystring";
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,7 +27,11 @@ app.get("/authUrl", (req, res) => {
 	);
 });
 
+app.use('/posts',postRouter);
+
 app.use("/spotify", spotifyRouter);
+
+
 
 // Error handling middleware
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
