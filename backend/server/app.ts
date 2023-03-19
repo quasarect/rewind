@@ -5,6 +5,8 @@ import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
 import querystring from "querystring";
+import uploadRouter from "./routes/uploadRoutes";
+// import { routingCheck } from "./middlewares/routingCheck";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -27,11 +29,13 @@ app.get("/authUrl", (req, res) => {
 	);
 });
 
+app.get('/ping',)
+
 app.use('/posts',postRouter);
 
 app.use("/spotify", spotifyRouter);
 
-
+app.use('/uploads',uploadRouter);
 
 // Error handling middleware
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
