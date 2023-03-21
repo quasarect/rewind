@@ -3,11 +3,12 @@ import { Spotify } from "../enums/spotifyEnums";
 import { IError } from "../types/basic/IError";
 import axios from "axios";
 import qs from "qs";
+import { statusCode } from "../enums/statusCodes";
 // import keyModel from "../models/keySchema";
 
 export const handleOauth: RequestHandler = (req, res, next) => {
 	if (req.query.error) {
-		throw new IError(req.params.error, 403);
+		throw new IError(req.params.error, statusCode.FORBIDDEN);
 	}
 	const code = req.query.code;
 	// const state = req.params.state;
@@ -55,6 +56,6 @@ export const handleOauth: RequestHandler = (req, res, next) => {
 			// keys.save();
 		})
 		.catch((err) => {
-			throw new IError("Spotify auth unsuccessfull", 400);
+			throw new IError("Spotify auth unsuccessfull", statusCode.BAD_REQUEST);
 		});
 };

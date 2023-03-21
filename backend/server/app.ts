@@ -16,6 +16,7 @@ app.use("/test", (req, res, next) => {
 	res.json({ message: "Recieved" });
 });
 
+// Get Oauth url
 app.get("/authUrl", (req, res) => {
 	const scope = "user-read-private user-read-email";
 	res.redirect(
@@ -29,12 +30,16 @@ app.get("/authUrl", (req, res) => {
 	);
 });
 
+// Call to check auth
 app.get('/ping',)
 
+// Musist routes
 app.use('/posts',postRouter);
 
+//Spotify routes
 app.use("/spotify", spotifyRouter);
 
+// Upload routes
 app.use('/uploads',uploadRouter);
 
 // Error handling middleware

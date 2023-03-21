@@ -1,6 +1,7 @@
 import { IError } from "../types/basic/IError";
 import { RequestHandler } from "express";
 import postModel from "../models/postSchema";
+import { statusCode } from "../enums/statusCodes";
 
 export const getPost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
@@ -8,12 +9,12 @@ export const getPost: RequestHandler = (req, res, next) => {
 		.findById({ _id: postId })
 		.then((result) => {
 			if (!result) {
-				throw new IError("Post not found", 300);
+				throw new IError("Post not found", statusCode.NOT_FOUND);
 			}
 			res.status(200).json({ post: result });
 		})
 		.catch((err) => {
-			throw new IError("Get post error", 404);
+			throw new IError("Get post error", statusCode.NOT_FOUND);
 		});
 };
 
@@ -31,7 +32,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 			console.log("Post saved successfully");
 		})
 		.catch((err) => {
-			throw new IError("Post not created", 500);
+			throw new IError("Post not created", statusCode.INTERNAL_SERVER_ERROR);
 		});
 };
 
@@ -43,6 +44,6 @@ export const deletePost: RequestHandler = (req, res, next) => {
 			res.status(200).json({ message: "Post deleted successfully" });
 		})
 		.catch((err) => {
-			throw new IError("Post not found", 404);
+			throw new IError("Post not found", statusCode.NOT_FOUND);
 		});
 };

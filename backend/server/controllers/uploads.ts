@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { IError } from "../types/basic/IError";
 import multer from "multer";
+import { statusCode } from "../enums/statusCodes";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -28,10 +29,10 @@ export const videoUpload: RequestHandler = (req, res, next) => {
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
-			throw new IError("Multer Audio Upload file error", 500);
+			throw new IError("Multer Audio Upload file error", statusCode.INTERNAL_SERVER_ERROR);
 		} else if (err) {
 			// An unknown error occurred when uploading.
-			throw new IError("Unknow audio upload error", 500);
+			throw new IError("Unknow audio upload error", statusCode.INTERNAL_SERVER_ERROR);
 		} else {
 			// Everything went fine.
 			next();
