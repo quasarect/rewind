@@ -1,3 +1,5 @@
+# AIM AND DESCRIPTION
+
 # Musistic
 
 A social media platform for music lovers to connect and interact!
