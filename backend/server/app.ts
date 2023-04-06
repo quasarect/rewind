@@ -6,10 +6,10 @@ import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
 import querystring from "querystring";
 import uploadRouter from "./routes/uploadRoutes";
+import { generateToken, isAuth, testToken } from "./middlewares/auth";
 // import { routingCheck } from "./middlewares/routingCheck";
 const app = express();
 const port = process.env.PORT || 3000;
-
 //test route
 app.use("/test", (req, res, next) => {
 	console.log("Recieved the request");
@@ -26,21 +26,24 @@ app.get("/authUrl", (req, res) => {
 				client_id: process.env.SPOTIFY_CLIENT_ID,
 				scope: scope,
 				redirect_uri: process.env.REDIRECT_URL,
-			})
+			}),
 	);
 });
 
-// Call to check auth
-app.get('/ping',)
+// Call to get token and check auth
+app.get("/ping", testToken);
+app.post("/ping", isAuth);
 
+//Auth middleware
+app.use(isAuth);
 // Musist routes
-app.use('/posts',postRouter);
+app.use("/posts", postRouter);
 
 //Spotify routes
 app.use("/spotify", spotifyRouter);
 
 // Upload routes
-app.use('/uploads',uploadRouter);
+app.use("/uploads", uploadRouter);
 
 // Error handling middleware
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {

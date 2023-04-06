@@ -11,8 +11,7 @@
     "esModuleInterop": true,                             
     "forceConsistentCasingInFileNames": true,         
     "strict": true,                     
-    "noUnusedLocals": true,                 
-    "noImplicitReturns": true,                   
+    "noUnusedLocals": true,                   
     "noFallthroughCasesInSwitch": true,      
     "allowUnreachableCode": true,                     
     "skipLibCheck": true   
