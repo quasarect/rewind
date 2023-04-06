@@ -16,16 +16,10 @@ export default function Sidebar({ navItems }) {
             <li key={index}>
               <Link
                 href={item.link}
-                className='w-full h-10 flex items-center my-2 text-white text text-xl'
+                className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
               >
-                <Image
-                  src={item.icon}
-                  alt={item.name}
-                  height={25}
-                  width={25}
-                  className='text-white rounded-full'
-                />
-                <span className='ml-2'>{item.name}</span>
+                <item.icon />
+                <span className='ml-2 text-white'>{item.name}</span>
               </Link>
             </li>
           ))}
