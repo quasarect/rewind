@@ -32,7 +32,10 @@ export const createPost: RequestHandler = (req, res, next) => {
 			console.log("Post saved successfully");
 		})
 		.catch((err) => {
-			throw new IError("Post not created", statusCode.INTERNAL_SERVER_ERROR);
+			throw new IError(
+				"Post not created",
+				statusCode.INTERNAL_SERVER_ERROR,
+			);
 		});
 };
 

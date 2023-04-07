@@ -4,7 +4,7 @@ import { IError } from "../types/basic/IError";
 import axios from "axios";
 import qs from "qs";
 import { statusCode } from "../enums/statusCodes";
-// import keyModel from "../models/keySchema";
+import keyModel from "../models/keySchema";
 
 export const handleOauth: RequestHandler = (req, res, next) => {
 	if (req.query.error) {
@@ -49,11 +49,11 @@ export const handleOauth: RequestHandler = (req, res, next) => {
 				.catch((err) => {
 					console.log(err);
 				});
-			// const keys = new keyModel({
-			// 	accessToken: response.data.access_token,
-			// 	refreshToken: response.data.refresh_token,
-			// });
-			// keys.save();
+			const keys = new keyModel({
+				accessToken: response.data.access_token,
+				refreshToken: response.data.refresh_token,
+			});
+			keys.save();
 		})
 		.catch((err) => {
 			throw new IError("Spotify auth unsuccessfull", statusCode.BAD_REQUEST);
