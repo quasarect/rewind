@@ -82,12 +82,6 @@ const userSchema = new Schema<IUser>({
 			ref: "",
 		},
 	],
-	musists: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "",
-		},
-	],
 });
 const userModel = model<IUser>("User", userSchema);
 export default userModel;

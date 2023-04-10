@@ -1,7 +1,11 @@
 import { IPost } from "../types/models/IPost";
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const postSchema = new Schema<IPost>({
+	user: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
+	},
 	text: {
 		type: String,
 	},
@@ -23,7 +27,7 @@ const postSchema = new Schema<IPost>({
 	},
 	imageUrl: {
 		type: String,
-	}
+	},
 });
 
 const postModel = model<IPost>("Post", postSchema);

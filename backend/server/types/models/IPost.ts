@@ -1,4 +1,6 @@
+import { Types } from "mongoose";
 export interface IPost {
+	user: Types.ObjectId;
 	text: string;
 	audioUrl?: string;
 	imageUrl?: string;

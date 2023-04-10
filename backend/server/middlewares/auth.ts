@@ -3,8 +3,11 @@ import jwt from "jsonwebtoken";
 import { IError } from "../types/basic/IError";
 import { statusCode } from "../enums/statusCodes";
 
-export function isAuth(req: Request, res: Response, next: NextFunction) {
-	console.log("Auth check");
+export function isAuth(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): unknown {
 	const token = req.header("Authorization")?.replace("Bearer ", "");
 	if (!token) {
 		throw new IError("Unauthorized", statusCode.UNAUTHORIZED);
@@ -24,7 +27,7 @@ export function isAuth(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
-export function testToken(req: Request, res: Response) {
+export function testToken(req: Request, res: Response): void {
 	const { email, type } = req.body;
 	res.status(200).json({ token: generateToken(email, type) });
 }
