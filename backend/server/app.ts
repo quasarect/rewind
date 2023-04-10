@@ -7,7 +7,7 @@ import postRouter from "./routes/postRouter";
 import querystring from "querystring";
 import uploadRouter from "./routes/uploadRoutes";
 import { isAuth, testToken } from "./middlewares/auth";
-// import { routingCheck } from "./middlewares/routingCheck";
+
 const app = express();
 const port = process.env.PORT || 3000;
 //Use body-parser
@@ -36,19 +36,17 @@ app.get("/authUrl", (req, res) => {
 // Call to get token and check auth
 app.get("/ping", testToken);
 app.post("/ping", isAuth);
-//Auth middleware 
-// Uncommented cause using through browser and postman
-// app.use(isAuth);
-// Musist routes
+
+// Post routes
 app.use("/posts", postRouter);
 
 //Spotify routes
 app.use("/spotify", spotifyRouter);
 
 // Upload routes
-app.use("/uploads", uploadRouter);
+app.use("/uploads", isAuth, uploadRouter);
 
-// Error handling middleware
+// Error handling 
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	res.status(error.code).json({ message: error.message });
 });
@@ -56,5 +54,5 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 // Start the server
 app.listen(port, async () => {
 	await mongoose.connect(process.env.MONGO_URL!);
-	console.log(`Musistic running on ${port}`);
+	console.log(`Rewind running on ${port}`);
 });

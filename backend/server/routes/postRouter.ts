@@ -6,6 +6,7 @@ import {
 	getPost,
 	postsByUser,
 } from "../controllers/posts";
+import { isAuth } from "../middlewares/auth";
 
 const postRouter = express.Router();
 
@@ -15,8 +16,8 @@ postRouter.get("/user/:id", postsByUser);
 
 postRouter.get("/:id", getPost);
 
-postRouter.delete("/:id", deletePost);
+postRouter.delete("/:id", isAuth, deletePost);
 
-postRouter.post("/create", createPost);
+postRouter.post("/create", isAuth, createPost);
 
 export default postRouter;

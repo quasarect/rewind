@@ -7,4 +7,5 @@ export interface IPost {
 	likeCount: number;
 	commentCount: number;
 	context?: Array<string>;
+	createdAt: Date;
 }
