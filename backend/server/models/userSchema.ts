@@ -2,14 +2,20 @@ import { IUser } from "../types/models/IUser";
 import mongoose, { model, Schema } from "mongoose";
 
 const userSchema = new Schema<IUser>({
+	//Spotify
 	name: {
 		type: String,
 		required: true,
 	},
+	//Rewind unique
 	username: {
 		type: String,
-		required: true,
+		// required: true,
 		unique: true,
+	},
+	country: {
+		type: String,
+		required: true,
 	},
 	userId: {
 		type: String,
@@ -20,10 +26,6 @@ const userSchema = new Schema<IUser>({
 		type: String,
 		required: true,
 		unique: true,
-	},
-	password: {
-		type: String,
-		required: true,
 	},
 	profileUrl: {
 		type: String,

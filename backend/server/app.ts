@@ -6,10 +6,12 @@ import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
 import querystring from "querystring";
 import uploadRouter from "./routes/uploadRoutes";
-import { generateToken, isAuth, testToken } from "./middlewares/auth";
+import { isAuth, testToken } from "./middlewares/auth";
 // import { routingCheck } from "./middlewares/routingCheck";
 const app = express();
 const port = process.env.PORT || 3000;
+//Use body-parser
+app.use(express.json());
 //test route
 app.use("/test", (req, res, next) => {
 	console.log("Recieved the request");
@@ -19,23 +21,24 @@ app.use("/test", (req, res, next) => {
 // Get Oauth url
 app.get("/authUrl", (req, res) => {
 	const scope = "user-read-private user-read-email";
-	res.redirect(
-		"https://accounts.spotify.com/authorize?" +
+	res.json({
+		URL:
+			"https://accounts.spotify.com/authorize?" +
 			querystring.stringify({
 				response_type: "code",
 				client_id: process.env.SPOTIFY_CLIENT_ID,
 				scope: scope,
 				redirect_uri: process.env.REDIRECT_URL,
 			}),
-	);
+	});
 });
 
 // Call to get token and check auth
 app.get("/ping", testToken);
 app.post("/ping", isAuth);
-
-//Auth middleware
-app.use(isAuth);
+//Auth middleware 
+// Uncommented cause using through browser and postman
+// app.use(isAuth);
 // Musist routes
 app.use("/posts", postRouter);
 

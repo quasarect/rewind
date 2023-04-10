@@ -4,8 +4,8 @@ export interface IUser {
 	name: string;
 	username: string;
 	userId: string;
+	country: string;
 	email: string;
-	password: string;
 	profileUrl: string;
 	tag: string;
 	createdAt: Date;

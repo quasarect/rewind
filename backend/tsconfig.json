@@ -11,12 +11,12 @@
     "esModuleInterop": true,                             
     "forceConsistentCasingInFileNames": true,         
     "strict": true,                     
-    "noUnusedLocals": true,                   
+    // "noUnusedLocals": true,                   
     "noFallthroughCasesInSwitch": true,      
     "allowUnreachableCode": true,                     
     "skipLibCheck": true   
   },
   "exclude": [
-    "node_modules "
+    "node_modules ",
   ]
 }
