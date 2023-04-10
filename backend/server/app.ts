@@ -7,7 +7,10 @@ import postRouter from "./routes/postRouter";
 import querystring from "querystring";
 import uploadRouter from "./routes/uploadRoutes";
 import { isAuth, testToken } from "./middlewares/auth";
-
+import { Server, Socket } from "socket.io";
+import { chatSocket } from "./sockets/conversation";
+import convoRouter from "./routes/conversationRoutes";
+import http from "http";
 const app = express();
 const port = process.env.PORT || 3000;
 //Use body-parser
@@ -40,13 +43,16 @@ app.post("/ping", isAuth);
 // Post routes
 app.use("/posts", postRouter);
 
+//Conversation routes
+app.use("/convo", convoRouter);
+
 //Spotify routes
 app.use("/spotify", spotifyRouter);
 
 // Upload routes
 app.use("/uploads", isAuth, uploadRouter);
 
-// Error handling 
+// Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	res.status(error.code).json({ message: error.message });
 });
@@ -55,4 +61,11 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 app.listen(port, async () => {
 	await mongoose.connect(process.env.MONGO_URL!);
 	console.log(`Rewind running on ${port}`);
+});
+// const server = http.createServer(app);
+const io = new Server();
+// console.log(io);
+io.on("connection", (socket) => {
+	console.log("Connected to socket.io");
+	chatSocket(socket);
 });

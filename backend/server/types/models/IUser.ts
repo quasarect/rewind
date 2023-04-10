@@ -8,6 +8,7 @@ export interface IUser {
 	email: string;
 	profileUrl: string;
 	tag: string;
+	status: string;
 	description: string;
 	aiGeneratedLine: string;
 	private: boolean;

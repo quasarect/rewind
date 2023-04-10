@@ -1,5 +1,5 @@
 export interface IMessage {
     username:string;
-    timestamp:Date;
+    timestamp:any;
     message:string;
 }

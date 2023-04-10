@@ -73,3 +73,11 @@ export const allPosts: RequestHandler = (req, res, next) => {
 		res.status(200).json({ posts: response });
 	});
 };
+
+export const likePost: RequestHandler = (req, res, next) => {
+	postModel
+		.updateOne({ _id: req.query.id }, { $inc: { likeCount: 1 } })
+		.then((response) => {
+			res.status(200);
+		});
+};

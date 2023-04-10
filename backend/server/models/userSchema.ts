@@ -14,27 +14,39 @@ const userSchema = new Schema<IUser>(
 			// required: true,
 			unique: true,
 		},
+		//Spotify
 		country: {
+			
 			type: String,
 			required: true,
 		},
+		//Rewind
+		status: {
+			type: String,
+			default: "Offline",
+		},
+		//Spotify
 		userId: {
 			type: String,
 			required: true,
 			unique: true,
 		},
+		//spotify
 		email: {
 			type: String,
 			required: true,
 			unique: true,
 		},
+		//spotify first and then rewind custom
 		profileUrl: {
 			type: String,
 			default: "",
 		},
+		// rewind from AI
 		tag: {
 			type: String,
 		},
+		//rewind 
 		description: {
 			type: String,
 		},
@@ -57,16 +69,11 @@ const userSchema = new Schema<IUser>(
 			type: Number,
 			default: 0,
 		},
+		//Spotify
 		spotifyData: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "keyModel",
 		},
-		conversations: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "",
-			},
-		],
 		followers: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
