@@ -10,7 +10,7 @@ export function isAuth(
 ): unknown {
 	const token = req.header("Authorization")?.replace("Bearer ", "");
 	if (!token) {
-		throw new IError("Unauthorized", statusCode.UNAUTHORIZED);
+		return next(new IError("Unauthorized", statusCode.UNAUTHORIZED));
 	}
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
@@ -23,7 +23,7 @@ export function isAuth(
 		}
 		next();
 	} catch (e) {
-		throw new IError("Unauthorized", statusCode.UNAUTHORIZED);
+		next(new IError("Unauthorized", statusCode.UNAUTHORIZED));
 	}
 }
 

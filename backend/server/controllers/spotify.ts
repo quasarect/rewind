@@ -10,13 +10,9 @@ import { generateToken } from "../middlewares/auth";
 
 export const handleOauth: RequestHandler = async (req, res, next) => {
 	if (req.query.error) {
-		throw new IError(req.params.error, statusCode.FORBIDDEN);
+		next(new IError(req.params.error, statusCode.FORBIDDEN));
 	}
 	const code = req.query.code;
-	// const state = req.query.state;
-	// if (state !== "fsdd") {
-	// 	res.redirect("/login");
-	// }
 	const body = qs.stringify({
 		grant_type: "authorization_code",
 		code: code,
@@ -61,10 +57,12 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 			token: generateToken(data.email, "user"),
 		});
 	} catch (err) {
-		console.log(err);
-		throw new IError(
-			"Spotify auth insuccessful",
-			statusCode.INTERNAL_SERVER_ERROR,
+		console.log("err");
+		next(
+			new IError(
+				"Spotify auth insuccessful",
+				statusCode.INTERNAL_SERVER_ERROR,
+			),
 		);
 	}
 };

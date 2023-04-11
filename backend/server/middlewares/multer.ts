@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 		//This ext is the extension of the file
 		//   const ext = path.extname(file.originalname);
 		const filename = `${Date.now()}-${file.originalname}`;
-        req.body.filename=filename;
+		req.body.filename = filename;
 		cb(null, filename);
 	},
 });
@@ -28,10 +28,10 @@ export const uploadMiddleware: RequestHandler = (req, res, next) => {
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
-			throw new IError("Multer Upload file error",500);
+			next(new IError("Multer Upload file error", 500));
 		} else if (err) {
 			// An unknown error occurred when uploading.
-			throw new IError("Unknow upload error",500);
+			next(new IError("Unknow upload error", 500));
 		} else {
 			// Everything went fine.
 			next();

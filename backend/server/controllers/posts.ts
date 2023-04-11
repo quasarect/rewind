@@ -5,17 +5,21 @@ import { statusCode } from "../enums/statusCodes";
 
 export const getPost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
-	postModel
-		.findById({ _id: postId })
-		.then((result) => {
-			if (!result) {
-				throw new IError("Post not found", statusCode.NOT_FOUND);
-			}
-			res.status(200).json({ post: result });
-		})
-		.catch((err) => {
-			throw new IError("Get post error", statusCode.NOT_FOUND);
-		});
+	try {
+		postModel
+			.findById({ _id: postId })
+			.then((result) => {
+				if (!result) {
+					throw new IError("Post not found", statusCode.NOT_FOUND);
+				}
+				res.status(200).json({ post: result });
+			})
+			.catch((err) => {
+				throw new IError("Get post error", statusCode.NOT_FOUND);
+			});
+	} catch (err) {
+		next(err);
+	}
 };
 
 export const createPost: RequestHandler = (req, res, next) => {
@@ -29,43 +33,59 @@ export const createPost: RequestHandler = (req, res, next) => {
 		imageUrl: imageUrl,
 		audioUrl: audioUrl,
 	});
-	post.save()
-		.then((response) => {
-			res.status(200).json({ message: "Post created successfully" });
-		})
-		.catch((err) => {
-			throw new IError(
-				"Post not created",
-				statusCode.INTERNAL_SERVER_ERROR,
-			);
-		});
+	try {
+		post.save()
+			.then((response) => {
+				res.status(200).json({ message: "Post created successfully" });
+			})
+			.catch((err) => {
+				next(
+					new IError(
+						"Post not created",
+						statusCode.INTERNAL_SERVER_ERROR,
+					),
+				);
+			});
+	} catch (err) {
+		next(err);
+	}
 };
 
 export const deletePost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
-	postModel
-		.deleteOne({ _id: postId })
-		.then((result) => {
-			res.status(200).json({ message: "Post deleted successfully" });
-		})
-		.catch((err) => {
-			throw new IError("Post not found", statusCode.NOT_FOUND);
-		});
+	try {
+		postModel
+			.deleteOne({ _id: postId })
+			.then((result) => {
+				res.status(200).json({ message: "Post deleted successfully" });
+			})
+			.catch((err) => {
+				next(new IError("Post not found", statusCode.NOT_FOUND));
+			});
+	} catch (err) {
+		next(err);
+	}
 };
 
 export const postsByUser: RequestHandler = (req, res, next) => {
 	const userId = req.params.id;
-	postModel
-		.find({ user: userId })
-		.then((response) => {
-			res.status(200).json({ posts: response });
-		})
-		.catch((err) => {
-			throw new IError(
-				"Error fetching posts",
-				statusCode.INTERNAL_SERVER_ERROR,
-			);
-		});
+	try {
+		postModel
+			.find({ user: userId })
+			.then((response) => {
+				res.status(200).json({ posts: response });
+			})
+			.catch((err) => {
+				next(
+					new IError(
+						"Error fetching posts",
+						statusCode.INTERNAL_SERVER_ERROR,
+					),
+				);
+			});
+	} catch (err) {
+		next(err);
+	}
 };
 
 export const allPosts: RequestHandler = (req, res, next) => {

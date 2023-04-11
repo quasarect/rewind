@@ -54,6 +54,7 @@ app.use("/uploads", isAuth, uploadRouter);
 
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
+	console.log("Error handler");
 	res.status(error.code).json({ message: error.message });
 });
 
