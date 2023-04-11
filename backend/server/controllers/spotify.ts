@@ -45,6 +45,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 			refreshToken: tokens.data.refresh_token,
 		});
 		await keyId.save();
+		console.log(data);
 		const user = new userModel({
 			name: data.display_name,
 			email: data.email,
@@ -57,7 +58,8 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 		res.status(200).json({
 			token: generateToken(data.email, "user"),
 		});
-	} catch (err) {
+	} catch (err: any) {
+		console.log(err.message);
 		next(
 			new IError(
 				"Spotify auth insuccessful",

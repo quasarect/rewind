@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
@@ -16,6 +17,8 @@ const port = process.env.PORT || 3000;
 
 //Use body-parser
 app.use(express.json());
+
+app.use(cors());
 
 //test route
 app.use("/test", (req, res, next) => {
