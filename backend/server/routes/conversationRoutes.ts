@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuth } from "../middlewares/auth";
+// import { isAuth } from "../middlewares/auth";
 import { createConvo, getConvo, userConvos } from "../controllers/conversation";
 
 const convoRouter = express.Router();

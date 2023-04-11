@@ -1,6 +1,6 @@
 # AIM AND DESCRIPTION
 
-# Musistic
+# Rewind
 
 A social media platform for music lovers to connect and interact!
 

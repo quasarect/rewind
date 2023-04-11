@@ -1,5 +1,7 @@
 /* eslint-disable*/
-import { Request } from "express";
+//@ts-ignore
+import { Request } from "express"; 
+
 
 declare global {
 	namespace Express {

@@ -7,12 +7,13 @@ import { statusCode } from "../enums/statusCodes";
 import keyModel from "../models/keySchema";
 import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
+import querystring from "querystring";
 
 export const handleOauth: RequestHandler = async (req, res, next) => {
 	if (req.query.error) {
 		next(new IError(req.params.error, statusCode.FORBIDDEN));
 	}
-	const code = req.query.code;
+	const code = req.body.code;
 	const body = qs.stringify({
 		grant_type: "authorization_code",
 		code: code,
@@ -57,7 +58,6 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 			token: generateToken(data.email, "user"),
 		});
 	} catch (err) {
-		console.log("err");
 		next(
 			new IError(
 				"Spotify auth insuccessful",
@@ -65,4 +65,18 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 			),
 		);
 	}
+};
+
+export const authUrl: RequestHandler = (req, res) => {
+	const scope = "user-read-private user-read-email";
+	res.status(200).json({
+		URL:
+			"https://accounts.spotify.com/authorize?" +
+			querystring.stringify({
+				response_type: "code",
+				client_id: process.env.SPOTIFY_CLIENT_ID,
+				scope: scope,
+				redirect_uri: process.env.REDIRECT_URL,
+			}),
+	});
 };

@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { IMessage } from "../types/basic/IMessage";
 import conversationModel from "../models/conversationSchema";
 
-export function chatSocket(socket: Socket) {
+export function chatSocket(socket: Socket): void {
 	// On conversation start event we add users to the room with the conversationId
 	socket.on("conversation", (data) => {
 		socket.join(data.id);

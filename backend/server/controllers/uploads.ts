@@ -44,10 +44,10 @@ export const audioUpload: RequestHandler = (req, res, next) => {
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
-			throw new IError("Multer Upload file error", 500);
+			next(new IError("Multer Upload file error", 500));
 		} else if (err) {
 			// An unknown error occurred when uploading.
-			throw new IError("Unknow audio upload error", 500);
+			next(new IError("Unknow audio upload error", 500));
 		} else {
 			// Everything went fine.
 			next();
@@ -56,18 +56,18 @@ export const audioUpload: RequestHandler = (req, res, next) => {
 };
 
 export const imageUpload: RequestHandler = (req, res, next) => {
-    console.log("Image uplaod");
+    // console.log("Image uplaod");
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
-			throw new IError("Multer Image Upload file error", 500);
+			next(new IError("Multer Image Upload file error", 500));
 		} else if (err) {
 			// An unknown error occurred when uploading.
-			throw new IError("Unknow image upload error", 500);
+			next(new IError("Unknow image upload error", 500));
 		} else {
 			// Everything went fine.
 			// next();
-            console.log("all good");
+            // console.log("all good");
 		}
 	});
 };

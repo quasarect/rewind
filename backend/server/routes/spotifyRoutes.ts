@@ -3,6 +3,6 @@ import { handleOauth } from "../controllers/spotify";
 
 const spotifyRouter=express.Router();
 
-spotifyRouter.get('/callback',handleOauth);
+spotifyRouter.get('/login',handleOauth);
 
 export default spotifyRouter;
