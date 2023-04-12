@@ -4,6 +4,7 @@ const authContext = createContext({
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
+  userId: null,
   token: null,
 })
 
@@ -12,6 +13,7 @@ export { authContext }
 const AuthContextProvider = props => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState(null)
+  const [userId, setUserId] = useState(null)
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
@@ -21,8 +23,11 @@ const AuthContextProvider = props => {
     }
   }, [])
 
-  const login = token => {
+  const login = (token, userId) => {
     localStorage.setItem('token', token)
+    localStorage.setItem('userId', userId)
+    setToken(token)
+    setUserId(userId)
     setIsAuthenticated(true)
   }
 

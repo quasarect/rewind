@@ -14,6 +14,8 @@ function Callback() {
   const { login } = useContext(authContext)
 
   const handleLogin = async () => {
+    if (!code) return
+
     try {
       const data = await sendRequest(
         '/spotify/login',
@@ -21,7 +23,7 @@ function Callback() {
         JSON.stringify({ code })
       )
       if (data.token) {
-        login(data.token)
+        login(data.token, data.userId)
         navigate('/')
       }
     } catch (err) {

@@ -52,7 +52,11 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 					const newUser = await userModel.find({ email: data.email });
 					if (newUser.length !== 0) {
 						return res.status(200).json({
-							token: generateToken(data.email, "user"),
+							token: generateToken(
+								newUser[0]._id.toString(),
+								"user",
+							),
+							userId: newUser[0]._id,
 							message: "User already exists",
 						});
 					}
@@ -90,6 +94,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 									user._id.toString(),
 									"user",
 								),
+								userId: user._id,
 								message: "New user created",
 							});
 						})

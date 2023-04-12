@@ -1,20 +1,50 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 import CommentSVG from './icons/comment.svg'
 import ReshareSVG from './icons/reshare.svg'
 import LikeSVG from './icons/like.svg'
 import LikedSVG from './icons/liked.svg'
 
-export default function Post({ post }) {
-  console.log(post)
+import { useHttpClient } from '../../hooks/httpRequest'
 
+import { authContext } from '../../store/authContext'
+
+export default function Post({ post }) {
   const [liked, setLiked] = useState(true)
+  const { sendRequest } = useHttpClient()
+  const { userId } = useContext(authContext)
+
+  useEffect(() => {
+    if (post?.likedBy) {
+      setLiked(true)
+    }
+  }, [userId])
+
+  const likeHandler = async liked => {
+    if (liked) {
+      try {
+        const response = await sendRequest('/posts/like?id=' + post?._id)
+        setLiked(true)
+        console.log(response)
+      } catch (err) {
+        console.log(err)
+      }
+    } else {
+      try {
+        const response = await sendRequest('/posts/unlike?id=' + post?._id)
+        setLiked(false)
+        console.log(response)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
 
   return (
     <div className='p-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary'>
       <div className='flex items-center'>
         <img
-          src={null}
+          src={post?.user?.profileUrl}
           alt='Profile Picture'
           className='w-10 h-10 rounded-full'
         />
@@ -49,13 +79,13 @@ export default function Post({ post }) {
             <img
               src={LikeSVG}
               className='h-4 hover:scale-110 cursor-pointer mr-2'
-              onClick={() => setLiked(!liked)}
+              onClick={() => likeHandler(true)}
             />
           ) : (
             <img
               src={LikedSVG}
               className='h-4 hover:scale-110 cursor-pointer mr-2'
-              onClick={() => setLiked(!liked)}
+              onClick={() => likeHandler(false)}
             />
           )}
           {post?.likeCount}

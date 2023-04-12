@@ -5,6 +5,8 @@ import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
 
 export const getPost: RequestHandler = (req, res, next) => {
+	console.log("here in get post");
+
 	const postId = req.params.id;
 	const userId = req.user?.id;
 	postModel
@@ -13,7 +15,7 @@ export const getPost: RequestHandler = (req, res, next) => {
 		.populate({
 			path: "likedBy",
 			match: { users: userId },
-			select:"none"
+			select: "none",
 		})
 		.then((result) => {
 			if (!result) {
@@ -28,6 +30,7 @@ export const getPost: RequestHandler = (req, res, next) => {
 
 export const createPost: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
+	console.log(userId);
 	const text = req.body.text;
 	const imageUrl = req.body.imageUrl || undefined;
 	const audioUrl = req.body.audioUrl || undefined;
@@ -87,13 +90,14 @@ export const postsByUser: RequestHandler = (req, res, next) => {
 
 export const allPosts: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
+	console.log(userId);
 	postModel
 		.find()
 		.populate({ path: "user", select: ["name", "profileUrl", "username"] })
 		.populate({
 			path: "likedBy",
 			match: { users: userId },
-			select:"none"
+			select: "none",
 		})
 		.then((response) => {
 			res.status(200).json({ posts: response });

@@ -16,14 +16,14 @@ postRouter.get("/all", allPosts);
 
 postRouter.get("/user/:id", postsByUser);
 
+postRouter.post("/create", isAuth, createPost);
+
+postRouter.get("/like", isAuth, likePost);
+
+postRouter.get("/unlike", isAuth, unlikePost);
+
 postRouter.get("/:id", isAuth, getPost);
 
 postRouter.delete("/:id", isAuth, deletePost);
-
-postRouter.post("/create", isAuth, createPost);
-
-postRouter.post("/like", isAuth, likePost);
-
-postRouter.post("/unlike", isAuth, unlikePost);
 
 export default postRouter;
