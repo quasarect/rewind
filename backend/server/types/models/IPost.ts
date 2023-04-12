@@ -8,4 +8,5 @@ export interface IPost {
 	commentCount: number;
 	context?: Array<string>;
 	createdAt: Date;
+	likedBy: Types.ObjectId;
 }

@@ -56,6 +56,11 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							message: "User already exists",
 						});
 					}
+					if (!data.email) {
+						return res
+							.status(statusCode.BAD_REQUEST)
+							.json({ message: "Email not registered" });
+					}
 					const keyId = new keyModel({
 						accessToken: tokens.data.access_token,
 						refreshToken: tokens.data.refresh_token,
@@ -70,10 +75,10 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 						);
 					});
 					const user = new userModel({
+						username: data.id,
 						name: data.display_name,
 						email: data.email,
 						country: data.country,
-						userId: data.id,
 						profileUrl: data.images.url,
 						spotifyData: keyId.id,
 					});
@@ -81,7 +86,10 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 					user.save()
 						.then((response) => {
 							res.status(200).json({
-								token: generateToken(data.email, "user"),
+								token: generateToken(
+									user._id.toString(),
+									"user",
+								),
 								message: "New user created",
 							});
 						})
@@ -95,6 +103,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 						});
 				})
 				.catch((err) => {
+					console.log(err);
 					next(
 						new IError(
 							"Couldnt get user data",

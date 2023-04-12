@@ -29,6 +29,10 @@ const postSchema = new Schema<IPost>(
 		imageUrl: {
 			type: String,
 		},
+		likedBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserArray",
+		},
 	},
 	{ timestamps: true },
 );

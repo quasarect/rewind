@@ -8,10 +8,10 @@ const userSchema = new Schema<IUser>(
 			type: String,
 			required: true,
 		},
-		//Rewind unique
+		//Spotify
 		username: {
 			type: String,
-			// required: true,
+			required: true,
 			unique: true,
 		},
 		//Spotify
@@ -25,12 +25,6 @@ const userSchema = new Schema<IUser>(
 			type: String,
 			default: "Offline",
 		},
-		//Spotify
-		userId: {
-			type: String,
-			required: true,
-			unique: true,
-		},
 		//spotify
 		email: {
 			type: String,
@@ -40,7 +34,7 @@ const userSchema = new Schema<IUser>(
 		//spotify first and then rewind custom
 		profileUrl: {
 			type: String,
-			default: "",
+			default: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
 		},
 		// rewind from AI
 		tag: {

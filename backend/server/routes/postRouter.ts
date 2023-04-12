@@ -6,6 +6,7 @@ import {
 	getPost,
 	likePost,
 	postsByUser,
+	unlikePost,
 } from "../controllers/posts";
 import { isAuth } from "../middlewares/auth";
 
@@ -21,6 +22,8 @@ postRouter.delete("/:id", isAuth, deletePost);
 
 postRouter.post("/create", isAuth, createPost);
 
-postRouter.post("/like",likePost)
+postRouter.post("/like", isAuth, likePost);
+
+postRouter.post("/unlike", isAuth, unlikePost);
 
 export default postRouter;
