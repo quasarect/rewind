@@ -8,8 +8,6 @@ function Callback() {
   const [params, setParams] = useSearchParams()
   const code = params.get('code')
 
-  console.log(code)
-
   const { sendRequest } = useHttpClient()
 
   const login = async () => {
