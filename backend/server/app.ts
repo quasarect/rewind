@@ -10,6 +10,7 @@ import { isAuth, testToken } from "./middlewares/auth";
 import { Server, Socket } from "socket.io";
 import { chatSocket } from "./sockets/conversation";
 import convoRouter from "./routes/conversationRoutes";
+import userRouter from "./routes/userRoutes";
 // import http from "http";
 
 const app = express();
@@ -32,6 +33,9 @@ app.post("/ping", testToken);
 
 // Post routes
 app.use("/posts", postRouter);
+
+// User routes
+app.use("/users", userRouter);
 
 //Conversation routes
 app.use("/convo", convoRouter);
