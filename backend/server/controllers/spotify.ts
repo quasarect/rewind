@@ -107,7 +107,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 					next(
 						new IError(
 							"Couldnt get user data",
-							statusCode.BAD_REQUEST,
+							statusCode.UNAUTHORIZED,
 						),
 					);
 				});
@@ -116,7 +116,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 			next(
 				new IError(
 					"Couldnt get tokens for code",
-					statusCode.INTERNAL_SERVER_ERROR,
+					statusCode.UNAUTHORIZED,
 				),
 			);
 		});

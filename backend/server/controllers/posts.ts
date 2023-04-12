@@ -13,6 +13,7 @@ export const getPost: RequestHandler = (req, res, next) => {
 		.populate({
 			path: "likedBy",
 			match: { users: userId },
+			select:"none"
 		})
 		.then((result) => {
 			if (!result) {
@@ -92,6 +93,7 @@ export const allPosts: RequestHandler = (req, res, next) => {
 		.populate({
 			path: "likedBy",
 			match: { users: userId },
+			select:"none"
 		})
 		.then((response) => {
 			res.status(200).json({ posts: response });

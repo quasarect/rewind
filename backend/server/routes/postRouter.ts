@@ -16,7 +16,7 @@ postRouter.get("/all", allPosts);
 
 postRouter.get("/user/:id", postsByUser);
 
-postRouter.get("/:id", getPost);
+postRouter.get("/:id", isAuth, getPost);
 
 postRouter.delete("/:id", isAuth, deletePost);
 
