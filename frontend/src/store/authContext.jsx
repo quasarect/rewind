@@ -1,11 +1,10 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 
 const authContext = createContext({
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
   token: null,
-  setToken: () => {},
 })
 
 export { authContext }
@@ -14,11 +13,21 @@ const AuthContextProvider = props => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState(null)
 
-  const login = () => {
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token')
+    if (storedToken) {
+      setToken(storedToken)
+      setIsAuthenticated(true)
+    }
+  }, [])
+
+  const login = token => {
+    localStorage.setItem('token', token)
     setIsAuthenticated(true)
   }
 
   const logout = () => {
+    localStorage.removeItem('token')
     setIsAuthenticated(false)
   }
 
@@ -29,7 +38,6 @@ const AuthContextProvider = props => {
         login,
         logout,
         token,
-        setToken,
       }}
     >
       {props.children}

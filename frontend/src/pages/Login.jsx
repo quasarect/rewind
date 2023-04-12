@@ -1,9 +1,11 @@
 import getSpotifyOAuthURL from '../utils/getSpotifyOAuthURL'
-
 import SpotifySVG from '../components/assets/spotify.svg'
+import { useRedirectAuthenticated } from '../hooks/redirectAuthenticated'
 
 function Login() {
   const redirectURL = getSpotifyOAuthURL()
+
+  useRedirectAuthenticated()
 
   return (
     <div className='h-screen w-screen  bg-rewind-dark-primary flex items-center justify-center flex-col'>

@@ -16,7 +16,6 @@ const userSchema = new Schema<IUser>(
 		},
 		//Spotify
 		country: {
-			
 			type: String,
 			required: true,
 		},
@@ -34,13 +33,14 @@ const userSchema = new Schema<IUser>(
 		//spotify first and then rewind custom
 		profileUrl: {
 			type: String,
-			default: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+			default:
+				"https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
 		},
 		// rewind from AI
 		tag: {
 			type: String,
 		},
-		//rewind 
+		//rewind
 		description: {
 			type: String,
 		},

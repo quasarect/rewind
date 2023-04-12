@@ -25,13 +25,14 @@ export const useHttpClient = () => {
         const response = await fetch(import.meta.env.VITE_API_ENDPOINT + url, {
           method,
           body,
-          headers,
+          headers: {
+            ...headers,
+            Authorization: 'Bearer ' + token,
+          },
           signal: httpAbortCtrl.signal,
         })
 
         const responseData = await response.json()
-
-        console.log('response' + responseData)
 
         activeHttpRequests.current = activeHttpRequests.current.filter(
           reqCtrl => reqCtrl !== httpAbortCtrl
