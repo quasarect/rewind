@@ -10,10 +10,12 @@ import { generateToken } from "../middlewares/auth";
 import querystring from "querystring";
 
 export const handleOauth: RequestHandler = async (req, res, next) => {
-	if (req.query.error) {
-		next(new IError(req.params.error, statusCode.FORBIDDEN));
-	}
+	// Recieive request from front end extract code
 	const code = req.body.code;
+	if (!code) {
+		next(new IError("Code not given", statusCode.BAD_REQUEST));
+	}
+
 	const body = qs.stringify({
 		grant_type: "authorization_code",
 		code: code,
@@ -33,40 +35,82 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 		},
 		data: body,
 	};
-	try {
-		const tokens = await axios(config);
-		const { data } = await axios.get(Spotify.ME, {
-			headers: {
-				Authorization: "Bearer " + tokens.data.access_token,
-			},
+	// First exhange code for tokens
+	axios(config)
+		.then(async (tokens) => {
+			// Once tokens are received hit me endpoint for user details
+			axios
+				.get(Spotify.ME, {
+					headers: {
+						Authorization: "Bearer " + tokens.data.access_token,
+					},
+				})
+				.then(async (reply) => {
+					// User data response
+					const data = reply.data;
+					//Check if user already exists
+					const newUser = await userModel.find({ email: data.email });
+					if (newUser.length !== 0) {
+						return res.status(200).json({
+							token: generateToken(data.email, "user"),
+							message: "User already exists",
+						});
+					}
+					const keyId = new keyModel({
+						accessToken: tokens.data.access_token,
+						refreshToken: tokens.data.refresh_token,
+					});
+					// Save keys
+					await keyId.save().catch((err) => {
+						next(
+							new IError(
+								"Couldnt save keys",
+								statusCode.INTERNAL_SERVER_ERROR,
+							),
+						);
+					});
+					const user = new userModel({
+						name: data.display_name,
+						email: data.email,
+						country: data.country,
+						userId: data.id,
+						profileUrl: data.images.url,
+						spotifyData: keyId.id,
+					});
+					//Save user data
+					user.save()
+						.then((response) => {
+							res.status(200).json({
+								token: generateToken(data.email, "user"),
+								message: "New user created",
+							});
+						})
+						.catch((err) => {
+							next(
+								new IError(
+									"Couldnt create user",
+									statusCode.INTERNAL_SERVER_ERROR,
+								),
+							);
+						});
+				})
+				.catch((err) => {
+					next(
+						new IError(
+							"Couldnt get user data",
+							statusCode.BAD_REQUEST,
+						),
+					);
+				});
+		})
+		.catch((err) => {
+			next(
+				new IError(
+					"Couldnt get tokens for code",
+					statusCode.INTERNAL_SERVER_ERROR,
+				),
+			);
 		});
-		const keyId = new keyModel({
-			accessToken: tokens.data.access_token,
-			refreshToken: tokens.data.refresh_token,
-		});
-		await keyId.save();
-		console.log(data);
-		const user = new userModel({
-			name: data.display_name,
-			email: data.email,
-			country: data.country,
-			userId: data.id,
-			profileUrl: data.images.url,
-			spotifyData: keyId.id,
-		});
-		await user.save();
-		res.status(200).json({
-			token: generateToken(data.email, "user"),
-		});
-	} catch (err: any) {
-		console.log(err.message);
-		next(
-			new IError(
-				"Spotify auth insuccessful",
-				statusCode.INTERNAL_SERVER_ERROR,
-			),
-		);
-	}
 };
 
 export const authUrl: RequestHandler = (req, res) => {
