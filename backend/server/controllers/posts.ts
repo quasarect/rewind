@@ -4,8 +4,7 @@ import postModel from "../models/postSchema";
 import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
 
-export const getPost: RequestHandler = (req, res, next) => {
-	console.log("here in get post");
+export const getPost: RequestHandler = (req, res, next) => {s
 
 	const postId = req.params.id;
 	const userId = req.user?.id;
@@ -30,7 +29,6 @@ export const getPost: RequestHandler = (req, res, next) => {
 
 export const createPost: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
-	console.log(userId);
 	const text = req.body.text;
 	const imageUrl = req.body.imageUrl || undefined;
 	const audioUrl = req.body.audioUrl || undefined;
@@ -90,7 +88,6 @@ export const postsByUser: RequestHandler = (req, res, next) => {
 
 export const allPosts: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
-	console.log(userId);
 	postModel
 		.find()
 		.populate({ path: "user", select: ["name", "profileUrl", "username"] })
