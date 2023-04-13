@@ -29,7 +29,7 @@ export const useHttpClient = () => {
             ...headers,
             Authorization: 'Bearer ' + token,
           },
-          signal: httpAbortCtrl.signal,
+          // signal: httpAbortCtrl.signal,
         })
 
         const responseData = await response.json()
