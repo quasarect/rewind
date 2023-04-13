@@ -68,18 +68,15 @@ const userSchema = new Schema<IUser>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "keyModel",
 		},
-		followers: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "",
-			},
-		],
-		following: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "",
-			},
-		],
+		followers: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserArray",
+		},
+
+		following: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserArray",
+		},
 	},
 	{ timestamps: true },
 );
