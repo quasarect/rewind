@@ -4,8 +4,7 @@ import postModel from "../models/postSchema";
 import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
 
-export const getPost: RequestHandler = (req, res, next) => {s
-
+export const getPost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
 	const userId = req.user?.id;
 	postModel
