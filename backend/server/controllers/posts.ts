@@ -103,8 +103,16 @@ export const allPosts: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const likePost: RequestHandler = (req, res, next) => {
+export const likePost: RequestHandler = async (req, res, next) => {
 	const userId = req.user?.id;
+	const post = await postModel
+		.findById(req.query.id)
+		.populate({ path: "likedBy", match: { users: userId } });
+	if (post?.likedBy) {
+		return res
+			.status(statusCode.BAD_REQUEST)
+			.json({ message: "ALready liked" });
+	}
 	postModel
 		.updateOne({ _id: req.query.id }, { $inc: { likeCount: 1 } })
 		.then((response) => {
@@ -146,7 +154,16 @@ export const likePost: RequestHandler = (req, res, next) => {
 	});
 };
 
-export const unlikePost: RequestHandler = (req, res, next) => {
+export const unlikePost: RequestHandler = async (req, res, next) => {
+	const userId = req.user?.id;
+	const post = await postModel
+		.findById(req.query.id)
+		.populate({ path: "likedBy", match: { users: userId } });
+	if (!post?.likedBy) {
+		return res
+			.status(statusCode.BAD_REQUEST)
+			.json({ message: "ALready unliked" });
+	}
 	postModel
 		.updateOne({ _id: req.query.id }, { $inc: { likeCount: -1 } })
 		.then((response) => {
@@ -169,7 +186,7 @@ export const unlikePost: RequestHandler = (req, res, next) => {
 		userArrayModel
 			.findByIdAndUpdate(
 				{ _id: post?.likedBy },
-				{ $pull: { users: req.user?.id } },
+				{ $pull: { users: userId } },
 				{ new: true },
 			)
 			.then((up) => {
