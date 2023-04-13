@@ -10,12 +10,13 @@ import { useHttpClient } from '../../hooks/httpRequest'
 import { authContext } from '../../store/authContext'
 
 export default function Post({ post }) {
-  const [liked, setLiked] = useState(true)
+  const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(post?.likeCount)
   const { sendRequest } = useHttpClient()
   const { userId } = useContext(authContext)
 
   useEffect(() => {
-    if (post?.likedBy) {
+    if (post?.likedBy?._id?.length > 0) {
       setLiked(true)
     }
   }, [userId])
@@ -25,6 +26,7 @@ export default function Post({ post }) {
       try {
         const response = await sendRequest('/posts/like?id=' + post?._id)
         setLiked(true)
+        setLikeCount(likeCount => likeCount + 1)
         console.log(response)
       } catch (err) {
         console.log(err)
@@ -33,6 +35,7 @@ export default function Post({ post }) {
       try {
         const response = await sendRequest('/posts/unlike?id=' + post?._id)
         setLiked(false)
+        setLikeCount(likeCount => likeCount - 1)
         console.log(response)
       } catch (err) {
         console.log(err)
@@ -77,18 +80,18 @@ export default function Post({ post }) {
         <div className='flex items-center justify-center'>
           {liked ? (
             <img
-              src={LikeSVG}
-              className='h-4 hover:scale-110 cursor-pointer mr-2'
-              onClick={() => likeHandler(true)}
-            />
-          ) : (
-            <img
               src={LikedSVG}
               className='h-4 hover:scale-110 cursor-pointer mr-2'
               onClick={() => likeHandler(false)}
             />
+          ) : (
+            <img
+              src={LikeSVG}
+              className='h-4 hover:scale-110 cursor-pointer mr-2'
+              onClick={() => likeHandler(true)}
+            />
           )}
-          {post?.likeCount}
+          {likeCount}
         </div>
       </div>
     </div>

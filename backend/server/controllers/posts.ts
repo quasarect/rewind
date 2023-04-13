@@ -179,7 +179,6 @@ export const unlikePost: RequestHandler = async (req, res, next) => {
 		});
 
 	postModel.findById(req.query.id).then((post) => {
-		console.log(post);
 		if (!post) {
 			return;
 		}
