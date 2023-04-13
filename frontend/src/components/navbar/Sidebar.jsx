@@ -1,6 +1,11 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
+import { authContext } from '../../store/authContext'
+
 export default function Sidebar({ navItems }) {
+  const { logout } = useContext(authContext)
+
   return (
     <>
       <div className='hidden md:block w-1/5'></div>
@@ -27,6 +32,12 @@ export default function Sidebar({ navItems }) {
               ))}
             </ul>
             {/* copyright */}
+            <div
+              className='w-full lg:w-4/5 text-ubuntu text-red-700 text-sm  text-manrope mb-2 cursor-pointer flex items-center justify-center'
+              onClick={logout}
+            >
+              logout..
+            </div>
             <div className='w-full lg:w-4/5 text-ubuntu text-white text-sm text-poppins mb-4'>
               © 2023 Rewind.io
             </div>

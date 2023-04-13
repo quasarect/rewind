@@ -23,8 +23,9 @@ function Callback() {
         JSON.stringify({ code })
       )
       if (data.token) {
-        login(data.token, data.userId)
-        navigate('/')
+        login(data.token)
+        // navigate('/')
+        window.location.href = '/'
       }
     } catch (err) {
       console.log(err, error)

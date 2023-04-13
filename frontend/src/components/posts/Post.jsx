@@ -91,6 +91,7 @@ export default function Post({ post }) {
               onClick={() => likeHandler(true)}
             />
           )}
+
           {likeCount}
         </div>
       </div>
