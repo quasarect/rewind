@@ -25,7 +25,7 @@
       "label": "client",
       // The task will launch a shell
       "type": "shell",
-      "command": "cd frontend && yarn dev",
+      "command": "cd frontend && yarn dev --host",
       // Mark as a background task to avoid the spinner animation on the terminal tab
       "isBackground": true,
       "problemMatcher": [],
