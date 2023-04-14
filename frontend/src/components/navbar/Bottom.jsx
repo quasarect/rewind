@@ -6,7 +6,7 @@ export default function Bottom({ navItems }) {
       <ul className='flex justify-evenly items-center'>
         {navItems.map((item, index) => (
           <li key={index}>
-            <Link href={item.link} className='hover:text-rewind-secondary'>
+            <Link to={item?.link} className='hover:text-rewind-secondary'>
               <img src={item?.icon} />
             </Link>
           </li>

@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-export default function Modal({ children, open, onClose, className }) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  useEffect(() => {
-    setIsOpen(open)
-  }, [open])
+export default function Modal({ children, open, onClose, className = '' }) {
+  const [isOpen, setIsOpen] = useState(open)
 
   const handleClose = () => {
     setIsOpen(false)
     onClose()
   }
+
+  console.log('rendered?')
 
   return (
     <div

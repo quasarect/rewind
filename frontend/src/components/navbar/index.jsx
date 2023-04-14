@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import Sidebar from './Sidebar'
 import Bottom from './Bottom'
 
@@ -6,7 +8,11 @@ import explore from './icons/explore.svg'
 import messages from './icons/messages.svg'
 import profile from './icons/profile.svg'
 
+import { authContext } from '../../store/authContext'
+
 export default function Navbar() {
+  const { user } = useContext(authContext)
+
   const navItems = [
     {
       name: 'Home',
@@ -26,7 +32,7 @@ export default function Navbar() {
     {
       name: 'Profile',
       icon: profile,
-      link: '/profile',
+      link: '/' + user?.username,
     },
   ]
 
