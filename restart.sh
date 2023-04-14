@@ -4,4 +4,5 @@ tsc
 cd ../frontend/
 yarn
 yarn build
-sudo pm2 restart app
+cd ../backend/
+sudo pm2 start dist/app.js --name "server"
