@@ -12,7 +12,7 @@ import { isAuth } from "../middlewares/auth";
 
 const postRouter = express.Router();
 
-postRouter.get("/all", allPosts);
+postRouter.get("/all", isAuth, allPosts);
 
 postRouter.get("/user/:id", postsByUser);
 

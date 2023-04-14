@@ -20,6 +20,16 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(cors());
+app.use(function (req, res, next) {
+	// console.log("here");
+	res.header("Access-Control-Allow-Origin", "*"); // update to match
+	// the domain you will make the request from
+	res.header(
+		"Access-Control-Allow-Headers",
+		"Origin, X-Requested-With, Content-Type, Accept, Authorization",
+	);
+	next();
+});
 
 //test route
 app.use("/test", (req, res, next) => {

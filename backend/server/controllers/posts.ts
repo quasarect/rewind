@@ -93,9 +93,9 @@ export const allPosts: RequestHandler = (req, res, next) => {
 		.populate({
 			path: "likedBy",
 			match: { users: userId },
-			select: "none",
 		})
 		.then((response) => {
+			console.log(response);
 			res.status(200).json({ posts: response });
 		})
 		.catch((err) => {

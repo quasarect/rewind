@@ -51,21 +51,15 @@ export const userbyEmail: RequestHandler = (req, res, next) => {
 export const followUser: RequestHandler = async (req, res, next) => {
 	const followerId = req.user?.id;
 	const following = req.query.id;
-	await userModel
+	const followed = await userModel
 		.findById(followerId)
-		.populate({ path: "followers", match: { users: following } })
-		.then((user) => {
-			if (user?.followers) {
-				console.log("already foolowed");
-				return res
-					.status(statusCode.BAD_REQUEST)
-					.json({ message: "Already followed" });
-			}
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-	console.log("this");
+		.populate({ path: "followers", match: { users: following } });
+	if (followed?.followers) {
+		console.log(followed);
+		return res
+			.status(statusCode.BAD_REQUEST)
+			.json({ message: "Already followed" });
+	}
 	userModel
 		.findOneAndUpdate({ _id: followerId }, { $inc: { followerCount: 1 } })
 		.then(async (user) => {
@@ -97,7 +91,7 @@ export const followUser: RequestHandler = async (req, res, next) => {
 					console.log(err);
 				});
 			userModel
-				.updateOne({ _id: followerId })
+				.updateOne({ _id: followerId }, { followers: followers._id })
 				.then((user) => {
 					console.log("updated user" + user);
 					res.status(200).json({ message: "follower added" });
