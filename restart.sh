@@ -5,4 +5,4 @@ cd ../frontend/
 yarn
 yarn build
 cd ../backend/
-sudo pm2 start dist/app.js --name "server"
+pm2 start ./dist/app.js --name "server"

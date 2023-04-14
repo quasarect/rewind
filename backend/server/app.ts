@@ -72,6 +72,8 @@ io.on("connection", (socket: Socket) => {
 });
 
 server.listen(port, async () => {
-	await mongoose.connect(process.env.MONGO_URL!);
-	console.log(`Rewind running on ${port}`);
+	mongoose
+		.connect(process.env.MONGO_URL!)
+		.then(() => console.log("Connected to MongoDB"))
+		.catch((err: Error) => console.log(err));
 });
