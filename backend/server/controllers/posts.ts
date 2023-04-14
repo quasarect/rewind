@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import postModel from "../models/postSchema";
 import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
+import userModel from "../models/userSchema";
 
 export const getPost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
@@ -40,7 +41,16 @@ export const createPost: RequestHandler = (req, res, next) => {
 
 	post.save()
 		.then((response) => {
-			res.status(200).json({ message: "Post created successfully" });
+			userModel
+				.findOneAndUpdate({ _id: userId }, { $inc: { postCount: 1 } })
+				.then((user) => {
+					res.status(200).json({
+						message: "Post created successfully",
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 		})
 		.catch((err) => {
 			next(
@@ -65,14 +75,13 @@ export const deletePost: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const postsByUser: RequestHandler = (req, res, next) => {
-	const userId = req.params.id;
-
+export const postsByUser: RequestHandler = async (req, res, next) => {
+	const username = req.params.username;
+	const user = await userModel.findOne({ username: username });
 	postModel
-		.find({ user: userId })
+		.find({ user: user?._id })
 		.populate({ path: "user", select: ["name", "profileUrl", "username"] })
 		.then((response) => {
-			console.log(response);
 			res.status(200).json({ posts: response });
 		})
 		.catch((err) => {
@@ -95,7 +104,6 @@ export const allPosts: RequestHandler = (req, res, next) => {
 			match: { users: userId },
 		})
 		.then((response) => {
-			console.log(response);
 			res.status(200).json({ posts: response });
 		})
 		.catch((err) => {
@@ -126,32 +134,50 @@ export const likePost: RequestHandler = async (req, res, next) => {
 				),
 			);
 		});
-	postModel.findById(req.query.id).then((post) => {
-		if (!post?.likedBy) {
-			const likeBy = new userArrayModel({
-				users: userId,
-			});
-			likeBy.save().then((users) => {
-				post!.likedBy = users._id;
-				post?.save().then((post) => {
-					console.log("saved");
+	postModel
+		.findById(req.query.id)
+		.then((post) => {
+			console.log(post?.likedBy);
+			if (!post?.likedBy) {
+				const likeBy = new userArrayModel({
+					users: userId,
 				});
-			});
-		} else {
-			userArrayModel
-				.updateOne(
-					{ _id: post.likedBy._id },
-					{ $push: { users: userId } },
-				)
-				.then((users) => {
-					console.log("pushded user");
-				})
-				.catch((err) => {
-					console.log("Could not push user");
-				});
-		}
-		// console.log(post);
-	});
+				likeBy
+					.save()
+					.then((users) => {
+						console.log("likedby array created");
+						post!.likedBy = users._id;
+						post?.save()
+							.then((post) => {
+								console.log("Post updated with likedby _id");
+							})
+							.catch((err) => {
+								console.log("id store error");
+								console.log(err);
+							});
+					})
+					.catch((err) => {
+						console.log("likeby store array erroe");
+						console.log(err);
+					});
+			} else {
+				userArrayModel
+					.updateOne(
+						{ _id: post.likedBy._id },
+						{ $addToSet: { users: userId } },
+					)
+					.then((users) => {
+						console.log("pushed liked user");
+					})
+					.catch((err) => {
+						console.log("Could not push user");
+					});
+			}
+			// console.log(post);
+		})
+		.catch((err) => {
+			console.log("Error" + err);
+		});
 };
 
 export const unlikePost: RequestHandler = async (req, res, next) => {

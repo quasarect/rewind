@@ -14,7 +14,7 @@ const postRouter = express.Router();
 
 postRouter.get("/all", isAuth, allPosts);
 
-postRouter.get("/user/:id", postsByUser);
+postRouter.get("/user/:username", postsByUser);
 
 postRouter.post("/create", isAuth, createPost);
 

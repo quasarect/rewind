@@ -6,7 +6,7 @@ const userArraySchema = new Schema<IUsersArray>({
 		{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			unique: true,
+			// unique: true,
 		},
 	],
 });

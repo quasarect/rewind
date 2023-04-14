@@ -63,6 +63,10 @@ const userSchema = new Schema<IUser>(
 			type: Number,
 			default: 0,
 		},
+		postCount: {
+			type: Number,
+			default: 0,
+		},
 		//Spotify
 		spotifyData: {
 			type: mongoose.Schema.Types.ObjectId,

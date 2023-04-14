@@ -27,6 +27,21 @@ export function isAuth(
 	}
 }
 
+export function passAuth(req: Request, res: Response, next: NextFunction) {
+	const token = req.header("Authorization")?.replace("Bearer ", "");
+	// if (!token) {
+	// 	return next(new IError("Unauthorized", statusCode.UNAUTHORIZED));
+	// }
+	//@ts-ignore
+	const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+		id: string;
+		type: string;
+	};
+	req.user = decoded;
+
+	next();
+}
+
 export function testToken(req: Request, res: Response): void {
 	const { id, type } = req.body;
 	res.status(200).json({ token: generateToken(id, type) });

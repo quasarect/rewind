@@ -15,6 +15,7 @@ export interface IUser {
 	artist: boolean;
 	followerCount: number;
 	followingCount: number;
+	postCount: number;
 	spotifyData: Types.ObjectId;
 	conversations: Array<Types.ObjectId>;
 	followers: Types.ObjectId;
