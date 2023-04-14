@@ -15,15 +15,19 @@ export default function Home() {
 
   const { user } = useContext(authContext)
 
-  const { posts, fetchPosts } = useGetPosts()
+  const { posts, fetchPosts, isLoading } = useGetPosts()
 
   return (
     <main className='w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary'>
       <Title />
       <CreatePost fetchPosts={fetchPosts} profileUrl={user?.profileUrl} />
-      {posts.map((post, index) => (
-        <Post key={post._id} post={post} />
-      ))}
+      {isLoading ? (
+        <div className='w-full flex items-center justify-center mt-6'>
+          Loading..
+        </div>
+      ) : (
+        posts.map((post, index) => <Post key={post._id} post={post} />)
+      )}
     </main>
   )
 }

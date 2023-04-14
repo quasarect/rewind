@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 // pages
 import Login from './pages/Login'
 import Callback from './pages/Callback'
+import NotFound404 from './pages/NotFound404'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Messages from './pages/Messages'
@@ -38,6 +39,7 @@ function App() {
             </NavbarSidebarWrapper>
           }
         />
+        <Route path='/404' element={<NotFound404 />} />
         <Route
           path='/home'
           element={

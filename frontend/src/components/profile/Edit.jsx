@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { useHttpClient } from '../../hooks/httpRequest'
 
+import { authContext } from '../../store/authContext'
+
 function Edit({ user, setEditing, refresh }) {
   const [name, setName] = useState(user?.name)
   const [username, setUsername] = useState(user?.username)
@@ -13,6 +15,8 @@ function Edit({ user, setEditing, refresh }) {
   const { sendRequest: sendEditReq, isLoading, error } = useHttpClient()
 
   const navigate = useNavigate()
+
+  const { fetchMe } = useContext(authContext)
 
   const usernameChangeHandler = async e => {
     if (e.target.value.length < 5) {
@@ -49,6 +53,7 @@ function Edit({ user, setEditing, refresh }) {
       } else {
         refresh(username)
       }
+      fetchMe()
     } catch (err) {
       console.log(err)
     }

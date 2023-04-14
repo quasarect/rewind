@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import CommentSVG from './icons/comment.svg'
 import ReshareSVG from './icons/reshare.svg'
@@ -8,6 +9,8 @@ import LikedSVG from './icons/liked.svg'
 import { useHttpClient } from '../../hooks/httpRequest'
 
 import { authContext } from '../../store/authContext'
+
+import PostBody from './PostBody'
 
 export default function Post({ post }) {
   const [liked, setLiked] = useState(false)
@@ -45,7 +48,10 @@ export default function Post({ post }) {
 
   return (
     <div className='p-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary'>
-      <div className='flex items-center'>
+      <Link
+        to={'/' + post?.user?.username}
+        className='flex items-center cursor-pointer'
+      >
         <img
           src={post?.user?.profileUrl}
           alt='Profile Picture'
@@ -59,10 +65,8 @@ export default function Post({ post }) {
             {post?.user?.username}
           </p>
         </div>
-      </div>
-      <div className='mt-4'>
-        <p className='text-poppins text-gray-200 text-md'>{post?.text}</p>
-      </div>
+      </Link>
+      <PostBody post={post} />
       <div className='mt-6 flex items-center justify-around px-4 text-white'>
         <div className='flex items-center justify-center'>
           <img
