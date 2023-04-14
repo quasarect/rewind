@@ -5,3 +5,5 @@ dist
 
 ## Environment file
 nodemon.json
+pm2.js
+.env

@@ -12,6 +12,9 @@ import { chatSocket } from "./sockets/conversation";
 import convoRouter from "./routes/conversationRoutes";
 import userRouter from "./routes/userRoutes";
 import http from "http";
+import { config } from "dotenv";
+
+config();
 
 const app = express();
 const port = process.env.PORT || 3000;
