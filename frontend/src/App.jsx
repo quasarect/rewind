@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Callback from './pages/Callback'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
+import Messages from './pages/Messages'
 
 // utils
 import NavbarSidebarWrapper from './components/utils/NavbarSidebarWrapper'
@@ -53,6 +54,7 @@ function App() {
             </NavbarSidebarWrapper>
           }
         />
+        <Route path='/messages' element={<Messages />} />
       </Routes>
     </div>
   )
