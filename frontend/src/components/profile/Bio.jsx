@@ -4,7 +4,7 @@ import Edit from './Edit'
 
 import { useHttpClient } from '../../hooks/httpRequest'
 
-function Bio({ user, isMe }) {
+function Bio({ user, isMe, refresh }) {
   const joinedYear = new Date(user?.createdAt).getFullYear()
 
   const [isFollower, setIsFollower] = useState(user?.followers?._id)
@@ -94,7 +94,9 @@ function Bio({ user, isMe }) {
         </div>
         <div className='mt-2 text-sm font-manrope'>Joined {joinedYear}</div>
       </div>
-      {editing && <Edit user={user} setEditing={setEditing} />}
+      {editing && (
+        <Edit user={user} setEditing={setEditing} refresh={refresh} />
+      )}
     </>
   )
 }

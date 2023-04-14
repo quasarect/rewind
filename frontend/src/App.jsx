@@ -1,6 +1,6 @@
 // native
 import { useContext, useEffect, useCallback } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 // pages
 import Login from './pages/Login'
@@ -13,17 +13,9 @@ import Messages from './pages/Messages'
 import NavbarSidebarWrapper from './components/utils/NavbarSidebarWrapper'
 
 import { authContext } from './store/authContext'
-import { useHttpClient } from './hooks/httpRequest'
 
 function App() {
-  const { setUser } = useContext(authContext)
-
-  const { sendRequest } = useHttpClient()
-
-  const fetchMe = useCallback(async () => {
-    const res = await sendRequest('/user/me')
-    setUser(res.user)
-  }, [])
+  const { fetchMe } = useContext(authContext)
 
   useEffect(() => {
     try {
@@ -40,6 +32,14 @@ function App() {
         <Route path='/callback' element={<Callback />} />
         <Route
           path='/'
+          element={
+            <NavbarSidebarWrapper>
+              <Home />
+            </NavbarSidebarWrapper>
+          }
+        />
+        <Route
+          path='/home'
           element={
             <NavbarSidebarWrapper>
               <Home />

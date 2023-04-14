@@ -17,32 +17,37 @@ function Profile() {
 
   const { posts, fetchPosts } = useGetUserPosts(username)
 
+  const fetchUser = useCallback(
+    async username => {
+      try {
+        const response = await sendRequest(`/user?username=${username}`)
+        if (response.user) {
+          console.log(response)
+          setUser(response.user)
+          setIsMe(response.isMe)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [username]
+  )
+
   useEffect(() => {
+    fetchUser(username)
     fetchPosts(username)
   }, [username])
 
-  const fetchUser = useCallback(async () => {
-    try {
-      const response = await sendRequest(`/user?username=${username}`)
-      if (response.user) {
-        console.log(response)
-        setUser(response.user)
-        setIsMe(response.isMe)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }, [username])
-
-  useEffect(() => {
-    fetchUser()
-  }, [username])
+  function refresh(username) {
+    fetchUser(username)
+    fetchPosts(username)
+  }
 
   return (
     <div className='w-full md:w-4/5 h-fit bg-rewind-dark-primary '>
       <div className=' flex flex-col md:flex-row md:justify-evenly p-4 pb-6 border-b border-rewind-dark-tertiary'>
         <Picture user={user} />
-        <Bio user={user} isMe={isMe} />
+        <Bio user={user} isMe={isMe} refresh={refresh} />
       </div>
       <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
         Posts ⇣

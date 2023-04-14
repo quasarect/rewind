@@ -10,10 +10,19 @@ const authContext = createContext({
 
 export { authContext }
 
+import { useHttpClient } from '../hooks/httpRequest'
+
 const AuthContextProvider = props => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState(null)
   const [user, setUser] = useState(null)
+
+  const { sendRequest } = useHttpClient()
+
+  const fetchMe = async () => {
+    const res = await sendRequest('/user/me')
+    setUser(res.user)
+  }
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
@@ -40,7 +49,7 @@ const AuthContextProvider = props => {
         isAuthenticated,
         token,
         user,
-        setUser,
+        fetchMe,
         login,
         logout,
       }}
