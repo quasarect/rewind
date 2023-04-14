@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
-import cors from "cors";
+// import cors from "cors";
 import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
@@ -19,17 +19,9 @@ const port = process.env.PORT || 3000;
 //Use body-parser
 app.use(express.json());
 
-app.use(cors());
-app.use(function (req, res, next) {
-	// console.log("here");
-	res.header("Access-Control-Allow-Origin", "*"); // update to match
-	// the domain you will make the request from
-	res.header(
-		"Access-Control-Allow-Headers",
-		"Origin, X-Requested-With, Content-Type, Accept, Authorization",
-	);
-	next();
-});
+
+// app.use(cors());
+
 
 //test route
 app.use("/test", (req, res, next) => {
