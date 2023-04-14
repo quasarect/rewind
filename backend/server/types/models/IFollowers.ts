@@ -1,4 +1,4 @@
 export interface IFollowers {
-    username:string;
-    profileUrl:string;
-} 
+	username: string;
+	profileUrl: string;
+}

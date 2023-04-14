@@ -1,3 +1,1 @@
-export interface IMusist {
-    
-}
+export interface IMusist {}

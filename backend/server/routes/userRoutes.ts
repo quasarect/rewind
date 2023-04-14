@@ -3,7 +3,9 @@ import {
 	followUser,
 	getMe,
 	unfollow,
+	updateUser,
 	userByFields,
+	usernameUnique,
 } from "../controllers/users";
 import { isAuth, passAuth } from "../middlewares/auth";
 
@@ -16,5 +18,11 @@ userRouter.get("/unfollow", isAuth, unfollow);
 userRouter.get("", passAuth, userByFields);
 
 userRouter.get("/me", isAuth, getMe);
+
+userRouter.get("/username", usernameUnique);
+
+userRouter.post("/update", isAuth, updateUser);
+
+
 
 export default userRouter;

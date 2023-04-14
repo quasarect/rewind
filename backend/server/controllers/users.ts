@@ -2,27 +2,43 @@ import { RequestHandler } from "express";
 import userModel from "../models/userSchema";
 import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
+import { getUserTopTrack } from "../services/spotify";
 
-export const userByFields: RequestHandler = (req, res, next) => {
+export const userByFields: RequestHandler = async (req, res, next) => {
 	const username = req.query.username;
 	const userId = req.query.userId;
 	const email = req.query.email;
+	console.log(username, userId, email);
 	let isMe = false;
 	userModel
 		.findOne({
 			$or: [{ username }, { _id: userId }, { email }],
 		})
 		.populate({ path: "followers", match: { users: req.user?.id } })
-		.then((user) => {
+		.populate({ path: "spotifyData" })
+		.then(async (user) => {
 			if (!user) {
-				return res.status(statusCode.NOT_FOUND);
+				return res.status(statusCode.NOT_FOUND).json({
+					message: "User not found",
+				});
 			}
 			if (req.user?.id) {
 				if (req.user.id == user._id.toString()) {
 					isMe = true;
 				}
 			}
-			res.status(200).json({ user: user, isMe: isMe });
+			const track = await getUserTopTrack(
+				"short_term",
+				1,
+				//@ts-ignore
+				user.spotifyData.accessToken,
+				//@ts-ignore
+				user.spotifyData.refreshToken,
+				//@ts-ignore
+				user.spotifyData._id,
+			);
+			//@ts-ignore
+			res.status(200).json({ user: user, isMe: isMe, topTrack: track });
 		})
 		.catch((err) => {
 			console.log(err);
@@ -31,19 +47,18 @@ export const userByFields: RequestHandler = (req, res, next) => {
 
 export const updateUser: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
-	const userUpdates = req.body.updates;
-	const updates = {
-		name: userUpdates.name,
-		description: userUpdates.description,
-		username: userUpdates.username,
-	};
+	const userUpdates = req.body;
 	userModel
-		.findByIdAndUpdate({ userId }, updates)
+		.findByIdAndUpdate(userId, {
+			name: userUpdates.name,
+			bio: userUpdates.bio,
+			username: userUpdates.username,
+		})
 		.then((updated) => {
 			res.status(200).json({ message: "User updated" });
 		})
 		.catch((err) => {
-			console.log("Couldnt update user");
+			res.status(statusCode.INTERNAL_SERVER_ERROR);
 		});
 };
 
@@ -216,4 +231,19 @@ export const getMe: RequestHandler = (req, res, next) => {
 		.catch((err) => {
 			console.log(err);
 		});
+};
+
+export const usernameUnique: RequestHandler = (req, res, next) => {
+	const username = req.query.username;
+	if (username == undefined) {
+		return res.status(statusCode.FORBIDDEN);
+	}
+	userModel.findOne({ username: username }).then((user) => {
+		if (user) {
+			return res
+				.status(statusCode.FORBIDDEN)
+				.json({ message: "Username already taken" });
+		}
+		res.status(200).json({ message: "Username available" });
+	});
 };

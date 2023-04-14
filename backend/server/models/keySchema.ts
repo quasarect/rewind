@@ -9,7 +9,7 @@ const keySchema = new Schema<ISpotify>({
 	refreshToken: {
 		type: String,
 		required: true,
-	}
+	},
 });
 const keyModel = model<ISpotify>("Key", keySchema);
 export default keyModel;

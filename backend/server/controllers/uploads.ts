@@ -29,10 +29,20 @@ export const videoUpload: RequestHandler = (req, res, next) => {
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
-			next(new IError("Multer Audio Upload file error", statusCode.INTERNAL_SERVER_ERROR));
+			next(
+				new IError(
+					"Multer Audio Upload file error",
+					statusCode.INTERNAL_SERVER_ERROR,
+				),
+			);
 		} else if (err) {
 			// An unknown error occurred when uploading.
-			next(new IError("Unknow audio upload error", statusCode.INTERNAL_SERVER_ERROR));
+			next(
+				new IError(
+					"Unknow audio upload error",
+					statusCode.INTERNAL_SERVER_ERROR,
+				),
+			);
 		} else {
 			// Everything went fine.
 			next();
@@ -56,7 +66,7 @@ export const audioUpload: RequestHandler = (req, res, next) => {
 };
 
 export const imageUpload: RequestHandler = (req, res, next) => {
-    // console.log("Image uplaod");
+	// console.log("Image uplaod");
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
@@ -67,7 +77,7 @@ export const imageUpload: RequestHandler = (req, res, next) => {
 		} else {
 			// Everything went fine.
 			// next();
-            // console.log("all good");
+			// console.log("all good");
 		}
 	});
 };

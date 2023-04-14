@@ -41,7 +41,7 @@ const userSchema = new Schema<IUser>(
 			type: String,
 		},
 		//rewind
-		description: {
+		bio: {
 			type: String,
 		},
 		aiGeneratedLine: {
@@ -70,7 +70,7 @@ const userSchema = new Schema<IUser>(
 		//Spotify
 		spotifyData: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "keyModel",
+			ref: "Key",
 		},
 		followers: {
 			type: mongoose.Schema.Types.ObjectId,

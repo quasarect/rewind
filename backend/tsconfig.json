@@ -1,22 +1,19 @@
 {
-  "compilerOptions": {
-    
-    "target": "es6",                                 
-    "module": "commonjs",                                
-    "rootDir": "./server",                                  
-    "sourceMap": true,                                
-    "outDir": "./dist",                                   
-    "removeComments": true,     
-    "noEmitOnError": true,                                   
-    "esModuleInterop": true,                             
-    "forceConsistentCasingInFileNames": true,         
-    "strict": true,                     
-    "noUnusedLocals": true,                   
-    "noFallthroughCasesInSwitch": true,      
-    "allowUnreachableCode": true,                     
-    "skipLibCheck": true   
-  },
-  "exclude": [
-    "node_modules ",
-  ]
+	"compilerOptions": {
+		"target": "es6",
+		"module": "commonjs",
+		"rootDir": "./server",
+		"sourceMap": true,
+		"outDir": "./dist",
+		"removeComments": true,
+		"noEmitOnError": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noFallthroughCasesInSwitch": true,
+		"allowUnreachableCode": true,
+		"skipLibCheck": true
+	},
+	"exclude": ["node_modules "]
 }

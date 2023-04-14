@@ -7,7 +7,7 @@ import { statusCode } from "../enums/statusCodes";
 import keyModel from "../models/keySchema";
 import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
-import querystring from "querystring";
+import { getUserTopTrack } from "../services/spotify";
 
 export const handleOauth: RequestHandler = async (req, res, next) => {
 	// Recieive request from front end extract code
@@ -127,16 +127,33 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 		});
 };
 
-export const authUrl: RequestHandler = (req, res) => {
-	const scope = "user-read-private user-read-email";
-	res.status(200).json({
-		URL:
-			"https://accounts.spotify.com/authorize?" +
-			querystring.stringify({
-				response_type: "code",
-				client_id: process.env.SPOTIFY_CLIENT_ID,
-				scope: scope,
-				redirect_uri: process.env.REDIRECT_URL,
-			}),
-	});
+export const userTopTrack: RequestHandler = async (req, res, next) => {
+	try {
+		const userId = req.user?.id;
+		console.log(userId);
+		const user = await userModel
+			.findOne({ _id: userId })
+			.populate({ path: "spotifyData" });
+		if (!user) {
+			res.status(statusCode.NOT_FOUND).json({
+				message: "user not found",
+			});
+		}
+		//@ts-ignore
+		const track = await getUserTopTrack(
+			"short_term",
+			1,
+			//@ts-ignore
+			user?.spotifyData.accessToken,
+			//@ts-ignore
+			user?.spotifyData.refreshToken,
+			//@ts-ignore
+			user?.spotifyData,
+		);
+		res.status(200).json({
+			track
+		});
+	} catch (err) {
+		console.log(err);
+	}
 };

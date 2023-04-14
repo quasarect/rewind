@@ -9,7 +9,7 @@ export interface IUser {
 	profileUrl: string;
 	tag: string;
 	status: string;
-	description: string;
+	bio: string;
 	aiGeneratedLine: string;
 	private: boolean;
 	artist: boolean;

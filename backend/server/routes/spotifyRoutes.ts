@@ -1,10 +1,12 @@
 import express from "express";
-import { authUrl, handleOauth } from "../controllers/spotify";
+import { handleOauth, userTopTrack } from "../controllers/spotify";
+import { isAuth } from "../middlewares/auth";
 
 const spotifyRouter = express.Router();
 
 spotifyRouter.post("/login", handleOauth);
 
-spotifyRouter.get("/auth-url", authUrl);
+spotifyRouter.get("/user", isAuth);
 
+spotifyRouter.get("/top-track", isAuth, userTopTrack);
 export default spotifyRouter;
