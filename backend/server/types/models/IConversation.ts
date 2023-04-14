@@ -3,6 +3,6 @@ import { IMessage } from "../basic/IMessage";
 
 export interface IConversation {
 	lastMessage: string;
-	participants: Array<Types.ObjectId>;
+	participants: Types.ObjectId;
 	messages: Array<IMessage>;
 }

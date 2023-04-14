@@ -81,6 +81,10 @@ export const postsByUser: RequestHandler = async (req, res, next) => {
 	postModel
 		.find({ user: user?._id })
 		.populate({ path: "user", select: ["name", "profileUrl", "username"] })
+		.populate({
+			path: "likedBy",
+			match: { users: user?._id },
+		})
 		.then((response) => {
 			res.status(200).json({ posts: response });
 		})

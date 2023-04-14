@@ -3,22 +3,48 @@ import { IMessage } from "../types/basic/IMessage";
 import conversationModel from "../models/conversationSchema";
 
 export function chatSocket(socket: Socket): void {
-	// On conversation start event we add users to the room with the conversationId
-	socket.on("conversation", (data) => {
-		socket.join(data.id);
+	/*
+	On conversation start event we add users to the room with the conversationId
+	
+	const event={
+		room:"conversationId"
+	}
+	*/
+	socket.on("conversation", (event) => {
+		console.log("conversation");
+		socket.join(event.id);
 	});
-	// On typing and stoptyping event we emit typing action and array of users
+	/* On typing and stoptyping event we emit typing action and array of users
+	event={
+		room:"conversationId",
+		user:[
+			"userIdentifier"     as per preference
+		]    
+		}
+	*/
 	socket.on("typing", (event) => {
+		console.log("typing");
 		socket.in(event.room).emit("typing", { user: event.user });
 	});
 	socket.on("stopTyping", (event) => {
 		socket.in(event.room).emit("stopTyping", { user: event.user });
 	});
-	// On message sent event we emit to all room connected users.
+	/* 
+	On message sent event we emit to all room connected users.
+	event={
+		room:"conversationId",
+		message:{
+			userId,     
+			text
+		}
+	}
+	*/
+
 	socket.on("message", async (event) => {
+		console.log("message");
 		//store message
 		const message: IMessage = {
-			username: event.message.username,
+			userId: event.message.userId,
 			message: event.message.text,
 			timestamp: Date.now(),
 		};

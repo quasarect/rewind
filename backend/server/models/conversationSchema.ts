@@ -6,12 +6,9 @@ const conversationSchema = new Schema<IConversation>(
 		lastMessage: {
 			type: String,
 		},
-		participants: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "User",
-			},
-		],
+		participants: {
+			type: mongoose.Schema.Types.ObjectId,
+		},
 		messages: [
 			{
 				type: Object,

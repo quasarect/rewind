@@ -11,7 +11,7 @@ import { Server, Socket } from "socket.io";
 import { chatSocket } from "./sockets/conversation";
 import convoRouter from "./routes/conversationRoutes";
 import userRouter from "./routes/userRoutes";
-// import http from "http";
+import http from "http";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,9 +19,7 @@ const port = process.env.PORT || 3000;
 //Use body-parser
 app.use(express.json());
 
-
 app.use(cors());
-
 
 //test route
 app.use("/test", (req, res, next) => {
@@ -55,14 +53,22 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start the server
-app.listen(port, async () => {
-	await mongoose.connect(process.env.MONGO_URL!);
-	console.log(`Rewind running on ${port}`);
+const server = http.createServer(app);
+const io = new Server(server, {
+	cors: {
+		origin: "*",
+		methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
+		allowedHeaders: ["Authorization"],
+	},
 });
-// const server = http.createServer(app);
-const io = new Server();
-// console.log(io);
+
 io.on("connection", (socket: Socket) => {
 	console.log("Connected to socket.io");
+	// console.log(socket);
 	chatSocket(socket);
+});
+
+server.listen(port, async () => {
+	await mongoose.connect(process.env.MONGO_URL!);
+	console.log(`Rewind running on ${port}`);
 });
