@@ -6,6 +6,7 @@ export interface IPost {
 	audioUrl?: string;
 	imageUrl?: string;
 	likeCount: number;
+	filepath: string;
 	commentCount: number;
 	context?: Array<string>;
 	createdAt: Date;

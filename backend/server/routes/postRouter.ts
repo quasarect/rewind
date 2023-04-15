@@ -9,6 +9,7 @@ import {
 	unlikePost,
 } from "../controllers/posts";
 import { isAuth } from "../middlewares/auth";
+import { fileUpload } from "../middlewares/multer";
 
 const postRouter = express.Router();
 
@@ -16,7 +17,7 @@ postRouter.get("/all", isAuth, allPosts);
 
 postRouter.get("/user/:username", postsByUser);
 
-postRouter.post("/create", isAuth, createPost);
+postRouter.post("/create", isAuth, fileUpload, createPost);
 
 postRouter.get("/like", isAuth, likePost);
 

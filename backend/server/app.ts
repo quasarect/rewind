@@ -5,7 +5,6 @@ import cors from "cors";
 import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
-import uploadRouter from "./routes/uploadRoutes";
 import { isAuth, testToken } from "./middlewares/auth";
 import { Server, Socket } from "socket.io";
 import { chatSocket } from "./sockets/conversation";
@@ -19,7 +18,7 @@ config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-
+app.use("/media", express.static("media"));
 //Use body-parser
 app.use(express.json());
 
@@ -47,9 +46,6 @@ app.use("/convo", convoRouter);
 //Spotify routes
 app.use("/spotify", spotifyRouter);
 
-// Upload routes
-app.use("/uploads", isAuth, uploadRouter);
-
 // Search routes
 app.use("/search", searchRouter);
 
@@ -71,7 +67,6 @@ const io = new Server(server, {
 
 io.on("connection", (socket: Socket) => {
 	console.log("Connected to socket.io");
-	// console.log(socket);
 	chatSocket(socket);
 });
 
