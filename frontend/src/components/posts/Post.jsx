@@ -80,7 +80,7 @@ export default function Post({ post, refreshPosts = () => {} }) {
     try {
       const response = await sendRequest('/posts/' + post?._id, 'DELETE')
       console.log(response)
-      refreshPosts()
+      refreshPosts(post?.user?.username)
     } catch (err) {
       console.log(err)
     }

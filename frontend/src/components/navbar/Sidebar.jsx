@@ -14,9 +14,9 @@ export default function Sidebar({ navItems }) {
           {/* below div is for responsive layout  */}
           <div className='w-full h-screen lg:w-4/5 flex flex-col justify-between'>
             {/* the logo div  */}
-            <div className='w-full flex items-center mt-10'>
+            <Link to={'/'} className='w-full flex items-center mt-10'>
               <img src='/logo.svg' alt='Rewind Logo' width={50} height={50} />
-            </div>
+            </Link>
             {/* the nav items  */}
             <ul className='h-full py-10'>
               {navItems.map((item, index) => (

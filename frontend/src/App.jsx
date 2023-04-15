@@ -40,14 +40,7 @@ function App() {
           }
         />
         <Route path='/404' element={<NotFound404 />} />
-        <Route
-          path='/home'
-          element={
-            <NavbarSidebarWrapper>
-              <Home />
-            </NavbarSidebarWrapper>
-          }
-        />
+
         <Route
           path='/:username'
           element={

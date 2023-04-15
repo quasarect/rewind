@@ -20,8 +20,6 @@ export default function DedicateUI({ setDedicate }) {
   useEffect(() => {
     setDedicate({
       to: user?._id,
-      name: user?.name,
-      username: user?.username,
       songName: song?.trackName,
       songPhoto: song?.imageUrl,
       songUrl: song?.external_url,

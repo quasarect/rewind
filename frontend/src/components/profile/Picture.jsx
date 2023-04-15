@@ -1,4 +1,17 @@
+import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { authContext } from '../../store/authContext'
+
 function Picture({ user, topTrack }) {
+  const { logout } = useContext(authContext)
+
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
+
   return (
     <div className=':w-auto flex flex-col items-center'>
       <img
@@ -23,6 +36,12 @@ function Picture({ user, topTrack }) {
           </div>
         </div>
       </a>
+      <button
+        className='md:hidden mt-2 text-sm text-red-500 font-manrope cursor-pointer'
+        onClick={handleLogout}
+      >
+        ← logout
+      </button>
     </div>
   )
 }

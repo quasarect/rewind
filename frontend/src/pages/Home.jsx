@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 
-import Title from '../components/home/Title'
 import CreatePost from '../components/home/CreatePost'
 import Post from '../components/posts/Post'
 
@@ -18,8 +17,10 @@ export default function Home() {
   const { posts, fetchPosts, isLoading } = useGetPosts()
 
   return (
-    <main className='w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary'>
-      <Title />
+    <main className='w-full md:w-4/5 lg:w-3/5 bg-rewind-dark-primary'>
+      <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary'>
+        For you
+      </div>
       <CreatePost fetchPosts={fetchPosts} profileUrl={user?.profileUrl} />
       {isLoading ? (
         <div className='w-full flex items-center justify-center mt-6'>

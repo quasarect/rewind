@@ -23,6 +23,7 @@ const AuthContextProvider = props => {
   const fetchMe = async () => {
     const res = await sendRequest('/user/me')
     setUser(res.user)
+    console.log(res.user)
   }
 
   useEffect(() => {
