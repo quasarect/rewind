@@ -33,12 +33,15 @@ export const createPost: RequestHandler = (req, res, next) => {
 	const imageUrl = req.body.imageUrl || undefined;
 	const audioUrl = req.body.audioUrl || undefined;
 	const dedicated = req.body.dedicated || undefined;
+	const fileName = req.body?.filename;
+	const fileType = req.body?.fileType;
 	const post = new postModel({
 		user: userId,
 		text: text,
 		imageUrl: imageUrl,
 		audioUrl: audioUrl,
 		dedicated: dedicated,
+		filepath: fileType + "/" + fileName,
 	});
 
 	post.save()

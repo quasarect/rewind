@@ -44,6 +44,9 @@ const postSchema = new Schema<IPost>(
 				songUrl: String,
 			},
 		},
+		filepath: {
+			type: String,
+		},
 	},
 	{ timestamps: true },
 );

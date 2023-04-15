@@ -81,7 +81,7 @@ export const searchGlobalTracks = async (
 	spotifyData: any,
 	query: string,
 	type: Array<string>,
-	limit?: number,
+	limit: number,
 ): Promise<unknown> => {
 	try {
 		const types = type.join(",");
