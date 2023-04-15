@@ -5,10 +5,11 @@ import { statusCode } from "../enums/statusCodes";
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
+		console.log(file);
 		if (file.fieldname === "audio") {
-			cb(null, "./uploads/audio");
+			cb(null, "../../uploads/audio");
 		} else if (file.fieldname === "image") {
-			cb(null, "./uploads/image");
+			cb(null, "../uploads/image");
 		} else if (file.filename === "video") {
 			cb(null, "./uploads/video");
 		} else {
@@ -18,7 +19,7 @@ const storage = multer.diskStorage({
 	filename: function (req, file, cb) {
 		//This ext is the extension of the file
 		//   const ext = path.extname(file.originalname);
-		const filename = `${Date.now()}-${file.originalname}`;
+		const filename = `${Date.now()}-${req.user?.id}`;
 		req.body.filename = filename;
 		cb(null, filename);
 	},
@@ -26,8 +27,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export const videoUpload: RequestHandler = (req, res, next) => {
-	upload.single("file")(req, res, function (err) {
+	upload.single("image")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
+			console.log(err);
+			console.log("err");
 			// A Multer error occurred when uploading.
 			next(
 				new IError(
@@ -67,17 +70,19 @@ export const audioUpload: RequestHandler = (req, res, next) => {
 
 export const imageUpload: RequestHandler = (req, res, next) => {
 	// console.log("Image uplaod");
-	upload.single("file")(req, res, function (err) {
+	upload.single("image")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			// A Multer error occurred when uploading.
+			console.log(err);
 			next(new IError("Multer Image Upload file error", 500));
 		} else if (err) {
 			// An unknown error occurred when uploading.
+			console.log(err);
 			next(new IError("Unknow image upload error", 500));
 		} else {
 			// Everything went fine.
 			// next();
-			// console.log("all good");
+			console.log("all good");
 		}
 	});
 };
