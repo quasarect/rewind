@@ -34,7 +34,15 @@ const postSchema = new Schema<IPost>(
 			ref: "UserArray",
 		},
 		dedicated: {
-			type: Object,
+			type: {
+				to: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: "User",
+				},
+				songName: String,
+				songPhoto: String,
+				songUrl: String,
+			},
 		},
 	},
 	{ timestamps: true },

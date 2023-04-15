@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 
 export interface IDedicated {
-	name: string;
 	songName: string;
 	songPhoto: string;
 	songUrl: string;
 	to: mongoose.Schema.Types.ObjectId;
-	username: string;
 }

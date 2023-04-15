@@ -24,12 +24,12 @@ function dedicatedCard({ dedicated }) {
           </div>
 
           <div className='text-gray-400 text-md font-manrope mt-2'>
-            dedicated to {dedicated?.name}(@
+            dedicated to {dedicated?.to.name}(@
             <Link
-              to={'/' + dedicated?.username}
+              to={'/' + dedicated?.to.username}
               className='underline cursor-pointer'
             >
-              {dedicated?.username}
+              {dedicated?.to.username}
             </Link>
             )
           </div>
