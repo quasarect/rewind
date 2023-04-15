@@ -15,7 +15,7 @@ export const getPost: RequestHandler = (req, res, next) => {
 			path: "likedBy",
 			match: { users: userId },
 		})
-		.populate("dedicated", "to")
+		.populate("dedicated.to")
 		.then((result) => {
 			if (!result) {
 				throw new IError("Post not found", statusCode.NOT_FOUND);
@@ -87,7 +87,7 @@ export const postsByUser: RequestHandler = async (req, res, next) => {
 			path: "likedBy",
 			match: { users: user?._id },
 		})
-		.populate("dedicated", "to")
+		.populate("dedicated.to")
 		.then((response) => {
 			res.status(200).json({ posts: response });
 		})
@@ -110,7 +110,7 @@ export const allPosts: RequestHandler = (req, res, next) => {
 			path: "likedBy",
 			match: { users: userId },
 		})
-		.populate("dedicated", "to")
+		.populate("dedicated.to")
 		.then((response) => {
 			res.status(200).json({ posts: response });
 		})

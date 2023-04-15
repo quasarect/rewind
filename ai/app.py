@@ -20,12 +20,18 @@ collection1 = db["users"]
 collection2 = db["keys"]
 
 
-@app.route('/', methods=['GET'])
+@app.route('/tagline', methods=['GET'])
 
 def generate_tagline():
-
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(' ')[1]
+        # do something with the auth_token
+    else:
+        return
+        # handle the case where the Authorization header is missing
     ################ithe header ch bagh mala te kalla nhi
-    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MzkzZDQ2ODZkMDEwMjczNTZlMzk3ZSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTY4MTQ3Mjk1NiwiZXhwIjoxNjgyMDc3NzU2fQ.UKhFLzgMj4ca9_uApel_yEXdQeX7CO-80Q4zSp2xiOU'
+    #auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MzkzZDQ2ODZkMDEwMjczNTZlMzk3ZSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTY4MTQ3Mjk1NiwiZXhwIjoxNjgyMDc3NzU2fQ.UKhFLzgMj4ca9_uApel_yEXdQeX7CO-80Q4zSp2xiOU'
 
     #decode authentication token
     try:
