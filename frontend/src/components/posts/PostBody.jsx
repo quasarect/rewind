@@ -7,7 +7,7 @@ function PostBody({ post }) {
     <>
       <div className='mt-4'>
         <p className='text-poppins text-gray-200 text-lg'>{post?.text}</p>
-        {post?.dedicate && <DedicateCard dedicate={post?.dedicate} />}
+        {post?.dedicated && <DedicateCard dedicated={post?.dedicated} />}
       </div>
     </>
   )
