@@ -62,7 +62,7 @@ function Profile() {
         Posts ⇣
       </div>
       {posts.map((post, index) => (
-        <Post key={post._id} post={post} />
+        <Post key={post._id} post={post} refreshPosts={fetchPosts} />
       ))}
     </div>
   )

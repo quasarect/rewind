@@ -26,7 +26,9 @@ export default function Home() {
           Loading..
         </div>
       ) : (
-        posts.map((post, index) => <Post key={post._id} post={post} />)
+        posts.map((post, index) => (
+          <Post key={post._id} post={post} refreshPosts={fetchPosts} />
+        ))
       )}
     </main>
   )

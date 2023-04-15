@@ -1,10 +1,11 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 import CommentSVG from './icons/comment.svg'
 import ReshareSVG from './icons/reshare.svg'
 import LikeSVG from './icons/like.svg'
 import LikedSVG from './icons/liked.svg'
+import MenuSVG from './icons/menu.svg'
 
 import { useHttpClient } from '../../hooks/httpRequest'
 
@@ -12,17 +13,22 @@ import { authContext } from '../../store/authContext'
 
 import PostBody from './PostBody'
 
-export default function Post({ post }) {
+export default function Post({ post, refreshPosts = () => {} }) {
+  const { user } = useContext(authContext)
+
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(post?.likeCount)
+  const [isMe, setIsMe] = useState(post?.user?._id === user?._id)
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   const { sendRequest } = useHttpClient()
-  const { userId } = useContext(authContext)
 
   useEffect(() => {
     if (post?.likedBy?._id?.length > 0) {
       setLiked(true)
     }
-  }, [userId])
+  }, [user])
 
   const likeHandler = async liked => {
     if (liked) {
@@ -46,26 +52,89 @@ export default function Post({ post }) {
     }
   }
 
+  const menuRef = useRef(null)
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuRef])
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      return
+    }
+
+    try {
+      const response = await sendRequest('/posts/' + post?._id, 'DELETE')
+      console.log(response)
+      refreshPosts()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <div className='p-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary'>
-      <Link
-        to={'/' + post?.user?.username}
-        className='flex items-center cursor-pointer'
-      >
-        <img
-          src={post?.user?.profileUrl}
-          alt='Profile Picture'
-          className='w-10 h-10 rounded-full'
-        />
-        <div className='ml-4'>
-          <h1 className='text-poppins text-gray-200 font-bold text-base'>
-            {post?.user?.name}
-          </h1>
-          <p className='text-poppins text-gray-400 text-xs'>
-            {post?.user?.username}
-          </p>
+      <div className='flex items-center cursor-pointer justify-between'>
+        <Link to={'/' + post?.user?.username} className='flex'>
+          <img
+            src={post?.user?.profileUrl}
+            alt='Profile Picture'
+            className='w-10 h-10 rounded-full'
+          />
+          <div className='ml-4'>
+            <h1 className='text-poppins text-gray-200 font-bold text-base'>
+              {post?.user?.name}
+            </h1>
+            <p className='text-poppins text-gray-400 text-xs'>
+              {post?.user?.username}
+            </p>
+          </div>
+        </Link>
+        <div className='relative'>
+          <img
+            src={MenuSVG}
+            alt='menu'
+            className='h-4 hover:scale-110 cursor-pointer text-white'
+            onClick={handleMenuClick}
+          />
+          {isMenuOpen && (
+            <div
+              className='absolute right-0 top-0 mt-4 mr-4 bg-rewind-dark-primary border border-rewind-dark-tertiary rounded-md'
+              ref={menuRef}
+            >
+              {!isMe && (
+                <div className='p-2 px-4 border-b border-rewind-dark-tertiary'>
+                  Report{' '}
+                </div>
+              )}
+              {isMe && (
+                <div className='p-2 px-4 '>
+                  <p
+                    className='text-poppins text-red-500 text-sm'
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      </Link>
+      </div>
       <PostBody post={post} />
       <div className='mt-6 flex items-center justify-around px-4 text-white'>
         <div className='flex items-center justify-center'>
