@@ -79,7 +79,7 @@ export default function CreatePost({ fetchPosts, profileUrl }) {
   }
 
   return (
-    <div className='py-2 px-4 border-b border-rewind-dark-tertiary w-full min-h-fit'>
+    <div className='py-2 px-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary w-full min-h-fit'>
       <div className='flex justify-between py-4'>
         <img
           src={profileUrl}

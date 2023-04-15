@@ -4,9 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  background-color: #111111;
-}
 
 .animation-pulse {
   position: relative;
