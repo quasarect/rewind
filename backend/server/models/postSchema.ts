@@ -33,6 +33,9 @@ const postSchema = new Schema<IPost>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "UserArray",
 		},
+		dedicated: {
+			type: Object,
+		},
 	},
 	{ timestamps: true },
 );

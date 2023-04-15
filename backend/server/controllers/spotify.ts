@@ -8,6 +8,7 @@ import keyModel from "../models/keySchema";
 import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
 import { getUserTopTrack } from "../services/spotify";
+import userArrayModel from "../models/userArraySchema";
 
 export const handleOauth: RequestHandler = async (req, res, next) => {
 	// Recieive request from front end extract code
@@ -48,15 +49,30 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 				.then(async (reply) => {
 					// User data response
 					const data = reply.data;
+					if (!data.email) {
+						return res
+							.status(statusCode.FORBIDDEN)
+							.json({ message: "Email not provided" });
+					}
 					//Check if user already exists
-					const newUser = await userModel.find({ email: data.email });
-					if (newUser.length !== 0) {
+					const oldUser = await userModel.findOne({
+						email: data.email,
+					});
+					if (oldUser) {
+						// If user already exists update new tokens
+						await userArrayModel.findByIdAndUpdate(
+							oldUser!.spotifyData,
+							{
+								accessToken: tokens.data.access_token,
+								refreshToken: tokens.data.refresh_token,
+							},
+						);
 						return res.status(200).json({
 							token: generateToken(
-								newUser[0]._id.toString(),
+								oldUser!._id.toString(),
 								"user",
 							),
-							userId: newUser[0]._id,
+							userId: oldUser!._id,
 							message: "User already exists",
 						});
 					}
@@ -144,14 +160,10 @@ export const userTopTrack: RequestHandler = async (req, res, next) => {
 			"short_term",
 			1,
 			//@ts-ignore
-			user?.spotifyData.accessToken,
-			//@ts-ignore
-			user?.spotifyData.refreshToken,
-			//@ts-ignore
 			user?.spotifyData,
 		);
 		res.status(200).json({
-			track
+			track,
 		});
 	} catch (err) {
 		console.log(err);

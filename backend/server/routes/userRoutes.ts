@@ -23,6 +23,4 @@ userRouter.get("/username", usernameUnique);
 
 userRouter.post("/update", isAuth, updateUser);
 
-
-
 export default userRouter;

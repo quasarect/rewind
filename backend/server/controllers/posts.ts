@@ -29,14 +29,16 @@ export const getPost: RequestHandler = (req, res, next) => {
 
 export const createPost: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
-	const text = req.body.text;
+	const text = req.body.text || undefined;
 	const imageUrl = req.body.imageUrl || undefined;
 	const audioUrl = req.body.audioUrl || undefined;
+	const dedicated = req.body.dedicated || undefined;
 	const post = new postModel({
 		user: userId,
 		text: text,
 		imageUrl: imageUrl,
 		audioUrl: audioUrl,
+		dedicated: dedicated,
 	});
 
 	post.save()

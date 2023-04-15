@@ -29,11 +29,12 @@ export async function refreshToken(objectId: string, refresh_token: string) {
 			accessToken: accessToken,
 		});
 		return {
+			_id: objectId,
 			accessToken: keys.data.access_token,
 			refreshToken: keys.data.refresh_token,
 		};
-	} catch (err) {
-		console.log("refresh error" + err);
+	} catch (err: any) {
+		console.log("refresh error" + JSON.stringify(err.response.data));
 		return {
 			error: err,
 		};
@@ -43,16 +44,14 @@ export async function refreshToken(objectId: string, refresh_token: string) {
 export const getUserTopTrack = async (
 	term: string,
 	limit: number,
-	access_token: string,
-	refresh_token: string,
-	objectId: string,
+	spotifyData: any,
 ): Promise<unknown> => {
 	try {
 		const track = await axios.get(
 			`${Spotify.BASE_URL}/v1/me/top/tracks?time_range=${term}&limit=${limit}`,
 			{
 				headers: {
-					Authorization: `Bearer ${access_token}`,
+					Authorization: `Bearer ${spotifyData.accessToken}`,
 				},
 			},
 		);
@@ -64,19 +63,53 @@ export const getUserTopTrack = async (
 		};
 	} catch (err: any) {
 		if (err.response?.data.error?.status == 401) {
-			const newtokens = await refreshToken(objectId, refresh_token);
+			const newtokens = await refreshToken(
+				spotifyData._id,
+				spotifyData.refreshToken,
+			);
+			if (newtokens.error) {
+				return console.log("refresh error");
+			}
+			if (newtokens) {
+				return await getUserTopTrack(term, limit, newtokens);
+			}
+		}
+	}
+};
+
+export const searchGlobalTracks = async (
+	spotifyData: any,
+	query: string,
+	type: Array<string>,
+	limit?: number,
+): Promise<unknown> => {
+	try {
+		const types = type.join(",");
+
+		const track = await axios.get(
+			`https://api.spotify.com/v1/search?q=${query}&type=${types}&limit=${limit}`,
+			{
+				headers: {
+					Authorization: `Bearer ${spotifyData.accessToken}`,
+				},
+			},
+		);
+		return track.data;
+	} catch (err: any) {
+		if (err.response?.data.error?.status == 401) {
+			const newtokens = await refreshToken(
+				spotifyData._id,
+				spotifyData.refreshToken,
+			);
 			if (newtokens.error) {
 				console.log("refresh error");
 			}
 			if (newtokens) {
-				return await getUserTopTrack(
-					term,
-					limit,
-					newtokens?.accessToken,
-					newtokens?.refreshToken,
-					objectId,
-				);
+				return await searchGlobalTracks(newtokens, query, type, limit);
 			}
+		}
+		if (err.response?.error?.status == 400) {
+			return { error: { message: err.response?.error?.message } };
 		}
 	}
 };

@@ -13,6 +13,7 @@ import convoRouter from "./routes/conversationRoutes";
 import userRouter from "./routes/userRoutes";
 import http from "http";
 import { config } from "dotenv";
+import searchRouter from "./routes/searchRoutes";
 
 config();
 
@@ -49,6 +50,9 @@ app.use("/spotify", spotifyRouter);
 // Upload routes
 app.use("/uploads", isAuth, uploadRouter);
 
+// Search routes
+app.use("/search", searchRouter);
+
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	console.log("Error handler");
@@ -75,5 +79,7 @@ server.listen(port, async () => {
 	mongoose
 		.connect(process.env.MONGO_URL!)
 		.then(() => console.log("Connected to MongoDB"))
-		.catch((err: Error) => console.log(err));
+		.catch((err: Error) =>
+			console.log("Couldnt connect to mongodb :" + err),
+		);
 });

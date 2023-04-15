@@ -31,11 +31,7 @@ export const userByFields: RequestHandler = async (req, res, next) => {
 				"short_term",
 				1,
 				//@ts-ignore
-				user.spotifyData.accessToken,
-				//@ts-ignore
-				user.spotifyData.refreshToken,
-				//@ts-ignore
-				user.spotifyData._id,
+				user.spotifyData,
 			);
 			//@ts-ignore
 			res.status(200).json({ user: user, isMe: isMe, topTrack: track });

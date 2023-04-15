@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { IDedicated } from "../basic/IDedicated";
 export interface IPost {
 	user: Types.ObjectId;
 	text: string;
@@ -9,4 +10,5 @@ export interface IPost {
 	context?: Array<string>;
 	createdAt: Date;
 	likedBy: Types.ObjectId;
+	dedicated: IDedicated;
 }
