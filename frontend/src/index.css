@@ -3,26 +3,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 
-.animation-pulse {
-  animation: pulse 2s infinite;
+
+* {
+  background-color: #111111;
 }
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.8);
-    box-shadow: 0 0 0 0 rgb(235, 222, 222);
-  }
-
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 60px rgba(229, 62, 62, 0);
-  }
-
-  100% {
-    transform: scale(0.8);
-  }
-} */
 
 .animation-pulse {
   position: relative;
