@@ -32,6 +32,10 @@ export const useHttpClient = () => {
           // signal: httpAbortCtrl.signal,
         })
 
+        if (response.status === 401) {
+          localStorage.removeItem('token')
+        }
+
         const responseData = await response.json()
 
         activeHttpRequests.current = activeHttpRequests.current.filter(
@@ -41,11 +45,6 @@ export const useHttpClient = () => {
         if (!response.ok) {
           setIsLoading(false)
           throw new Error(responseData.message)
-        }
-
-        if (response.status === 401) {
-          localStorage.removeItem('token')
-          window.location.reload()
         }
 
         if (response.status !== 200 && response.status !== 201) {

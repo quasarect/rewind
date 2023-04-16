@@ -1,13 +1,13 @@
 import React from 'react'
-
+import { Link } from 'react-router-dom'
 import DedicateCard from './DedicateCard'
 import VideoPlayer from './VideoPlayer'
 import AudioPlayer from './AudioPlayer'
 
-function PostBody({ post }) {
+function PostBody({ post, redirect = true }) {
   const fileType = post?.filepath ? post?.filepath.split('/')[0] : null
 
-  return (
+  const body = (
     <>
       <div className='mt-4'>
         <p className='text-poppins text-gray-200 text-lg'>{post?.text}</p>
@@ -44,6 +44,11 @@ function PostBody({ post }) {
         {post?.dedicated && <DedicateCard dedicated={post?.dedicated} />}
       </div>
     </>
+  )
+  return redirect ? (
+    <Link to={'/post/' + post?._id}>{body}</Link>
+  ) : (
+    <div>{body}</div>
   )
 }
 

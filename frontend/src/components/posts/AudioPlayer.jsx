@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import PlaySVG from './icons/play.svg'
 import PauseSVG from './icons/pause.svg'
 // import CCSVG from './icons/cc.svg'
@@ -28,17 +28,55 @@ export default function AudioPlayer({ src, user }) {
   const audioElement = useRef(null)
   const { playerState, togglePlay } = useAudioPlayer(audioElement)
 
+  const [color, setColor] = useState('bg-purple-500')
+
+  useEffect(() => {
+    function getRandomColor() {
+      const colors = [
+        '#34d399',
+        '#10b981',
+        '#059669',
+        '#047857',
+        '#065f46',
+        '#4a5568',
+        '#64748b',
+        '#718096',
+        '#2d3748',
+        '#2e4053',
+        '#475569',
+        '#576574',
+        '#6c757d',
+        '#343a40',
+        '#8B5CF6',
+        '#6D28D9',
+        '#5B21B6',
+        '#A855F7',
+        '#9333EA',
+        '#7E22CE',
+      ]
+
+      const randomColor = colors[Math.floor(Math.random() * colors.length)]
+
+      return randomColor
+    }
+
+    setColor(getRandomColor())
+  }, [])
+
   const animateClass = playerState.isPlaying ? 'animate-pulse' : ''
 
   return (
     <div className='relative flex items-center justify-center w-full'>
       <audio src={src} ref={audioElement} />
 
-      <div className='h-48 bg-purple-500 w-full md:w-1/2 rounded-2xl px-8 py-4 flex items-center justify-center relative'>
+      <div
+        className={`h-48 w-full md:w-1/2 rounded-2xl px-8 py-4 flex items-center justify-center relative`}
+        style={{
+          backgroundColor: color,
+        }}
+      >
         <div
-          className={
-            'bg-gray-100 h-24 w-24 rounded-full transition-all ' + animateClass
-          }
+          className={`bg-gray-100 h-24 w-24 rounded-full transition-all ${animateClass}`}
         ></div>
         <img
           src={user?.profileUrl}
@@ -46,7 +84,7 @@ export default function AudioPlayer({ src, user }) {
           className='h-24 w-24 rounded-full z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 '
         />
         <img
-          src='./logo.svg'
+          src='/logo.svg'
           className='absolute h-8 w-8 bottom-4 left-4 bg-transparent opacity-70'
           alt='logo'
         />
@@ -57,17 +95,17 @@ export default function AudioPlayer({ src, user }) {
           @{user?.username}
         </span>
 
-        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50'>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40'>
           {playerState.isPlaying ? (
             <img
               src={PauseSVG}
-              className='w-8 h-8 text-white cursor-pointer z-50 '
+              className='w-8 h-8 text-white cursor-pointer z-40 '
               onClick={togglePlay}
             />
           ) : (
             <img
               src={PlaySVG}
-              className='w-6 h-6 text-white cursor-pointer z-50'
+              className='w-6 h-6 text-white cursor-pointer z-40'
               onClick={togglePlay}
             />
           )}

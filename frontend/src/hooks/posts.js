@@ -13,7 +13,8 @@ export const useGetPosts = () => {
       if (responseData.posts) {
         const sortedPosts = responseData.posts.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b?.createdAt ? b.createdAt : b.updatedAt).getTime() -
+            new Date(a?.createdAt ? a.createdAt : a.updatedAt).getTime()
         )
         setPosts(sortedPosts)
         console.log(sortedPosts)

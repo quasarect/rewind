@@ -6,7 +6,7 @@ function dedicatedCard({ dedicated }) {
   }
 
   return (
-    <div className='mt-2'>
+    <div className='mt-2 overflow-clip'>
       <div className='w-full flex items-center justify-center'>
         <div className='mt-4 py-4 px-10 w-fit max-w-full font-manrope flex flex-col items-center justify-center border border-rewind-dark-secondary bg-rewind-dark-secondary rounded'>
           <div className='flex items-center justify-center cursor-pointer'>
@@ -27,7 +27,7 @@ function dedicatedCard({ dedicated }) {
             </div>
           </div>
 
-          <div className='text-gray-400 text-md font-manrope mt-2'>
+          <div className='text-gray-400 text-md font-manrope mt-2 px-2 overflow-clip'>
             dedicated to {dedicated?.to.name}(@
             <Link
               to={'/' + dedicated?.to.username}

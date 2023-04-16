@@ -11,7 +11,7 @@ import {
   UploadAudio,
 } from './Buttons'
 
-export default function CreatePost({ fetchPosts, profileUrl }) {
+export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
   const postRef = useRef(null)
 
   const [post, setPost] = useState('')
@@ -61,10 +61,19 @@ export default function CreatePost({ fetchPosts, profileUrl }) {
     if (post.length === 0 && !isDedicated && !image && !video && !audio) return
     var body = new FormData()
     body.append('text', post)
-    body.append('dedicated', JSON.stringify(dedicate))
+    if (isDedicated)
+      body.append(
+        'dedicated',
+        JSON.stringify({
+          ...dedicate,
+          to: dedicate?.to?._id,
+        })
+      )
     if (image) body.append('file', image.file, image.name)
     else if (video) body.append('file', video.file, video.name)
     else if (audio) body.append('file', audio.file, audio.name)
+
+    if (replyTo) body.append('replyTo', replyTo)
 
     try {
       const response = await sendRequest('/posts/create', 'POST', body, {})
@@ -90,7 +99,9 @@ export default function CreatePost({ fetchPosts, profileUrl }) {
           <textarea
             type='text'
             className='border-0 outline-none bg-transparent text-white text-lg px-2 w-full resize-none py-1 min-h-10  overflow-hidden'
-            placeholder='What is on your mind?'
+            placeholder={
+              replyTo ? `Comment your thoughts 👀` : 'What is on your mind?'
+            }
             value={post}
             ref={postRef}
             onChange={e => {
@@ -110,8 +121,10 @@ export default function CreatePost({ fetchPosts, profileUrl }) {
         audio={audio}
         audioRef={audioRef}
         setAudio={setAudio}
-        isDedicated={isDedicated}
+        dedicate={dedicate}
         setDedicate={setDedicate}
+        isDedicated={isDedicated}
+        setIsDedicated={setIsDedicated}
       />
       <div className='w-full flex justify-between items-center px-6 py-2 mt-3 '>
         <div className='flex'>
@@ -131,7 +144,7 @@ export default function CreatePost({ fetchPosts, profileUrl }) {
           className='px-4 py-1 text-lg text-white bg-rewind-dark-tertiary rounded-full text-poppins hover:bg-gray-200 hover:text-rewind-dark-primary transition-colors'
           onClick={postHandler}
         >
-          Post
+          {replyTo ? 'Reply' : 'Post'}
         </button>
       </div>
     </div>

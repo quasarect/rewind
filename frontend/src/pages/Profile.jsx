@@ -27,6 +27,9 @@ function Profile() {
           setUser(response.user)
           setTopTrack(response.topTrack)
           setIsMe(response.isMe)
+        } else {
+          console.log(response)
+          navigate('/404')
         }
       } catch (error) {
         console.log(error)
