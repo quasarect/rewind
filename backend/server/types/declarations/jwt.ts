@@ -5,7 +5,7 @@ import { Request } from "express";
 declare global {
 	namespace Express {
 		interface Request {
-			user?: { id: string; type: string };
+			user?: { id: string; type: string; _v: string };
 		}
 	}
 }

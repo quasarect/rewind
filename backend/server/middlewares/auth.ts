@@ -16,10 +16,16 @@ export function isAuth(
 		const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
 			id: string;
 			type: string;
+			_v: string;
 		};
+		if (decoded._v != process.env.VERSION! || decoded._v == undefined) {
+			return res
+				.status(statusCode.UNAUTHORIZED)
+				.json({ message: "Outdated version" });
+		}
 		req.user = decoded;
 		if (req.body.test) {
-			return res.json({ message: "Auhtorized" });
+			return res.status(statusCode.OK).json({ message: "Auhtorized" });
 		}
 		next();
 	} catch (e) {
@@ -29,13 +35,11 @@ export function isAuth(
 
 export function passAuth(req: Request, res: Response, next: NextFunction) {
 	const token = req.header("Authorization")?.replace("Bearer ", "");
-	// if (!token) {
-	// 	return next(new IError("Unauthorized", statusCode.UNAUTHORIZED));
-	// }
-	//@ts-ignore
-	const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+
+	const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
 		id: string;
 		type: string;
+		_v: string;
 	};
 	req.user = decoded;
 
@@ -48,7 +52,7 @@ export function testToken(req: Request, res: Response): void {
 }
 
 export function generateToken(id: string, type: string): string {
-	const user = { id: id, username: type };
+	const user = { id: id, username: type, _v: process.env.VERSION };
 	const token = jwt.sign(user, process.env.JWT_SECRET!, { expiresIn: "7d" });
 	return token;
 }

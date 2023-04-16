@@ -33,7 +33,16 @@ export const createPost: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
 	const text = req.body?.text;
 	const dedicated = req.body?.dedicated;
-	const replyTo = req.body.replyTo;
+	const replyTo = req.body?.replyTo;
+	if (replyTo) {
+		// increment comment count
+		postModel
+			.findByIdAndUpdate(replyTo, { $inc: { commentCount: 1 } })
+			.then((inc) => {})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 	let filepath;
 	if (req.body.filename && req.body.fileType) {
 		filepath = req.body.fileType + "/" + req.body.filename;
@@ -41,7 +50,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 	const post = new postModel({
 		user: userId,
 		text: text,
-		dedicated: JSON.parse(dedicated),
+		dedicated: dedicated == undefined ? undefined : JSON.parse(dedicated),
 		filepath: filepath,
 		replyTo: replyTo,
 	});
@@ -91,7 +100,7 @@ export const postsByUser: RequestHandler = async (req, res, next) => {
 	const username = req.params.username;
 	const user = await userModel.findOne({ username: username });
 	postModel
-		.find({ user: user?._id })
+		.find({ user: user?._id, replyTo: { $exists: false } })
 		.populate({ path: "user", select: ["name", "profileUrl", "username"] })
 		.populate({
 			path: "likedBy",
@@ -114,7 +123,7 @@ export const postsByUser: RequestHandler = async (req, res, next) => {
 export const allPosts: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
 	postModel
-		.find()
+		.find({ replyTo: { $exists: false } })
 		.populate({ path: "user", select: ["name", "profileUrl", "username"] })
 		.populate({
 			path: "likedBy",
@@ -240,9 +249,10 @@ export const unlikePost: RequestHandler = async (req, res, next) => {
 };
 
 export const fetchComments: RequestHandler = (req, res, next) => {
-	const postId = req.query.postId as string;
+	const postId = req.params.postId as string;
 	postModel
 		.find({ replyTo: { $in: [postId] } })
+		.populate({ path: "user", select: "name username profileUrl" })
 		.then((posts) => {
 			res.status(200).json({ posts });
 		})

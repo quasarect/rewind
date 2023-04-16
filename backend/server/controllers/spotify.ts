@@ -36,7 +36,8 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 		},
 		data: body,
 	};
-	// First exhange code for tokens
+	console.log(process.env.REDIRECT_URL);
+	// First exchange code for tokens
 	axios(config)
 		.then(async (tokens) => {
 			// Once tokens are received hit me endpoint for user details
@@ -129,6 +130,8 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							});
 						})
 						.catch((err) => {
+							console.log(err);
+
 							next(
 								new IError(
 									"Couldnt create user",
@@ -148,6 +151,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 				});
 		})
 		.catch((err) => {
+			console.log(err.message);
 			next(
 				new IError(
 					"Couldnt get tokens for code",

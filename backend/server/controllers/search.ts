@@ -8,9 +8,11 @@ import postModel from "../models/postSchema";
 export const globalSearch: RequestHandler = async (req, res, next) => {
 	const searchText: string = req.query.text as string;
 	await Promise.all([
-		postModel.find({
-			$or: [{ text: { $regex: searchText, $options: "i" } }],
-		}),
+		postModel
+			.find({
+				$or: [{ text: { $regex: searchText, $options: "i" } }],
+			})
+			.populate({ path: "user", select: "name username profileUrl" }),
 		userModel
 			.find({
 				$or: [
@@ -65,7 +67,7 @@ export const searchSong: RequestHandler = async (req, res, next) => {
 			5,
 		);
 		const songs: any = [];
-		if (tracks.error) {
+		if (tracks?.error) {
 			return res
 				.status(statusCode.BAD_REQUEST)
 				.json({ message: tracks.error.message });

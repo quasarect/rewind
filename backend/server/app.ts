@@ -6,15 +6,15 @@ import { IError } from "./types/basic/IError";
 import spotifyRouter from "./routes/spotifyRoutes";
 import postRouter from "./routes/postRouter";
 import { isAuth, testToken } from "./middlewares/auth";
-import { Server, Socket } from "socket.io";
-import { chatSocket } from "./sockets/conversation";
+import { Server } from "socket.io";
 import convoRouter from "./routes/conversationRoutes";
 import userRouter from "./routes/userRoutes";
 import http from "http";
 import { config } from "dotenv";
 import searchRouter from "./routes/searchRoutes";
-import jwt from "jsonwebtoken";
-
+import { ioConfig } from "./sockets/ioconfig";
+// import { createAdapter } from "@socket.io/mongo-adapter";
+// import cron from "node-cron";
 config();
 
 const app = express();
@@ -60,32 +60,32 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 // Start the server
 const server = http.createServer(app);
 const io = new Server(server, {
+	path: "app/socket",
 	cors: {
 		origin: "*",
 		methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
 		allowedHeaders: ["Authorization"],
 	},
-});
-
-io.on("connection", (socket: Socket) => {
-	console.log("Connected to socket.io");
-	const token = socket.handshake.headers.authorization?.split(" ")[1];
-
-	const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
-		id: string;
-		type: string;
-	};
-	if (!decoded) {
-		return console.log("unauthorized");
-	}
-	chatSocket(socket, decoded.id);
+	cleanupEmptyChildNamespaces:true
 });
 
 server.listen(port, async () => {
 	mongoose
 		.connect(process.env.MONGO_URL!)
-		.then(() => console.log("Connected to MongoDB"))
+		.then(() => {
+			// mongoose.connection
+			// 	.collection("socket-io")
+			// 	.createIndex({ expireAfterSeconds: 20 });
+			// io.adapter(
+			// 	createAdapter(mongoose.connection.collection("socket-io"), {
+			// 		addCreatedAtField: true,
+			// 	}),
+			// );
+			console.log("Connected to mongo db");
+		})
 		.catch((err: Error) =>
-			console.log("Couldnt connect to mongodb :" + err),
+			console.log("Couldn't connect to mongodb :" + err),
 		);
 });
+
+ioConfig(io);

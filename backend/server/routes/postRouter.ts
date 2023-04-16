@@ -24,7 +24,7 @@ postRouter.get("/like", isAuth, likePost);
 
 postRouter.get("/unlike", isAuth, unlikePost);
 
-postRouter.get("/comments", fetchComments);
+postRouter.get("/:postId/comments", fetchComments);
 
 postRouter.get("/:id", isAuth, getPost);
 
