@@ -54,7 +54,7 @@ app.use("/search", searchRouter);
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	console.log("Error handler");
 	// console.log(error);
-	res.status(error.code).json({ message: error.message });
+	res.status(error.code || 500).json({ message: error.message });
 });
 
 // Start the server
@@ -66,7 +66,7 @@ const io = new Server(server, {
 		methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
 		allowedHeaders: ["Authorization"],
 	},
-	cleanupEmptyChildNamespaces:true
+	cleanupEmptyChildNamespaces: true,
 });
 
 server.listen(port, async () => {

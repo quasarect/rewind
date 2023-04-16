@@ -30,6 +30,7 @@ export const getPost: RequestHandler = (req, res, next) => {
 };
 
 export const createPost: RequestHandler = (req, res, next) => {
+	console.log("post");
 	const userId = req.user?.id;
 	const text = req.body?.text;
 	const dedicated = req.body?.dedicated;
@@ -38,10 +39,10 @@ export const createPost: RequestHandler = (req, res, next) => {
 	if (req.body.filename && req.body.fileType) {
 		filepath = req.body.fileType + "/" + req.body.filename;
 	}
-	if (!text || !dedicated || !filepath) {
+	if (!text && !dedicated && !filepath) {
 		return res
 			.status(statusCode.BAD_REQUEST)
-			.json({ message: "invalid post" });
+			.json({ message: "Invalid post" });
 	}
 	if (replyTo) {
 		// increment comment count
