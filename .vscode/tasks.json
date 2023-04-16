@@ -10,7 +10,7 @@
   "tasks": [
     {
       "label": "Create Terminals",
-      "dependsOn": ["client", "server", "tsc"],
+      "dependsOn": ["client", "server", "tsc", "ai"],
       // Mark as the default build task so cmd/ctrl+shift+b will create them
       "group": {
         "isDefault": true
@@ -26,6 +26,20 @@
       // The task will launch a shell
       "type": "shell",
       "command": "cd frontend && yarn dev --host",
+      // Mark as a background task to avoid the spinner animation on the terminal tab
+      "isBackground": true,
+      "problemMatcher": [],
+      // Create the tasks in a terminal group
+      "presentation": {
+        "group": "my-group"
+      }
+    },
+    {
+      // The name that shows up in terminal tab
+      "label": "ai",
+      // The task will launch a shell
+      "type": "shell",
+      "command": "cd ai && python ./files/app.py",
       // Mark as a background task to avoid the spinner animation on the terminal tab
       "isBackground": true,
       "problemMatcher": [],

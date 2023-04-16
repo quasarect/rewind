@@ -1,6 +1,5 @@
 import requests
 import pymongo
-import jwt
 import logging
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
@@ -8,8 +7,11 @@ import os
 from io import BytesIO
 import openai
 from flask import Flask, jsonify,request
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+
+CORS(app)
 
 #Load environment variables from .env file
 load_dotenv() 
@@ -21,6 +23,11 @@ collection1 = db["users"]
 collection2 = db["keys"]
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
+#test route
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({"message": "Hello World"})
 
 @app.route('/tagline', methods=['GET'])
 
@@ -94,18 +101,27 @@ def generate_tagline():
     return jsonify({"tagline": generated_text})
 
 
+@app.route('/status/:id', methods=['GET'])
+def get_status():
+    return jsonify({"status": local_db[request.form['id']]})
+
 # voice bot functions
 #take audio file and transcribe into text format. To be edited further
 
 def take_prompt():
 
-    audio_file = request.files['audio']
+    try:
+        audio_file = request.files['audio']
 
-    audio_data = audio_file.read()
-    audio_file_obj = BytesIO(audio_data)
-    audio_file_obj.name = audio_file.filename
+        print(audio_file.filename)
 
-    transcript = openai.Audio.transcribe("whisper-1", audio_file_obj, response_format = "text")
+        audio_data = audio_file.read()
+        audio_file_obj = BytesIO(audio_data)
+        audio_file_obj.name = audio_file.filename
+
+        transcript = openai.Audio.transcribe("whisper-1", audio_file_obj, response_format = "text") 
+    except:
+        pass
 
     return transcript
 
@@ -188,7 +204,9 @@ def execute_command(prompt):
 
 # voice bot route
 @app.route('/execute', methods=['GET','POST'])
+@cross_origin()
 def execute():
+
     prompt = take_prompt()
     response = execute_command(prompt)
     return jsonify(response)

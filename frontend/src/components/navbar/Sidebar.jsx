@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom'
 
 import { authContext } from '../../store/authContext'
 
-export default function Sidebar({ navItems }) {
+import home from './icons/home.svg'
+import explore from './icons/explore.svg'
+import messages from './icons/messages.svg'
+import profile from './icons/profile.svg'
+import voice from './icons/voice.svg'
+
+export default function Sidebar({ user, setShowBot }) {
   const { logout } = useContext(authContext)
 
   return (
@@ -19,17 +25,58 @@ export default function Sidebar({ navItems }) {
             </Link>
             {/* the nav items  */}
             <ul className='h-full py-10'>
-              {navItems.map((item, index) => (
-                <li key={index}>
-                  <Link
-                    to={item.link}
-                    className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
-                  >
-                    <img src={item?.icon} />
-                    <span className='ml-2 text-white'>{item.name}</span>
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  to='/'
+                  className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
+                >
+                  <img src={home} />
+                  <span className='ml-2 text-white'>Home</span>
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to='explore'
+                  className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
+                >
+                  <img src={explore} />
+                  <span className='ml-2 text-white'>Explore</span>
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to=''
+                  className='w-full h-10 flex items-center my-2 text text-xl '
+                  onClick={() => setShowBot(true)}
+                >
+                  <img src={voice} className='max-h-7 mx-1' />
+                  <span className='ml-2 text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-pink-800 font-semibold'>
+                    Rebot
+                  </span>
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to='messages'
+                  className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
+                >
+                  <img src={messages} />
+                  <span className='ml-2 text-white'>Messages</span>
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to={user?.username}
+                  className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
+                >
+                  <img src={profile} />
+                  <span className='ml-2 text-white'>Profile</span>
+                </Link>
+              </li>
             </ul>
             {/* copyright */}
             <div

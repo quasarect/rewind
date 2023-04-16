@@ -1,10 +1,12 @@
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import SpotifyPlayer from 'react-spotify-web-playback'
 
 import { authContext } from '../../store/authContext'
 
 export default function Sidebar() {
   const { user } = useContext(authContext)
+
+  const playerRef = useRef()
 
   console.log(user?.spotifyData?.accessToken)
 
@@ -17,6 +19,7 @@ export default function Sidebar() {
           <div className='w-full  flex items-center justify-center p-4 '>
             {user?.spotifyData?.accessToken && (
               <SpotifyPlayer
+                ref={playerRef}
                 styles={{
                   bgColor: '#333',
                   color: '#fff',

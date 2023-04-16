@@ -92,6 +92,9 @@ function Bio({ user, isMe, refresh }) {
         <div className='text-gray-500 italic font-manrope text-sm mt-2'>
           {user?.ai}
         </div>
+        <div className='mt-2 text-base font-manrope text-rewind-primay'>
+          {user?.aiGeneratedLine}
+        </div>
         <div className='mt-2 text-sm font-manrope'>Joined {joinedYear}</div>
       </div>
       {editing && (
