@@ -22,7 +22,7 @@ function App() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      return
+      fetchMe()
     }
     try {
       fetchMe()
