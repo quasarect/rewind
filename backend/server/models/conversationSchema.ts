@@ -7,11 +7,15 @@ const conversationSchema = new Schema<IConversation>(
 			type: String,
 		},
 		participants: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: [mongoose.Schema.Types.ObjectId],
+			ref: "User",
+			required: true,
 		},
+
 		messages: [
 			{
-				type: Object,
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Message",
 			},
 		],
 	},
@@ -19,6 +23,7 @@ const conversationSchema = new Schema<IConversation>(
 		timestamps: true,
 	},
 );
+
 
 const conversationModel = model<IConversation>(
 	"Conversation",

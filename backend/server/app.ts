@@ -13,6 +13,7 @@ import userRouter from "./routes/userRoutes";
 import http from "http";
 import { config } from "dotenv";
 import searchRouter from "./routes/searchRoutes";
+import jwt from "jsonwebtoken";
 
 config();
 
@@ -52,6 +53,7 @@ app.use("/search", searchRouter);
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	console.log("Error handler");
+	console.log(error);
 	res.status(error.code).json({ message: error.message });
 });
 
@@ -67,6 +69,12 @@ const io = new Server(server, {
 
 io.on("connection", (socket: Socket) => {
 	console.log("Connected to socket.io");
+	const token = socket.handshake.headers.authorization?.split(" ")[1];
+
+	const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as unknown;
+	if (!decoded) {
+		return console.log("unauthorized");
+	}
 	chatSocket(socket);
 });
 

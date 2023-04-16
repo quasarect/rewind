@@ -2,44 +2,24 @@ import { RequestHandler } from "express";
 import conversationModel from "../models/conversationSchema";
 import { IError } from "../types/basic/IError";
 import { statusCode } from "../enums/statusCodes";
+import { createConversation, getConversation } from "../services/conversations";
 
-export const createConvo: RequestHandler = (req, res, next) => {
+export const createConvo: RequestHandler = async (req, res, next) => {
 	const users: Array<string> = req.body.users;
-	const conversation = new conversationModel({
-		lastMessage: "",
-		messages: [{}],
-		participants: users,
-	});
-	conversation
-		.save()
-		.then((response) => {
-			res.status(200).json({ conversationId: conversation._id });
-		})
-		.catch((err) => {
-			next(
-				new IError(
-					"Couldnt create conversation",
-					statusCode.INTERNAL_SERVER_ERROR,
-				),
-			);
-		});
+	const conversation = await createConversation(users);
+	if (conversation instanceof IError) {
+		return next(conversation);
+	}
+	res.status(200).json({ conversationId: conversation._id });
 };
 
-export const getConvo: RequestHandler = (req, res, next) => {
-	const conversationId = req.params.id;
-	conversationModel
-		.find({ _id: conversationId })
-		.then((response) => {
-			res.status(200).json({ conversation: response });
-		})
-		.catch((err) => {
-			next(
-				new IError(
-					"Couldnt find a conversation",
-					statusCode.INTERNAL_SERVER_ERROR,
-				),
-			);
-		});
+export const getConvo: RequestHandler = async (req, res, next) => {
+	const conversationId = req.params.id as string;
+	const conversation = await getConversation(conversationId);
+	if (conversation instanceof IError) {
+		return next(conversation);
+	}
+	res.status(200).json({ conversation });
 };
 
 export const userConvos: RequestHandler = (req, res, next) => {

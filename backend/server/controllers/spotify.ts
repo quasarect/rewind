@@ -99,7 +99,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 						name: data.display_name,
 						email: data.email,
 						country: data.country,
-						profileUrl: data.images[0]?.url ,
+						profileUrl: data.images[0]?.url,
 						spotifyData: keyId.id,
 					});
 					//Save user data

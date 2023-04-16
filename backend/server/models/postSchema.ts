@@ -23,12 +23,6 @@ const postSchema = new Schema<IPost>(
 				type: String,
 			},
 		],
-		audioUrl: {
-			type: String,
-		},
-		imageUrl: {
-			type: String,
-		},
 		likedBy: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "UserArray",

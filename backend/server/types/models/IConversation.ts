@@ -1,8 +1,7 @@
 import { Types } from "mongoose";
-import { IMessage } from "../basic/IMessage";
 
 export interface IConversation {
 	lastMessage: string;
-	participants: Types.ObjectId;
-	messages: Array<IMessage>;
+	participants: Array<Types.ObjectId>;
+	messages: Array<Types.ObjectId>;
 }

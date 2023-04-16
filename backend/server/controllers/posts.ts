@@ -4,6 +4,8 @@ import postModel from "../models/postSchema";
 import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
 import userModel from "../models/userSchema";
+import fs from "fs";
+import path from "path";
 
 export const getPost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
@@ -30,18 +32,16 @@ export const getPost: RequestHandler = (req, res, next) => {
 export const createPost: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
 	const text = req.body.text || undefined;
-	const imageUrl = req.body.imageUrl || undefined;
-	const audioUrl = req.body.audioUrl || undefined;
 	const dedicated = req.body.dedicated || undefined;
-	const fileName = req.body?.filename;
-	const fileType = req.body?.fileType;
+	let filepath;
+	if (req.body.filename && req.body.fileType) {
+		filepath = req.body.fileType + "/" + req.body.filename;
+	}
 	const post = new postModel({
 		user: userId,
 		text: text,
-		imageUrl: imageUrl,
-		audioUrl: audioUrl,
-		dedicated: dedicated,
-		filepath: fileType + "/" + fileName,
+		dedicated: JSON.parse(dedicated),
+		filepath: filepath,
 	});
 
 	post.save()
@@ -69,10 +69,15 @@ export const createPost: RequestHandler = (req, res, next) => {
 
 export const deletePost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
-
 	postModel
-		.deleteOne({ _id: postId })
+		.findOneAndDelete({ _id: postId })
 		.then((result) => {
+			userArrayModel.deleteMany({ _id: { $in: [result?.likedBy] } });
+			fs.unlink(path.resolve() + "/media/" + result?.filepath, (err) => {
+				if (err) {
+					console.log(err + "error deleting file");
+				}
+			});
 			res.status(200).json({ message: "Post deleted successfully" });
 		})
 		.catch((err) => {
@@ -156,12 +161,9 @@ export const likePost: RequestHandler = async (req, res, next) => {
 				likeBy
 					.save()
 					.then((users) => {
-						console.log("likedby array created");
 						post!.likedBy = users._id;
 						post?.save()
-							.then((post) => {
-								console.log("Post updated with likedby _id");
-							})
+							.then((post) => {})
 							.catch((err) => {
 								console.log("id store error");
 								console.log(err);

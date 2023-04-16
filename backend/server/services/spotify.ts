@@ -24,7 +24,6 @@ export async function refreshToken(objectId: string, refresh_token: string) {
 		const keys = await axios(config);
 
 		const accessToken = keys.data.access_token;
-		console.log("acces" + accessToken);
 		await keyModel.findByIdAndUpdate(objectId, {
 			accessToken: accessToken,
 		});

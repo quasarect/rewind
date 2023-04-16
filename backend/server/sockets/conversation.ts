@@ -1,18 +1,30 @@
 import { Socket } from "socket.io";
-import { IMessage } from "../types/basic/IMessage";
 import conversationModel from "../models/conversationSchema";
+import { createConversation } from "../services/conversations";
+import { IError } from "../types/basic/IError";
+import messageModel from "../models/messageSchema";
 
 export function chatSocket(socket: Socket): void {
 	/*
 	On conversation start event we add users to the room with the conversationId
 	
 	const event={
-		room:"conversationId"
+		room:"conversationId",
+		user:"ownUserID or name for online status"
+		users:["user1Id","user2Id"]
 	}
 	*/
-	socket.on("conversation", (event) => {
+	socket.on("conversation", async (event) => {
 		console.log("conversation");
-		socket.join(event.id);
+		if (!event.room) {
+			const id = await createConversation(event.users);
+			if (id instanceof IError) {
+				console.log("error");
+			}
+			event.room = id;
+		}
+		await socket.join(event.room);
+		socket.in(event.room).emit("online", { user: event.user });
 	});
 	/* On typing and stoptyping event we emit typing action and array of users
 	event={
@@ -43,15 +55,16 @@ export function chatSocket(socket: Socket): void {
 	socket.on("message", async (event) => {
 		console.log("message");
 		//store message
-		const message: IMessage = {
-			userId: event.message.userId,
-			message: event.message.text,
-			timestamp: Date.now(),
-		};
-		await conversationModel.updateOne(
-			{ _id: event.room },
-			{ $push: { messages: message }, lastMessage: event.message.text },
-		);
+		const message = event.message;
+		await conversationModel.findById(event.room).then((conversation) => {
+			messageModel.findByIdAndUpdate(conversation?.messages[0]._id, {
+				$push: { messages: message },
+			});
+		});
 		socket.in(event.room).emit("message", { message: event.message });
+	});
+
+	socket.on("leave", async (event) => {
+		socket.leave(event.room);
 	});
 }

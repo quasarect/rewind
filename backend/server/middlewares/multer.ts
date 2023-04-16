@@ -2,12 +2,12 @@ import { RequestHandler } from "express";
 import { IError } from "../types/basic/IError";
 import multer from "multer";
 import path from "path";
+// import uuid from "uuid";
 
 const baseDir = path.resolve();
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		console.log(file.fieldname);
 		if (file.mimetype.includes("audio")) {
 			req.body.fileType = "audios";
 			cb(null, baseDir + "/media/audios");
@@ -23,7 +23,6 @@ const storage = multer.diskStorage({
 		const ext = path.extname(file.originalname);
 		const filename = `${Date.now()}-${req.user?.id}${ext}`;
 		req.body.filename = filename;
-		console.log(filename);
 		cb(null, filename);
 	},
 });

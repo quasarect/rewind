@@ -4,8 +4,8 @@ import { createConvo, getConvo, userConvos } from "../controllers/conversation";
 
 const convoRouter = express.Router();
 
-// Get ID after creating a convo
-convoRouter.get("/id", createConvo);
+// create convo
+convoRouter.get("/create", createConvo);
 
 // Get conversations of user with userId
 convoRouter.get("/user/:id", userConvos);
