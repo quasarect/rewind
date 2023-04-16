@@ -71,11 +71,14 @@ io.on("connection", (socket: Socket) => {
 	console.log("Connected to socket.io");
 	const token = socket.handshake.headers.authorization?.split(" ")[1];
 
-	const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as unknown;
+	const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
+		id: string;
+		type: string;
+	};
 	if (!decoded) {
 		return console.log("unauthorized");
 	}
-	chatSocket(socket);
+	chatSocket(socket, decoded.id);
 });
 
 server.listen(port, async () => {

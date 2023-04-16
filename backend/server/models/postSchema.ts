@@ -41,6 +41,10 @@ const postSchema = new Schema<IPost>(
 		filepath: {
 			type: String,
 		},
+		replyTo: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Post",
+		},
 	},
 	{ timestamps: true },
 );

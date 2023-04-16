@@ -31,8 +31,9 @@ export const getPost: RequestHandler = (req, res, next) => {
 
 export const createPost: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
-	const text = req.body.text || undefined;
-	const dedicated = req.body.dedicated || undefined;
+	const text = req.body?.text;
+	const dedicated = req.body?.dedicated;
+	const replyTo = req.body.replyTo;
 	let filepath;
 	if (req.body.filename && req.body.fileType) {
 		filepath = req.body.fileType + "/" + req.body.filename;
@@ -42,6 +43,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 		text: text,
 		dedicated: JSON.parse(dedicated),
 		filepath: filepath,
+		replyTo: replyTo,
 	});
 
 	post.save()
@@ -235,4 +237,16 @@ export const unlikePost: RequestHandler = async (req, res, next) => {
 				console.log("err");
 			});
 	});
+};
+
+export const fetchComments: RequestHandler = (req, res, next) => {
+	const postId = req.query.postId as string;
+	postModel
+		.find({ replyTo: { $in: [postId] } })
+		.then((posts) => {
+			res.status(200).json({ posts });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 };

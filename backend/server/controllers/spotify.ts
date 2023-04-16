@@ -54,10 +54,21 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							.status(statusCode.FORBIDDEN)
 							.json({ message: "Email not provided" });
 					}
+					const tagline = await axios.get(
+						process.env.AI_SERVER_URL!,
+						{
+							headers: {
+								Authorization: "Bearer " + req?.user?.id,
+							},
+						},
+					);
 					//Check if user already exists
-					const oldUser = await userModel.findOne({
-						email: data.email,
-					});
+					const oldUser = await userModel.findOneAndUpdate(
+						{
+							email: data.email,
+						},
+						{ aiGeneratedLine: tagline },
+					);
 					if (oldUser) {
 						// If user already exists update new tokens
 						await userArrayModel.findByIdAndUpdate(
@@ -67,6 +78,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 								refreshToken: tokens.data.refresh_token,
 							},
 						);
+
 						return res.status(200).json({
 							token: generateToken(
 								oldUser!._id.toString(),
@@ -94,6 +106,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							),
 						);
 					});
+
 					const user = new userModel({
 						username: data.id,
 						name: data.display_name,
@@ -101,6 +114,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 						country: data.country,
 						profileUrl: data.images[0]?.url,
 						spotifyData: keyId.id,
+						aiGeneratedLine: tagline,
 					});
 					//Save user data
 					user.save()

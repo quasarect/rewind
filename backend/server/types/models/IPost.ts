@@ -10,4 +10,5 @@ export interface IPost {
 	createdAt: Date;
 	likedBy: Types.ObjectId;
 	dedicated: IDedicated;
+	replyTo: Types.ObjectId;
 }

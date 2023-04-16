@@ -3,6 +3,7 @@ import {
 	allPosts,
 	createPost,
 	deletePost,
+	fetchComments,
 	getPost,
 	likePost,
 	postsByUser,
@@ -22,6 +23,8 @@ postRouter.post("/create", isAuth, fileUpload, createPost);
 postRouter.get("/like", isAuth, likePost);
 
 postRouter.get("/unlike", isAuth, unlikePost);
+
+postRouter.get("/comments", fetchComments);
 
 postRouter.get("/:id", isAuth, getPost);
 

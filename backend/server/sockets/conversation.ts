@@ -4,13 +4,12 @@ import { createConversation } from "../services/conversations";
 import { IError } from "../types/basic/IError";
 import messageModel from "../models/messageSchema";
 
-export function chatSocket(socket: Socket): void {
+export function chatSocket(socket: Socket, userId: string): void {
 	/*
 	On conversation start event we add users to the room with the conversationId
 	
 	const event={
 		room:"conversationId",
-		user:"ownUserID or name for online status"
 		users:["user1Id","user2Id"]
 	}
 	*/
@@ -24,7 +23,7 @@ export function chatSocket(socket: Socket): void {
 			event.room = id;
 		}
 		await socket.join(event.room);
-		socket.in(event.room).emit("online", { user: event.user });
+		socket.in(event.room).emit("online", { user: userId });
 	});
 	/* On typing and stoptyping event we emit typing action and array of users
 	event={
@@ -36,10 +35,7 @@ export function chatSocket(socket: Socket): void {
 	*/
 	socket.on("typing", (event) => {
 		console.log("typing");
-		socket.in(event.room).emit("typing", { user: event.user });
-	});
-	socket.on("stopTyping", (event) => {
-		socket.in(event.room).emit("stopTyping", { user: event.user });
+		socket.in(event.room).emit("typing", { user: userId });
 	});
 	/* 
 	On message sent event we emit to all room connected users.

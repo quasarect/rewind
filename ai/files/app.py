@@ -23,23 +23,7 @@ collection2 = db["keys"]
 @app.route('/tagline', methods=['GET'])
 
 def generate_tagline():
-    auth_header = request.headers.get('Authorization')
-    if auth_header:
-        auth_token = auth_header.split(' ')[1]
-        # do something with the auth_token
-    else:
-        return
-        # handle the case where the Authorization header is missing
-    ################ithe header ch bagh mala te kalla nhi
-    #auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MzkzZDQ2ODZkMDEwMjczNTZlMzk3ZSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTY4MTQ3Mjk1NiwiZXhwIjoxNjgyMDc3NzU2fQ.UKhFLzgMj4ca9_uApel_yEXdQeX7CO-80Q4zSp2xiOU'
-
-    #decode authentication token
-    try:
-        decoded_token = jwt.decode(auth_token, os.getenv('JWT_SECRET'), algorithms=['HS256'])
-        user_id = decoded_token["id"]
-    except jwt.exceptions.InvalidSignatureError:
-        return jsonify({"message": "Invalid token signature"}), 401
-
+    user_id = request.headers.get('Authorization').split(' ')[1]
     # get data from db
     result1 = collection1.find_one({"_id": ObjectId(user_id)})
     spotify_id = result1["spotifyData"]
@@ -91,7 +75,7 @@ def generate_tagline():
 
     openai.api_key = os.getenv('OPENAI_API_KEY')
 
-    prompt = f"Write a cool tagline for user whose top genre in music are: { top_genres } Give output just the tagline "
+    prompt = f"Write a cool and unique tagline for user whose top genre in music are: { top_genres } Give output just the tagline "
       
     response = openai.Completion.create(
       model="text-davinci-003",
@@ -104,11 +88,6 @@ def generate_tagline():
     )
 
     generated_text = response.choices[0].text.strip()
-
-    myquery = {"_id": ObjectId(user_id)}
-    newvalues = { "$set": {"tag": generated_text } }
-
-    collection1.update_one(myquery, newvalues)
 
     return jsonify({"tagline": generated_text})
 
