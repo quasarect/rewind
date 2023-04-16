@@ -19,6 +19,7 @@ db = client["app"]
 collection1 = db["users"]
 collection2 = db["keys"]
 
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @app.route('/tagline', methods=['GET'])
 
@@ -74,7 +75,6 @@ def generate_tagline():
     else:
         return jsonify({"message": "Error retrieving top genres from Spotify"}), 500
 
-    openai.api_key = os.getenv('OPENAI_API_KEY')
 
     prompt = f"Write a cool and unique tagline for user whose top genre in music are: { top_genres } Give output just the tagline "
       
@@ -97,9 +97,12 @@ def generate_tagline():
 #take audio file and transcribe into text format. To be edited further
 
 def take_prompt():
-    prompt = "search for enchanted"
-    #prompt = request.json['prompt']
-    return prompt
+    #need to work on audio input
+        #temporarily using a hardcoded audio file available in the same folder
+    audio_file = open("create_post_2.m4a", "rb")
+    transcript = openai.Audio.transcribe("whisper-1", audio_file, response_format = "text")
+    print(transcript)
+    return transcript
 
 
 #check if the response is successful
@@ -124,13 +127,13 @@ def execute_command(prompt):
     base = os.getenv("BASE_URL")
     
     #various prompts to be used
-    create_post = f"the url for creating a post is {base}posts/create and the method is POST and payload consists of only text"
-    search_user = f"the url for searching a user is {base}search/username?username=((name)) and the method is GET"
-    search_song = f"the url for searching a song is {base}search/song?text=((song)) and the method is GET"
+    create_post = f"when query implies to create a post, use url {base}posts/create and the method is POST and payload consists of only text"
+    search_user = f"when query implies to search for user, use url {base}search/username?username=((name)) and the method is GET"
+    search_song = f"when query implies to search for song, use url {base}search/song?text=((song)) and the method is GET"
     response_format = '{"url"= "", "method" = " ", "payload" = {"text" = " "}}'
     
     #create the prompt for the openai api
-    user_prompt = f'{prompt}. fit the given query only one of the following calls. {search_song}. {create_post}. {search_user}.give the url, method and payload required for making an api call stored. Give all this in a dictionary format.Respond strictly in given format {response_format}.'
+    user_prompt = f'{prompt}. fit the given query appropriately in only one of the following calls. {search_song}. {create_post}. {search_user}.give the url, method and payload required for making an api call stored. Give all this in a dictionary format. Respond strictly in given format {response_format}. Do not add anything outside the format specified.'
     
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
