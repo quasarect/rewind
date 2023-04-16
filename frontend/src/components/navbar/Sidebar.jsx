@@ -37,7 +37,7 @@ export default function Sidebar({ user, setShowBot }) {
 
               <li>
                 <Link
-                  to='explore'
+                  to='/explore'
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
                   <img src={explore} />
@@ -60,7 +60,7 @@ export default function Sidebar({ user, setShowBot }) {
 
               <li>
                 <Link
-                  to='messages'
+                  to='/messages'
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
                   <img src={messages} />
@@ -70,7 +70,7 @@ export default function Sidebar({ user, setShowBot }) {
 
               <li>
                 <Link
-                  to={user?.username}
+                  to={'/' + user?.username}
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
                   <img src={profile} />

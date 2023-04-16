@@ -43,7 +43,10 @@ export default function Bottom({ user, setShowBot }) {
           </li>
 
           <li>
-            <Link to={user?.username} className='hover:text-rewind-secondary'>
+            <Link
+              to={'/' + user?.username}
+              className='hover:text-rewind-secondary'
+            >
               <img src={profile} />
             </Link>
           </li>
