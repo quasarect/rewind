@@ -21,9 +21,6 @@ function App() {
   const { fetchMe, isAuthenticated } = useContext(authContext)
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      fetchMe()
-    }
     try {
       fetchMe()
     } catch (err) {
