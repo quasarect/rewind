@@ -100,11 +100,6 @@ def generate_tagline():
 
     return jsonify({"tagline": generated_text})
 
-
-@app.route('/status/:id', methods=['GET'])
-def get_status():
-    return jsonify({"status": local_db[request.form['id']]})
-
 # voice bot functions
 #take audio file and transcribe into text format. To be edited further
 
