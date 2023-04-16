@@ -35,7 +35,7 @@ export default function Home() {
   console.log(posts, users)
 
   return (
-    <main className='w-full md:w-4/5 lg:w-3/5 bg-rewind-dark-primary'>
+    <main className='w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary'>
       <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary'>
         Explore Rewind
       </div>

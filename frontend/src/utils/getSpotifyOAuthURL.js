@@ -4,7 +4,16 @@ export default () => {
     import.meta.env.VITE_SPOTIFY_CALLBACK_URL
   )
 
-  const scopes = ['user-read-private', 'user-read-email', 'user-top-read']
+  const scopes = [
+    'streaming',
+    'user-read-email',
+    'user-read-private',
+    'user-library-read',
+    'user-library-modify',
+    'user-read-playback-state',
+    'user-modify-playback-state',
+    'user-top-read',
+  ]
 
   const scope = scopes.join('%20')
 

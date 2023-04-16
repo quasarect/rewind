@@ -5,6 +5,7 @@ import logging
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import os
+from io import BytesIO
 import openai
 from flask import Flask, jsonify,request
 
@@ -97,20 +98,21 @@ def generate_tagline():
 #take audio file and transcribe into text format. To be edited further
 
 def take_prompt():
-    #need to work on audio input
-        #temporarily using a hardcoded audio file available in the same folder
-    # audio_file = open("create_post_2.m4a", "rb")
-    current_dir = os.getcwd()
-    audio_file = os.path.join(current_dir, "search_user_1.m4a")
-    with open(audio_file, "rb") as f:
-        transcript = openai.Audio.transcribe("whisper-1", f, response_format = "text")
-    print(transcript)
+
+    audio_file = request.files['audio']
+
+    audio_data = audio_file.read()
+    audio_file_obj = BytesIO(audio_data)
+    audio_file_obj.name = audio_file.filename
+
+    transcript = openai.Audio.transcribe("whisper-1", audio_file_obj, response_format = "text")
+
     return transcript
 
 
 #check if the response is successful
 def check_response(response):
-    if response.status_code == 200:
+    if response and response.status_code == 200:
         # the request was successful, return the response data
         return response.json()
     else:
@@ -120,12 +122,14 @@ def check_response(response):
 
 #execute the command received from the prompt
 def execute_command(prompt):
+
+    print(prompt)
     
     #get the auth token and user id from idk where.
         #if have auth token, then use it to create userid or vice versa
         #auth_token and userid are hardcoded
-    auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MzliZmE1MTJiNzY3ODgyYWVlOGI5YiIsInVzZXJuYW1lIjoidXNlciIsIl92IjoiMS4wLjAiLCJpYXQiOjE2ODE2NzMwNDEsImV4cCI6MTY4MjI3Nzg0MX0.Ylu2myZVgDlSwFrsc3h3g2Is49wgeRl4DAYXYCYBL7I"
-    #userid = "6439bfa512b767882aee8b9b"
+
+    auth = request.headers.get('Authorization').split(' ')[1]
     
     base = os.getenv("BASE_URL")
     
@@ -169,7 +173,12 @@ def execute_command(prompt):
     payload = response.get("payload")
 
     #make the api call
-    response = requests.request(method, url, headers=headers, json=payload,timeout=120)
+    try:
+        response = requests.request(method, url, headers=headers, json=payload,timeout=120)
+        print(response)
+    except:
+        response.status_code = 500
+        print("error while making api call")
 
     #check if the response is successful
     return check_response(response)

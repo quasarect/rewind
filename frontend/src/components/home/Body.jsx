@@ -18,7 +18,7 @@ export function Body({
   setDedicate,
 }) {
   return (
-    <div className='flex  items-center justify-center flex-col'>
+    <div className='flex items-center justify-center flex-col mb-4'>
       {image?.data && (
         <div className='w-fit max-w-full max-h-80 bg-rewind-dark-primary relative '>
           <span

@@ -57,7 +57,7 @@ function Bio({ user, isMe, refresh }) {
   return (
     <>
       <div className='ml-8 mt-8 md:m-0 md:mt-4 md:w-2/3 '>
-        <div className='text-xl font-bold font-roboto flex '>
+        <div className='text-xl font-bold font-roboto flex flex-wrap '>
           <div>
             {user?.name}{' '}
             {/* {user?.following && (

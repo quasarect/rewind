@@ -52,7 +52,7 @@ function Post() {
   }, [fetchPost, postId])
 
   return (
-    <main className='w-full md:w-4/5 lg:w-3/5 bg-rewind-dark-primary'>
+    <main className='w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary'>
       <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary'>
         Rewind
       </div>
@@ -67,7 +67,7 @@ function Post() {
       ) : (
         <>
           <PostUI post={post} redirect={false} onComment={fetchPost} />
-          <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary'>
+          <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary bg-rewind-dark-primary'>
             Comments ⇣
           </div>
           {comments.length === 0 && (

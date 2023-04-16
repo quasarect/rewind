@@ -27,7 +27,7 @@ function dedicatedCard({ dedicated }) {
             </div>
           </div>
 
-          <div className='text-gray-400 text-md font-manrope mt-2 px-2 overflow-clip'>
+          <div className='text-gray-400 text-md font-manrope mt-2 px-2 overflow-clip flex-wrap'>
             dedicated to {dedicated?.to.name}(@
             <Link
               to={'/' + dedicated?.to.username}

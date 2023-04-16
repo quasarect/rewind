@@ -89,7 +89,7 @@ export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
 
   return (
     <div className='py-2 px-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary w-full min-h-fit'>
-      <div className='flex justify-between py-4'>
+      <div className='flex justify-between py-2'>
         <img
           src={profileUrl}
           alt='profile'
@@ -126,7 +126,7 @@ export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
         isDedicated={isDedicated}
         setIsDedicated={setIsDedicated}
       />
-      <div className='w-full flex justify-between items-center px-6 py-2 mt-3 '>
+      <div className='w-full flex justify-between items-center px-6 pb-2'>
         <div className='flex'>
           <DedicateButtonUI
             setIsDedicated={setIsDedicated}

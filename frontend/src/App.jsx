@@ -29,7 +29,7 @@ function App() {
   }, [])
 
   return (
-    <div className='flex h-screen bg-rewind-dark-primary text-white'>
+    <div className='flex h-screen bg-rewind-dark-primary text-white '>
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/callback' element={<Callback />} />
