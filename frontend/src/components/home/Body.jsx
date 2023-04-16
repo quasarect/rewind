@@ -1,4 +1,4 @@
-import DedicateUI from './DedicateUI'
+import Dedicate from './Dedicate'
 import CrossSVG from '../assets/cross.svg'
 import VideoPlayer from '../posts/VideoPlayer'
 
@@ -6,14 +6,16 @@ export function Body({
   image,
   imageRef,
   setImage,
-  isDedicated,
-  setDedicate,
   video,
   videoRef,
   setVideo,
   setAudio,
   audio,
   audioRef,
+  isDedicated,
+  setIsDedicated,
+  dedicate,
+  setDedicate,
 }) {
   return (
     <div className='flex  items-center justify-center flex-col'>
@@ -62,7 +64,13 @@ export function Body({
         </div>
       )}
 
-      {isDedicated && <DedicateUI setDedicate={setDedicate} />}
+      {isDedicated && (
+        <Dedicate
+          dedicate={dedicate}
+          setDedicate={setDedicate}
+          setIsDedicated={setIsDedicated}
+        />
+      )}
     </div>
   )
 }
