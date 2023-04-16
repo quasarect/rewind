@@ -34,6 +34,15 @@ export const createPost: RequestHandler = (req, res, next) => {
 	const text = req.body?.text;
 	const dedicated = req.body?.dedicated;
 	const replyTo = req.body?.replyTo;
+	let filepath;
+	if (req.body.filename && req.body.fileType) {
+		filepath = req.body.fileType + "/" + req.body.filename;
+	}
+	if (!text || !dedicated || !filepath) {
+		return res
+			.status(statusCode.BAD_REQUEST)
+			.json({ message: "invalid post" });
+	}
 	if (replyTo) {
 		// increment comment count
 		postModel
@@ -42,10 +51,6 @@ export const createPost: RequestHandler = (req, res, next) => {
 			.catch((err) => {
 				console.log(err);
 			});
-	}
-	let filepath;
-	if (req.body.filename && req.body.fileType) {
-		filepath = req.body.fileType + "/" + req.body.filename;
 	}
 	const post = new postModel({
 		user: userId,

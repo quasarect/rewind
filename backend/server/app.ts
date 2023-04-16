@@ -53,7 +53,7 @@ app.use("/search", searchRouter);
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	console.log("Error handler");
-	console.log(error);
+	// console.log(error);
 	res.status(error.code).json({ message: error.message });
 });
 

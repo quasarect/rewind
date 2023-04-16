@@ -41,6 +41,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 	axios(config)
 		.then(async (tokens) => {
 			// Once tokens are received hit me endpoint for user details
+			console.log("token recieved");
 			axios
 				.get(Spotify.ME, {
 					headers: {
@@ -55,15 +56,16 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							.status(statusCode.FORBIDDEN)
 							.json({ message: "Email not provided" });
 					}
-					const tagline = await axios.get(
-						process.env.AI_SERVER_URL!,
-						{
-							headers: {
-								Authorization: "Bearer " + req?.user?.id,
-							},
-						},
-					);
+					// const tagline = await axios.get(
+					// 	process.env.AI_SERVER_URL!,
+					// 	{
+					// 		headers: {
+					// 			Authorization: "Bearer " + req?.user?.id,
+					// 		},
+					// 	},
+					// );
 					//Check if user already exists
+					const tagline = "hello";
 					const oldUser = await userModel.findOneAndUpdate(
 						{
 							email: data.email,
@@ -151,7 +153,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 				});
 		})
 		.catch((err) => {
-			console.log(err.message);
+			console.log(err);
 			next(
 				new IError(
 					"Couldnt get tokens for code",
