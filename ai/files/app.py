@@ -99,8 +99,11 @@ def generate_tagline():
 def take_prompt():
     #need to work on audio input
         #temporarily using a hardcoded audio file available in the same folder
-    audio_file = open("create_post_2.m4a", "rb")
-    transcript = openai.Audio.transcribe("whisper-1", audio_file, response_format = "text")
+    # audio_file = open("create_post_2.m4a", "rb")
+    current_dir = os.getcwd()
+    audio_file = os.path.join(current_dir, "search_user_1.m4a")
+    with open(audio_file, "rb") as f:
+        transcript = openai.Audio.transcribe("whisper-1", f, response_format = "text")
     print(transcript)
     return transcript
 
