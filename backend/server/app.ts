@@ -50,6 +50,8 @@ app.use("/spotify", spotifyRouter);
 // Search routes
 app.use("/search", searchRouter);
 
+
+
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	console.log("Error handler");

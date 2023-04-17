@@ -33,38 +33,31 @@ export const getPost: RequestHandler = (req, res, next) => {
 };
 
 export const createPost: RequestHandler = (req, res, next) => {
-	console.log("post");
 	const userId = req.user?.id;
 	const text = req.body?.text;
-	const dedicated = req.body?.dedicated;
+	const dedicated =
+		req.body?.dedicated == undefined
+			? undefined
+			: JSON.parse(req.body.dedicated);
 	const replyTo = req.body?.replyTo;
 	let filepath;
-	if (req.body.filename && req.body.fileType) {
-		filepath = req.body.fileType + "/" + req.body.filename;
-	}
+
 	if (!text && !dedicated && !filepath) {
 		return res
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "Invalid post" });
 	}
+	if (req.body.filename && req.body.fileType) {
+		filepath = req.body.fileType + "/" + req.body.filename;
+	}
+
 	const post = new postModel({
 		user: userId,
 		text: text,
-		dedicated: dedicated == undefined ? undefined : JSON.parse(dedicated),
+		dedicated: dedicated,
 		filepath: filepath,
 		replyTo: replyTo,
 	});
-	if (replyTo) {
-		// increment comment count
-		sendNotification(replyTo, userId, NotificationTypes.comment, post._id);
-		postModel
-			.findByIdAndUpdate(replyTo, { $inc: { commentCount: 1 } })
-			.then((inc) => {})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
-
 	post.save()
 		.then((response) => {
 			res.status(200).json({
@@ -79,6 +72,41 @@ export const createPost: RequestHandler = (req, res, next) => {
 				),
 			);
 		});
+	// Comment dedicating a song notif
+	if (replyTo && dedicated) {
+		return sendNotification(
+			dedicated.to,
+			userId,
+			NotificationTypes.comment,
+		);
+	}
+	// Only a dedication notif
+	if (dedicated) {
+		sendNotification(
+			dedicated.to,
+			userId,
+			NotificationTypes.dedicate,
+			post._id,
+		);
+	}
+
+	// Comment notif
+	if (replyTo) {
+		// increment comment count
+		postModel
+			.findByIdAndUpdate(replyTo, { $inc: { commentCount: 1 } })
+			.then((inc) => {
+				sendNotification(
+					inc?.user,
+					userId,
+					NotificationTypes.comment,
+					post._id,
+				);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 };
 
 export const deletePost: RequestHandler = (req, res, next) => {

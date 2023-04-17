@@ -25,7 +25,7 @@
       "label": "client",
       // The task will launch a shell
       "type": "shell",
-      "command": "cd frontend && yarn dev --host",
+      "command": "cd frontend && yarn && yarn dev --host",
       // Mark as a background task to avoid the spinner animation on the terminal tab
       "isBackground": true,
       "problemMatcher": [],
@@ -39,7 +39,7 @@
       "label": "ai",
       // The task will launch a shell
       "type": "shell",
-      "command": "cd ai && python ./files/app.py",
+      "command": "cd ai && pip install -r requirements.txt && python3 ./files/app.py",
       // Mark as a background task to avoid the spinner animation on the terminal tab
       "isBackground": true,
       "problemMatcher": [],
@@ -53,7 +53,7 @@
       "label": "server",
       // The task will launch a shell
       "type": "shell",
-      "command": "cd backend && npm start",
+      "command": "cd backend && npm install && npm start",
       // Mark as a background task to avoid the spinner animation on the terminal tab
       "isBackground": true,
       "problemMatcher": [],

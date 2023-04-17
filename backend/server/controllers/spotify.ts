@@ -7,7 +7,20 @@ import { statusCode } from "../enums/statusCodes";
 import keyModel from "../models/keySchema";
 import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
-import { getUserTopTrack } from "../services/spotify";
+import { refreshToken } from "../services/spotify";
+
+export const refresh: RequestHandler = async (req, res, next) => {
+	const userId = req.user?.id;
+	const data = await userModel.findById(userId).populate("spotifyData");
+	const tokens = await refreshToken(
+		//@ts-ignore
+		data?.spotifyData._id!,
+		//@ts-ignore
+		data?.spotifyData.refreshToken,
+	);
+	res.status(200).json({ accessToken: tokens.accessToken });
+};
+
 export const handleOauth: RequestHandler = async (req, res, next) => {
 	// Recieive request from front end extract code
 	const code = req.body.code;
@@ -52,22 +65,11 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							.status(statusCode.FORBIDDEN)
 							.json({ message: "Email not provided" });
 					}
-					// const tagline = await axios.get(
-					// 	process.env.AI_SERVER_URL!,
-					// 	{
-					// 		headers: {
-					// 			Authorization: "Bearer " + req?.user?.id,
-					// 		},
-					// 	},
-					// );
+
 					//Check if user already exists
-					const tagline = "hello";
-					const oldUser = await userModel.findOneAndUpdate(
-						{
-							email: data.email,
-						},
-						{ aiGeneratedLine: tagline },
-					);
+					const oldUser = await userModel.findOne({
+						email: data.email,
+					});
 					if (oldUser) {
 						// If user already exists update new tokens
 						await keyModel.findByIdAndUpdate(oldUser!.spotifyData, {
@@ -102,6 +104,17 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							),
 						);
 					});
+					// for now cause ai server not working for me
+					let tagline;
+					try {
+						tagline = await axios.get(process.env.AI_SERVER_URL!, {
+							headers: {
+								Authorization: "Bearer " + req?.user?.id,
+							},
+						});
+					} catch (err: any) {
+						console.log(err.response);
+					}
 
 					const user = new userModel({
 						username: data.id,
@@ -152,31 +165,4 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 				),
 			);
 		});
-};
-
-export const userTopTrack: RequestHandler = async (req, res, next) => {
-	try {
-		const userId = req.user?.id;
-		console.log(userId);
-		const user = await userModel
-			.findOne({ _id: userId })
-			.populate({ path: "spotifyData" });
-		if (!user) {
-			res.status(statusCode.NOT_FOUND).json({
-				message: "user not found",
-			});
-		}
-		//@ts-ignore
-		const track = await getUserTopTrack(
-			"short_term",
-			1,
-			//@ts-ignore
-			user?.spotifyData,
-		);
-		res.status(200).json({
-			track,
-		});
-	} catch (err) {
-		console.log(err);
-	}
 };

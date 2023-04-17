@@ -46,6 +46,12 @@ export const userByFields: RequestHandler = async (req, res, next) => {
 export const updateUser: RequestHandler = (req, res, next) => {
 	const userId = req.user?.id;
 	const userUpdates = req.body;
+	// Add a validation later in middleware
+	if (!userUpdates.name || !userUpdates.username) {
+		return res
+			.status(statusCode.BAD_REQUEST)
+			.json({ message: "name or username cannot be empty" });
+	}
 	userModel
 		.findByIdAndUpdate(userId, {
 			name: userUpdates.name,
@@ -192,7 +198,6 @@ export const unfollow: RequestHandler = async (req, res, next) => {
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "Cannot unfolow self" });
 	}
-	console.log(follower, following);
 	await Promise.all([
 		userModel
 			.findOneAndUpdate(
@@ -240,24 +245,24 @@ export const getMe: RequestHandler = (req, res, next) => {
 		.populate("spotifyData")
 		.populate("lastNotif")
 		.then(async (user) => {
-			let notificationCount;
+			let notificationCount, createdAt;
 			if (user?.lastNotif) {
 				//@ts-ignore
-				const createdAt = user.lastNotif.createdAt;
-				console.log(createdAt);
-				notificationCount = await notificationModel
-					.find({
-						createdAt: { $gt: createdAt },
-						recipient: user._id,
-					})
-					.then((notifs) => {
-						console.log(notifs);
-					});
+				createdAt = user.lastNotif.createdAt;
+			} else {
+				//@ts-ignore
+				createdAt = user?.createdAt;
 			}
-			console.log(notificationCount);
+			notificationCount = await notificationModel
+				.find({
+					createdAt: { $gt: createdAt },
+					recipient: user?._id,
+				})
+				.count();
+
 			res.status(200).json({
 				user: user,
-				notifCount: 0,
+				notifCount: notificationCount || 0,
 			});
 		})
 		.catch((err) => {
