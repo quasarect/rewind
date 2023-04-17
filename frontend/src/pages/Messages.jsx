@@ -1,72 +1,43 @@
-import React, { useState, useEffect } from 'react'
-import { socket } from '../socket'
+import { useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
+
+import SearchUser from '../components/messages/SearchUser'
 
 function Messages() {
-  const [messages, setMessages] = useState([])
+  const show = useLocation().pathname === '/messages'
 
-  useEffect(() => {
-    socket.on('message', message => {
-      setMessages(messages => [...messages, message])
-    })
-  }, [])
-
-  console.log(messages)
-
-  const connect = () => {
-    socket.connect()
-  }
-
-  const disconnect = () => {
-    socket.disconnect()
-  }
-
-  const sayTyping = () => {
-    socket.emit('typing', 'hello')
-  }
-
-  const sendMessage = () => {
-    socket.emit('sendMessage', 'hello')
-  }
+  const [searchUser, setSearchUser] = useState(false)
 
   return (
-    <div>
-      <div>
-        <button
-          onClick={connect}
-          className='
-        px-4 py-2 border border-white  
-      '
-        >
-          Connect
-        </button>
-        <button
-          onClick={disconnect}
-          className='
-        px-4 py-2 border border-white  
-      '
-        >
-          Disconnect
-        </button>
+    <>
+      <div
+        className={`w-full h-fit pb-16 md:pb-0 md:w-4/5 bg-rewind-dark-primary ${
+          !show && 'hidden lg:block lg:w-2/5'
+        }`}
+      >
+        <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center'>
+          <div>Messages</div>
+          <div>
+            <button
+              className='bg-rewind-dark-tertiary text-gray-200 text-base font-manrope px-4 py-1 rounded-md'
+              onClick={() => {
+                setSearchUser(true)
+              }}
+            >
+              New
+            </button>
+          </div>
+        </div>
       </div>
-      <div>
-        <button
-          onClick={sayTyping}
-          className='
-        px-4 py-2 border border-white
-      '
-        >
-          Say Typing
-        </button>
-        <button
-          onClick={sendMessage}
-          className='
-        px-4 py-2 border border-white
-      '
-        >
-          Send Message
-        </button>
-      </div>
-    </div>
+      {searchUser && (
+        <SearchUser
+          onClose={() => {
+            setSearchUser(false)
+          }}
+        />
+      )}
+      <Outlet />
+    </>
   )
 }
 

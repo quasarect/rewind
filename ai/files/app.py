@@ -107,19 +107,18 @@ def take_prompt():
 
     try:
         audio_file = request.files['audio']
-
-        print(audio_file.filename)
-
+        audio_file.save(audio_file.filename)
         audio_data = audio_file.read()
         audio_file_obj = BytesIO(audio_data)
         audio_file_obj.name = audio_file.filename
-
-        transcript = openai.Audio.transcribe("whisper-1", audio_file_obj, response_format = "text") 
-    except:
+        print(audio_file_obj.name)
+        with open(audio_file_obj.name, 'rb') as f:
+            transcript = openai.Audio.transcribe("whisper-1", f, response_format = "text")
+        print(transcript)
+        return transcript
+    except Exception as error:
+        print(error)
         pass
-
-    return transcript
-
 
 #check if the response is successful
 def check_response(response):
@@ -134,8 +133,7 @@ def check_response(response):
 #execute the command received from the prompt
 def execute_command(prompt):
 
-    print(prompt)
-    
+    if not prompt or prompt == "": return
     #get the auth token and user id from idk where.
         #if have auth token, then use it to create userid or vice versa
         #auth_token and userid are hardcoded
@@ -187,11 +185,12 @@ def execute_command(prompt):
     try:
         response = requests.request(method, url, headers=headers, json=payload,timeout=120)
         print(response)
-    except:
-        response.status_code = 500
+    except Exception as error:
+        print(error)
         print("error while making api call")
 
     #check if the response is successful
+    return 
     return check_response(response)
 
 

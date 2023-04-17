@@ -3,6 +3,8 @@ import { useAudioRecorder } from 'react-audio-voice-recorder'
 
 import Modal from '../utils/Modal'
 
+import reset from './icons/reset.svg'
+
 async function sendAudio(blob, id) {
   const formData = new FormData()
   formData.append(
@@ -38,6 +40,8 @@ export default function VoiceBot({ showBot, setShowBot }) {
   } = useAudioRecorder()
 
   const [status, setStatus] = useState(null)
+  const [recorded, setRecorded] = useState(false)
+
   console.log(status)
 
   const handleStop = async () => {
@@ -57,14 +61,19 @@ export default function VoiceBot({ showBot, setShowBot }) {
             <button
               className='px-4 py-2 text-white bg-gradient-to-r from-purple-600 to-pink-800 rounded-full'
               onClick={() => {
-                if (isRecording) {
+                if (isRecording && !recorded) {
+                  setRecorded(true)
                   handleStop()
-                } else if (!isPaused) {
+                } else if (!isPaused && !recorded) {
                   startRecording()
                 }
               }}
             >
-              {isRecording ? 'Recording...' : !isPaused && 'Record'}
+              {recorded
+                ? 'Evaluating..'
+                : isRecording
+                ? 'Recording...'
+                : !isPaused && 'Record'}
             </button>
           </div>
         </div>

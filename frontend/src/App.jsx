@@ -10,7 +10,9 @@ import Home from './pages/Home'
 import Explore from './pages/Explore'
 import Profile from './pages/Profile'
 import Post from './pages/Post'
+import TestMessage from './pages/TestMessages'
 import Messages from './pages/Messages'
+import Chat from './components/messages/Chat'
 
 // utils
 import NavbarSidebarWrapper from './components/utils/NavbarSidebarWrapper'
@@ -57,7 +59,19 @@ function App() {
             </NavbarSidebarWrapper>
           }
         />
-        <Route path='/messages' element={<Messages />} />
+
+        <Route
+          path='/messages'
+          element={
+            <NavbarSidebarWrapper showSidebar={false}>
+              <Messages />
+            </NavbarSidebarWrapper>
+          }
+        >
+          <Route path=':coversationId' element={<Chat />} />
+        </Route>
+
+        <Route path='/test-messages' element={<TestMessage />} />
         <Route path='/404' element={<NotFound404 />} />
         <Route
           path='/:username'

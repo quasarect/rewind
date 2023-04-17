@@ -39,7 +39,7 @@
       "label": "ai",
       // The task will launch a shell
       "type": "shell",
-      "command": "cd ai && pip install -r requirements.txt && python3 ./files/app.py",
+      "command": "cd ai && pip install -r requirements.txt && python ./files/app.py",
       // Mark as a background task to avoid the spinner animation on the terminal tab
       "isBackground": true,
       "problemMatcher": [],
