@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from io import BytesIO
 import openai
+import json
 from flask import request
 
 #Load environment variables from .env file
@@ -52,34 +53,74 @@ def execute_command(prompt):
     
     base = os.getenv("BASE_URL")
     
-    #various prompts to be used
-    create_post = f"when query implies to create a post, use url /posts/create and the method is POST and payload consists of only text"
-    search_user = f"when query implies to search for user, use url /search/username?username=((name)) and the method is GET"
-    search_song = f"when query implies to search for song, use url /search/song?text=((song)) and the method is GET"
-    response_format = '{"url"= "", "method" = " ", "payload" = {"text" = " "}}'
-    
-    #create the prompt for the openai api
-    user_prompt = f'{prompt}. fit the given query appropriately in only one of the following calls. {search_song}. {create_post}. {search_user}.give the url, method and payload required for making an api call stored. Give all this in a dictionary format. Respond strictly in given format {response_format}. Do not add anything outside the format specified.'
+    #get the commands to provide the prompt from the apis.json file
+    file = open("apis.json", "r")
+    command_id = []
+    command_name = []
+    command_description = []
+
+    api_format = json.load(file)
+
+    for x in api_format:
+        command_id.append(x['id'])
+        command_name.append(x['name'])
+        command_description.append(x['description'])
+        
+        
+    #user prompt to identify the command    
+    user_prompt = f'categorize {prompt}. id {command_id}. name {command_name}. description {command_description}.'
     
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "hello world"},
+        messages= [{"role": "system", "content": "only id as output. No explaination."},
         {"role": "user", "content": user_prompt}],
-        # temperature=0,
-        # max_tokens=100,
+        #temperature=0.5,
+        max_tokens=9,
         # top_p=1,
         # frequency_penalty=0,
         # presence_penalty=0
     )
 
-    #receive the response from the openai api and convert it to a dictionary
-    #response will be in string format
+    try:
+        #receive the response from the openai api and convert it to a dictionary
+            #response will be in an integer
+        response = response['choices'][0]['message']['content']
+        print(response)
+        id = int(response)
+    except ValueError:
+        id = 0
+    except Exception as e:
+        print(e)
+     
+        
+    #get the format of the api call from the apis.json file
+    user_prompt = f'{prompt}. Specified format: {api_format[id]}. fill the values in curly braces of the given format.'
     
+    #provide the prompt to the openai api
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages= [{"role": "system", "content": "only format specified as output. No explaination."},
+        {"role": "user", "content": user_prompt}],
+        #temperature=0.5,
+        #max_tokens=9,
+        # top_p=1,
+        # frequency_penalty=0,
+        # presence_penalty=0
+    )
     response = response['choices'][0]['message']['content']
-    response = eval(response)
+    
+    try:
+        if eval(response):
+            response = eval(response)
+    except SyntaxError:
+            response = api_format[0]
+    except Exception as e:
+        print(e)
+            
     print(response)
-
+    
+    ###########work on this part later###########
     #create the headers for the api call
     headers = {
         'Content-Type': 'application/json',
