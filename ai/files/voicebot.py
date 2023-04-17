@@ -86,7 +86,7 @@ def execute_command(prompt):
         #receive the response from the openai api and convert it to a dictionary
             #response will be in an integer
         response = response['choices'][0]['message']['content']
-        print(response)
+        #print(response)
         id = int(response)
     except ValueError:
         id = 0
@@ -121,24 +121,29 @@ def execute_command(prompt):
     print(response)
     
     ###########work on this part later###########
-    #create the headers for the api call
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {auth}'
-    }
-
-    #get the url, method and payload from the response
-    method = response.get("method")
-    url = response.get("url")
-    payload = response.get("payload")
-
-    #make the api call
     try:
-        response = requests.request(method,{base} + url, headers=headers, json=payload,timeout=120)
-        print(response)
-    except:
-        response.status_code = 500
-        print("error while making api call")
+        #create the headers for the api call
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {auth}'
+        }
 
-    #check if the response is successful
-    return check_response(response)
+        #get the url, method and payload from the response
+        method = response.get("method")
+        url = response.get("url")
+        payload = response.get("payload")
+
+        #make the api call
+        try:
+            response = requests.request(method,{base} + url, headers=headers, json=payload,timeout=120)
+            print(response)
+        except:
+            response.status_code = 500
+            print("error while making api call")
+
+        #check if the response is successful
+        return check_response(response)
+    
+    except Exception as e:
+        print(e)
+        return {'error': 'error while making api call'}
