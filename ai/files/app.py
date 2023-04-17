@@ -1,37 +1,20 @@
-import requests
-import pymongo
-import logging
-from bson.objectid import ObjectId
-from dotenv import load_dotenv
-import os
-from io import BytesIO
-import openai
-from flask import Flask, jsonify,request
+from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
+from tagline import generate_tagline
+from voicebot import take_prompt, execute_command
 
 app = Flask(__name__)
 
 CORS(app)
-
-#Load environment variables from .env file
-load_dotenv() 
-
-#connect mongodb
-client = pymongo.MongoClient(os.getenv('MONGO_URL'))
-db = client["app"]
-collection1 = db["users"]
-collection2 = db["keys"]
-
-openai.api_key = os.getenv('OPENAI_API_KEY')
 
 #test route
 @app.route('/test', methods=['GET'])
 def test():
     return jsonify({"message": "Hello World"})
 
+#tagline generation route
 @app.route('/tagline', methods=['GET'])
-
-def generate_tagline():
+def tagline():
     user_id = request.headers.get('Authorization').split(' ')[1]
     #user_id = "6439bfa512b767882aee8b9b"
     # get data from db
@@ -200,11 +183,9 @@ def execute_command(prompt):
 @app.route('/execute', methods=['GET','POST'])
 @cross_origin()
 def execute():
-
     prompt = take_prompt()
     response = execute_command(prompt)
     return jsonify(response)
-
 
 
 if __name__ == '__main__':
