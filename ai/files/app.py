@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from tagline import generate_tagline
-from voicebot import take_prompt, execute_command
+from voicebot import take_prompt, execute_command, initialize_status
 
 app = Flask(__name__)
 
@@ -23,11 +23,15 @@ def tagline():
 @app.route('/execute', methods=['GET','POST'])
 @cross_origin()
 def execute():
-    prompt = take_prompt()
+    user_id = request.headers.get('Authorization').split(' ')[1]
+    status_id = initialize_status(user_id)
+    
+    prompt = take_prompt(status_id)
     if not prompt:
         return jsonify({"error": "something went wrong during transcription"})
-    response = execute_command(prompt)
-    return jsonify(response)
+    
+    execute_command(prompt, status_id)
+    return
 
 
 if __name__ == '__main__':
