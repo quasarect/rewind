@@ -1,12 +1,32 @@
 import { useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import SearchUser from '../components/messages/SearchUser'
+
+import { useHttpClient } from '../hooks/httpRequest'
 
 function Messages() {
   const show = useLocation().pathname === '/messages'
 
   const [searchUser, setSearchUser] = useState(false)
+
+  const { sendRequest } = useHttpClient()
+
+  const navigate = useNavigate()
+
+  const redirectConversation = async userId => {
+    try {
+      const response = await sendRequest(
+        `/conversation/create?userId=${userId}`
+      )
+
+      if (response.conversationId) {
+        navigate(`/messages/${response.conversationId}`)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   return (
     <>
@@ -31,7 +51,8 @@ function Messages() {
       </div>
       {searchUser && (
         <SearchUser
-          onClose={() => {
+          onClose={userId => {
+            redirectConversation(userId)
             setSearchUser(false)
           }}
         />

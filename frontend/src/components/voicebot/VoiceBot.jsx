@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
-import { useAudioRecorder } from 'react-audio-voice-recorder'
+import { useEffect, useRef } from 'react'
+import { useReactMediaRecorder } from 'react-media-recorder'
 
 import Modal from '../utils/Modal'
 
 import reset from './icons/reset.svg'
 
-async function sendAudio(blob, id) {
+async function sendAudio(audio, blob) {
+  audio.src = blob
+
+  const audioBlob = await fetch(audio.src).then(res => res.blob())
+
   const formData = new FormData()
-  formData.append(
-    'audio',
-    new Blob([blob], { type: 'audio/webm' }),
-    'audio.webm'
-  )
+  formData.append('audio', audioBlob, 'audio.wav')
   formData.append('id', localStorage.getItem('token'))
 
   const headers = new Headers()
@@ -30,24 +30,26 @@ async function sendAudio(blob, id) {
 
 export default function VoiceBot({ showBot, setShowBot }) {
   const {
-    recordingBlob,
-    isRecording,
-    isPaused,
-    recordingTime,
+    clearBlobUrl,
     startRecording,
     stopRecording,
-    togglePauseResume,
-  } = useAudioRecorder()
+    status,
+    mediaBlobUrl: recordingBlob,
+  } = useReactMediaRecorder({
+    audio: true,
+    video: false,
+    blobPropertyBag: { type: 'audio/wav', endings: 'native' },
+  })
 
-  const [status, setStatus] = useState(null)
-  const [recorded, setRecorded] = useState(false)
+  const audioRef = useRef(null)
 
-  console.log(status)
-
-  const handleStop = async () => {
-    stopRecording()
-    sendAudio(recordingBlob)
-  }
+  useEffect(() => {
+    if (status === 'stopped') {
+      stopRecording()
+      sendAudio(audioRef.current, recordingBlob)
+      clearBlobUrl()
+    }
+  }, [status])
 
   return (
     showBot && (
@@ -61,20 +63,19 @@ export default function VoiceBot({ showBot, setShowBot }) {
             <button
               className='px-4 py-2 text-white bg-gradient-to-r from-purple-600 to-pink-800 rounded-full'
               onClick={() => {
-                if (isRecording && !recorded) {
-                  setRecorded(true)
-                  handleStop()
-                } else if (!isPaused && !recorded) {
+                if (status === 'recording') {
+                  stopRecording()
+                } else {
                   startRecording()
+                  console.log('started')
                 }
+                status === ''
               }}
             >
-              {recorded
-                ? 'Evaluating..'
-                : isRecording
-                ? 'Recording...'
-                : !isPaused && 'Record'}
+              {status === 'idle' && 'Record'}
+              {status === 'recording' && 'Stop'}
             </button>
+            <audio src={recordingBlob} ref={audioRef} />
           </div>
         </div>
       </Modal>

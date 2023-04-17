@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import os
 from io import BytesIO
+from pydub import AudioSegment
 import openai
 import json
 from flask import request
@@ -17,15 +18,15 @@ def take_prompt():
 
     try:
         audio_file = request.files['audio']
+        audio_file.save(audio_file.filename)
+        with open(audio_file.filename, 'rb') as f:
+            transcript = openai.Audio.transcribe("whisper-1", f, response_format="text")
 
-        print(audio_file.filename)
+    
 
-        audio_data = audio_file.read()
-        audio_file_obj = BytesIO(audio_data)
-        audio_file_obj.name = audio_file.filename
-
-        transcript = openai.Audio.transcribe("whisper-1", audio_file_obj, response_format = "text") 
-    except:
+    except Exception as error:
+        transcript = None
+        print(error)
         pass
 
     return transcript
@@ -53,13 +54,15 @@ def execute_command(prompt):
     
     base = os.getenv("BASE_URL")
     
-    #get the commands to provide the prompt from the apis.json file
-    file = open("apis.json", "r")
+   
+    with open("apis.json", "r") as file:
+        api_format = json.load(file)  
+    
+
     command_id = []
     command_name = []
     command_description = []
 
-    api_format = json.load(file)
 
     for x in api_format:
         command_id.append(x['id'])

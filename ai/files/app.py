@@ -24,6 +24,8 @@ def tagline():
 @cross_origin()
 def execute():
     prompt = take_prompt()
+    if not prompt:
+        return jsonify({"error": "something went wrong during transcription"})
     response = execute_command(prompt)
     return jsonify(response)
 

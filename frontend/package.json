@@ -11,8 +11,8 @@
   "dependencies": {
     "date-fns": "^2.29.3",
     "react": "^18.2.0",
-    "react-audio-voice-recorder": "^1.0.10",
     "react-dom": "^18.2.0",
+    "react-media-recorder": "^1.6.6",
     "react-router-dom": "^6.10.0",
     "react-spotify-web-playback": "^0.13.4",
     "socket.io-client": "^4.6.1"
