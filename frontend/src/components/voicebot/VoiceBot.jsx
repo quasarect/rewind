@@ -10,7 +10,7 @@ async function sendAudio(blob, id) {
   formData.append(
     'audio',
     new Blob([blob], { type: 'audio/webm' }),
-    'audio.webm'
+    'audio.webm',
   )
   formData.append('id', localStorage.getItem('token'))
 
@@ -52,14 +52,14 @@ export default function VoiceBot({ showBot, setShowBot }) {
   return (
     showBot && (
       <Modal
-        title='Rebot'
+        title="Rebot"
         onClose={() => setShowBot(false)}
         showActions={false}
       >
-        <div className='relative min-h-full w-full'>
-          <div className='absolute bottom-4 flex items-center justify-center w-full py-4 max-h-fit'>
+        <div className="relative min-h-full w-full">
+          <div className="absolute bottom-4 flex items-center justify-center w-full py-4 max-h-fit">
             <button
-              className='px-4 py-2 text-white bg-gradient-to-r from-purple-600 to-pink-800 rounded-full'
+              className="px-4 py-2 text-white bg-gradient-to-r from-purple-600 to-pink-800 rounded-full"
               onClick={() => {
                 if (isRecording && !recorded) {
                   setRecorded(true)

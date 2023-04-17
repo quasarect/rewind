@@ -23,11 +23,11 @@ def take_prompt():
         audio_data = audio_file.read()
         audio_file_obj = BytesIO(audio_data)
         audio_file_obj.name = audio_file.filename
-
+        
         transcript = openai.Audio.transcribe("whisper-1", audio_file_obj, response_format = "text") 
-    except:
-        pass
-
+    except Exception as e:
+        print(e)
+        return e
     return transcript
 
 
@@ -45,26 +45,24 @@ def check_response(response):
 def execute_command(prompt):
 
     print(prompt)
-    
-    #get the auth token and user id from idk where.
-    #if have auth token, then use it to create userid or vice versa
 
-    auth = request.headers.get('Authorization').split(' ')[1]
-    
-    base = os.getenv("BASE_URL")
     
     #get the commands to provide the prompt from the apis.json file
-    file = open("apis.json", "r")
-    command_id = []
-    command_name = []
-    command_description = []
+    try:
+        file = open("./files/apis.json", "r")
+        command_id = []
+        command_name = []
+        command_description = []
 
-    api_format = json.load(file)
+        api_format = json.load(file)
 
-    for x in api_format:
-        command_id.append(x['id'])
-        command_name.append(x['name'])
-        command_description.append(x['description'])
+        for x in api_format:
+            command_id.append(x['id'])
+            command_name.append(x['name'])
+            command_description.append(x['description'])
+    except Exception as err:
+        print(err)
+        return err
         
         
     #user prompt to identify the command    
@@ -92,6 +90,7 @@ def execute_command(prompt):
         id = 0
     except Exception as e:
         print(e)
+        return e
      
         
     #get the format of the api call from the apis.json file
@@ -117,33 +116,7 @@ def execute_command(prompt):
             response = api_format[0]
     except Exception as e:
         print(e)
-            
-    print(response)
-    
-    ###########work on this part later###########
-    try:
-        #create the headers for the api call
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {auth}'
-        }
+        return e
+    print(response) 
+    return response
 
-        #get the url, method and payload from the response
-        method = response.get("method")
-        url = response.get("url")
-        payload = response.get("payload")
-
-        #make the api call
-        try:
-            response = requests.request(method,{base} + url, headers=headers, json=payload,timeout=120)
-            print(response)
-        except:
-            response.status_code = 500
-            print("error while making api call")
-
-        #check if the response is successful
-        return check_response(response)
-    
-    except Exception as e:
-        print(e)
-        return {'error': 'error while making api call'}
