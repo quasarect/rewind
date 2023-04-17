@@ -13,8 +13,9 @@ import { IError } from "../types/basic/IError";
 
 const userRouter = express.Router();
 
-userRouter.post("/notificationviewed", (req, res, next) => {
-	updateNotifViewed(req.user?.id, req.query.id as string);
+userRouter.get("/notifications/seen", isAuth, async (req, res, next) => {
+	await updateNotifViewed(req.user?.id, req.query.id as string);
+	res.status(200).json({ message: "Marked all as read" });
 });
 
 userRouter.get("/notifications", isAuth, async (req, res, next) => {

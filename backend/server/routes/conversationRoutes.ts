@@ -1,17 +1,24 @@
 import express from "express";
 // import { isAuth } from "../middlewares/auth";
-import { createConvo, getConvo, userConvos } from "../controllers/conversation";
+import {
+	createConvo,
+	getConvo,
+	sendMessage,
+	userConvos,
+} from "../controllers/conversation";
+import { isAuth } from "../middlewares/auth";
 
 const convoRouter = express.Router();
 
 // create convo
-convoRouter.get("/create", createConvo);
+convoRouter.get("/create", isAuth, createConvo);
 
 // Get conversations of user with userId
-convoRouter.get("/user/:id", userConvos);
+convoRouter.get("/user", isAuth, userConvos);
 
+convoRouter.post("/send", sendMessage);
 
 //Get conversation by ID
-convoRouter.get("/:id", getConvo);
+convoRouter.get("", getConvo);
 
 export default convoRouter;

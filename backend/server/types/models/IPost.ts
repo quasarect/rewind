@@ -11,4 +11,5 @@ export interface IPost {
 	likedBy: Types.ObjectId;
 	dedicated: IDedicated;
 	replyTo: Types.ObjectId;
+	reshared: Types.ObjectId;
 }

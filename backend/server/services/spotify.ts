@@ -1,7 +1,12 @@
 import axios from "axios";
 import { Spotify } from "../enums/spotifyEnums";
 import keyModel from "../models/keySchema";
-
+/**
+ * 
+ * @param objectId spotifyData _id tokens ka _id
+ * @param refresh_token refresh token to refresh
+ * @returns 
+ */
 export async function refreshToken(objectId: string, refresh_token: string) {
 	try {
 		const config = {
@@ -39,7 +44,13 @@ export async function refreshToken(objectId: string, refresh_token: string) {
 		};
 	}
 }
-
+/**
+ * 
+ * @param term The term for the track short,med,long
+ * @param limit limit on responses
+ * @param spotifyData spotifyData object populated one
+ * @returns track name url image
+ */
 export const getUserTopTrack = async (
 	term: string,
 	limit: number,
@@ -54,9 +65,8 @@ export const getUserTopTrack = async (
 				},
 			},
 		);
-
 		return {
-			name: track.data.items[0].album.name,
+			name: track.data.items[0].name,
 			external_url: track.data.items[0].album.external_urls.spotify,
 			image_url: track.data.items[0].album.images[0].url,
 		};
@@ -75,7 +85,14 @@ export const getUserTopTrack = async (
 		}
 	}
 };
-
+/**
+ * 
+ * @param spotifyData spotifyData populated one
+ * @param query string query for search
+ * @param type type like "tracks","albums","playlists"
+ * @param limit response limit
+ * @returns 
+ */
 export const searchGlobalTracks = async (
 	spotifyData: any,
 	query: string,

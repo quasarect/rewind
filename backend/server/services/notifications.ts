@@ -3,19 +3,21 @@ import notificationModel from "../models/notificationSchema";
 import { NotificationTypes } from "../enums/notificationEnums";
 import userModel from "../models/userSchema";
 /**
- *@recipient jisko notif jayega
- *@sender jisse trigger hua
- *@type type of notif
- *@post postId if related to post
+ *
+ * @param recipient person receiving notif
+ * @param sender person sending notif
+ * @param type type of notif
+ * @param post postId of the
+ * @returns boolean
  */
 export const sendNotification = async (
 	recipient: any,
 	sender: any,
 	type: string,
-	post?: Types.ObjectId,
+	postId?: Types.ObjectId,
 ) => {
 	if (sender == recipient) {
-		return;
+		return false;
 	}
 	let alreadyNotified: boolean;
 	if (
@@ -25,7 +27,7 @@ export const sendNotification = async (
 		NotificationTypes.reshare
 	) {
 		alreadyNotified = await notificationModel
-			.find({ sender, type, post })
+			.find({ sender, type, post: postId })
 			.then((notifs) => {
 				if (notifs.length == 0) {
 					return false;
@@ -50,23 +52,28 @@ export const sendNotification = async (
 			});
 	}
 	if (alreadyNotified) {
-		return;
+		return false;
 	}
 	const notification = new notificationModel({
 		sender,
 		recipient,
 		type,
-		post,
+		post: postId,
 	});
 	try {
 		await notification.save();
 		return true;
 	} catch (err) {
 		console.log(err);
-		return;
+		return false;
 	}
 };
-
+/**
+ *
+ * @param userId User who viewed the notif
+ * @param notificationId the latest notification saved
+ * @returns boolean
+ */
 export const updateNotifViewed = async (
 	userId: any,
 	notificationId: string,
@@ -84,7 +91,15 @@ export const updateNotifViewed = async (
 	}
 	return false;
 };
-
+/**
+ *
+ * @param userId get all seen and unseen notifs
+ * {
+ * 		newNotifications:[{}]
+ * 		seenNotifications:[{}]
+ * }
+ * @returns
+ */
 export const getNotifications = async (userId: any) => {
 	try {
 		const user = await userModel.findById(userId).populate("lastNotif");
@@ -97,26 +112,37 @@ export const getNotifications = async (userId: any) => {
 			//@ts-ignore
 			createdAt = user?.createdAt;
 		}
-		console.log(createdAt);
 		const notifications = await Promise.all([
-			notificationModel.find({
-				createdAt: { $gt: createdAt },
-				recipient: user?._id,
-			}),
-			notificationModel.find({
-				createdAt: { $lt: createdAt },
-				recipient: user?._id,
-			}),
+			notificationModel
+				.find({
+					createdAt: { $gt: createdAt },
+					recipient: user?._id,
+				})
+				.populate({
+					path: "sender",
+					select: "name username profileUrl",
+				})
+				.populate({
+					path: "post",
+				}),
+			notificationModel
+				.find({
+					createdAt: { $lte: createdAt },
+					recipient: user?._id,
+				})
+				.populate({
+					path: "sender",
+					select: "name username profileUrl",
+				})
+				.populate({
+					path: "post",
+				}),
 		]).then((notifs) => {
 			return notifs;
 		});
-		console.log({
-			newNotifications: notifications[0],
-			oldNotifications: notifications[1],
-		});
 		return {
 			newNotifications: notifications[0],
-			oldNotifications: notifications[1],
+			seenNotifications: notifications[1],
 		};
 	} catch (err) {
 		console.log(err);

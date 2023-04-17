@@ -45,6 +45,10 @@ const postSchema = new Schema<IPost>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Post",
 		},
+		reshared: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Post",
+		},
 	},
 	{ timestamps: true },
 );
