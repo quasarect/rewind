@@ -4,6 +4,9 @@ import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
 import { getUserTopTrack } from "../services/spotify";
 import { IError } from "../types/basic/IError";
+import { sendNotification } from "../services/notifications";
+import { NotificationTypes } from "../enums/notificationEnums";
+import notificationModel from "../models/notificationSchema";
 
 export const userByFields: RequestHandler = async (req, res, next) => {
 	const username = req.query.username;
@@ -168,6 +171,14 @@ export const followUser: RequestHandler = async (req, res, next) => {
 			.catch((err) => {
 				console.log("err" + err);
 			});
+		sendNotification(
+			//@ts-ignore
+			following,
+			followerId,
+			NotificationTypes.follow,
+		).then(() => {
+			console.log("Notification sent");
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -227,10 +238,30 @@ export const getMe: RequestHandler = (req, res, next) => {
 	userModel
 		.findById(userId)
 		.populate("spotifyData")
-		.then((user) => {
-			res.status(200).json({ user: user });
+		.populate("lastNotif")
+		.then(async (user) => {
+			let notificationCount;
+			if (user?.lastNotif) {
+				//@ts-ignore
+				const createdAt = user.lastNotif.createdAt;
+				console.log(createdAt);
+				notificationCount = await notificationModel
+					.find({
+						createdAt: { $gt: createdAt },
+						recipient: user._id,
+					})
+					.then((notifs) => {
+						console.log(notifs);
+					});
+			}
+			console.log(notificationCount);
+			res.status(200).json({
+				user: user,
+				notifCount: 0,
+			});
 		})
 		.catch((err) => {
+			console.log(err);
 			next(
 				new IError(
 					"Couldnt get me user",

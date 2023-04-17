@@ -81,6 +81,11 @@ const userSchema = new Schema<IUser>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "UserArray",
 		},
+		lastNotif: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Notification",
+			default: null,
+		},
 	},
 	{ timestamps: true },
 );

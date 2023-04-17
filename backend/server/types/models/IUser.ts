@@ -21,4 +21,5 @@ export interface IUser {
 	followers: Types.ObjectId;
 	following: Types.ObjectId;
 	musists: Array<Types.ObjectId>;
+	lastNotif: Types.ObjectId;
 }

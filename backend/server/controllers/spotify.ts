@@ -8,8 +8,6 @@ import keyModel from "../models/keySchema";
 import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
 import { getUserTopTrack } from "../services/spotify";
-import userArrayModel from "../models/userArraySchema";
-
 export const handleOauth: RequestHandler = async (req, res, next) => {
 	// Recieive request from front end extract code
 	const code = req.body.code;
@@ -40,7 +38,6 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 	axios(config)
 		.then(async (tokens) => {
 			// Once tokens are received hit me endpoint for user details
-			console.log("token recieved");
 			axios
 				.get(Spotify.ME, {
 					headers: {
@@ -73,13 +70,10 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 					);
 					if (oldUser) {
 						// If user already exists update new tokens
-						await userArrayModel.findByIdAndUpdate(
-							oldUser!.spotifyData,
-							{
-								accessToken: tokens.data.access_token,
-								refreshToken: tokens.data.refresh_token,
-							},
-						);
+						await keyModel.findByIdAndUpdate(oldUser!.spotifyData, {
+							accessToken: tokens.data.access_token,
+							refreshToken: tokens.data.refresh_token,
+						});
 
 						return res.status(200).json({
 							token: generateToken(

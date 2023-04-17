@@ -6,6 +6,9 @@ import userArrayModel from "../models/userArraySchema";
 import userModel from "../models/userSchema";
 import fs from "fs";
 import path from "path";
+import { sendNotification } from "../services/notifications";
+import { NotificationTypes } from "../enums/notificationEnums";
+import { Types } from "mongoose";
 
 export const getPost: RequestHandler = (req, res, next) => {
 	const postId = req.params.id;
@@ -44,15 +47,6 @@ export const createPost: RequestHandler = (req, res, next) => {
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "Invalid post" });
 	}
-	if (replyTo) {
-		// increment comment count
-		postModel
-			.findByIdAndUpdate(replyTo, { $inc: { commentCount: 1 } })
-			.then((inc) => {})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
 	const post = new postModel({
 		user: userId,
 		text: text,
@@ -60,19 +54,22 @@ export const createPost: RequestHandler = (req, res, next) => {
 		filepath: filepath,
 		replyTo: replyTo,
 	});
+	if (replyTo) {
+		// increment comment count
+		sendNotification(replyTo, userId, NotificationTypes.comment, post._id);
+		postModel
+			.findByIdAndUpdate(replyTo, { $inc: { commentCount: 1 } })
+			.then((inc) => {})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	post.save()
 		.then((response) => {
-			userModel
-				.findOneAndUpdate({ _id: userId }, { $inc: { postCount: 1 } })
-				.then((user) => {
-					res.status(200).json({
-						message: "Post created successfully",
-					});
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+			res.status(200).json({
+				message: "Post created successfully",
+			});
 		})
 		.catch((err) => {
 			next(
@@ -145,7 +142,7 @@ export const allPosts: RequestHandler = (req, res, next) => {
 };
 
 export const likePost: RequestHandler = async (req, res, next) => {
-	const userId = req.user?.id;
+	const userId = req.user?.id as Types.ObjectId;
 	const post = await postModel
 		.findById(req.query.id)
 		.populate({ path: "likedBy", match: { users: userId } });
@@ -170,7 +167,6 @@ export const likePost: RequestHandler = async (req, res, next) => {
 	postModel
 		.findById(req.query.id)
 		.then((post) => {
-			console.log(post?.likedBy);
 			if (!post?.likedBy) {
 				const likeBy = new userArrayModel({
 					users: userId,
@@ -196,18 +192,16 @@ export const likePost: RequestHandler = async (req, res, next) => {
 						{ _id: post.likedBy._id },
 						{ $addToSet: { users: userId } },
 					)
-					.then((users) => {
-						console.log("pushed liked user");
-					})
+					.then((users) => {})
 					.catch((err) => {
 						console.log("Could not push user");
 					});
 			}
-			// console.log(post);
 		})
 		.catch((err) => {
 			console.log("Error" + err);
 		});
+	sendNotification(post?.user!, userId, NotificationTypes.like, post?._id);
 };
 
 export const unlikePost: RequestHandler = async (req, res, next) => {
