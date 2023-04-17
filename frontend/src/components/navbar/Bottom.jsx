@@ -6,6 +6,8 @@ import messages from './icons/messages.svg'
 import voice from './icons/voice.svg'
 import profile from './icons/profile.svg'
 
+import notif from './icons/notif.svg'
+
 export default function Bottom({ user, setShowBot }) {
   return (
     <div>
@@ -33,6 +35,19 @@ export default function Bottom({ user, setShowBot }) {
                 src={voice}
                 className='max-h-10 mr-1 rounded-full border border-rewind-secondary px-4 py-2'
               />
+            </Link>
+          </li>
+
+          <li>
+            <Link to='/notifications' className='hover:text-rewind-secondary'>
+              <div className='relative'>
+                <img src={notif} />
+                {user?.notifCount > 0 && (
+                  <div class='absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-rewind-secondary border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900'>
+                    {user?.notifCount}
+                  </div>
+                )}
+              </div>
             </Link>
           </li>
 

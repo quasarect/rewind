@@ -8,8 +8,6 @@ export default function Sidebar() {
 
   const playerRef = useRef()
 
-  console.log(user?.spotifyData?.accessToken)
-
   return (
     <>
       <div className='hidden lg:block lg:w-2/5 '></div>

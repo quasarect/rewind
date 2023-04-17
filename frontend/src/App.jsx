@@ -13,6 +13,7 @@ import Post from './pages/Post'
 import TestMessage from './pages/TestMessages'
 import Messages from './pages/Messages'
 import Chat from './components/messages/Chat'
+import Notifications from './pages/Notifications'
 
 // utils
 import NavbarSidebarWrapper from './components/utils/NavbarSidebarWrapper'
@@ -70,6 +71,15 @@ function App() {
         >
           <Route path=':coversationId' element={<Chat />} />
         </Route>
+
+        <Route
+          path='/notifications'
+          element={
+            <NavbarSidebarWrapper>
+              <Notifications />
+            </NavbarSidebarWrapper>
+          }
+        />
 
         <Route path='/test-messages' element={<TestMessage />} />
         <Route path='/404' element={<NotFound404 />} />

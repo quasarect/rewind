@@ -53,12 +53,12 @@ export default function Post({
     }
   }, [user])
 
-  const likeHandler = async liked => {
+  const likeHandler = async (liked) => {
     if (liked) {
       try {
         const response = await sendRequest('/posts/like?id=' + post?._id)
         setLiked(true)
-        setLikeCount(likeCount => likeCount + 1)
+        setLikeCount((likeCount) => likeCount + 1)
         console.log(response)
       } catch (err) {
         console.log(err)
@@ -67,7 +67,7 @@ export default function Post({
       try {
         const response = await sendRequest('/posts/unlike?id=' + post?._id)
         setLiked(false)
-        setLikeCount(likeCount => likeCount - 1)
+        setLikeCount((likeCount) => likeCount - 1)
         console.log(response)
       } catch (err) {
         console.log(err)
@@ -82,7 +82,7 @@ export default function Post({
   }
 
   useEffect(() => {
-    const handleClickOutside = e => {
+    const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setIsMenuOpen(false)
       }
@@ -110,51 +110,51 @@ export default function Post({
   }
 
   return (
-    <div className='p-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary'>
-      <div className='flex items-center cursor-pointer justify-between'>
-        <Link to={'/' + post?.user?.username} className='flex'>
+    <div className="p-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary">
+      <div className="flex items-center cursor-pointer justify-between">
+        <Link to={'/' + post?.user?.username} className="flex">
           <img
             src={post?.user?.profileUrl}
-            alt='Profile Picture'
-            className='w-10 h-10 rounded-full'
+            alt="Profile Picture"
+            className="w-10 h-10 rounded-full"
           />
-          <div className='ml-4'>
-            <h1 className='text-poppins text-gray-200 font-bold text-base flex items-baseline'>
+          <div className="ml-4">
+            <h1 className="text-poppins text-gray-200 font-bold text-base flex items-baseline">
               {post?.user?.name}
               <span
-                className='
+                className="
               text-poppins font-normal inline-block text-gray-400 text-xs ml-2
-              '
+              "
               >
                 • {time}
               </span>
             </h1>
-            <p className='text-poppins text-gray-400 text-xs'>
+            <p className="text-poppins text-gray-400 text-xs">
               {post?.user?.username}
             </p>
           </div>
         </Link>
-        <div className='relative'>
+        <div className="relative">
           <img
             src={MenuSVG}
-            alt='menu'
-            className='h-4 hover:scale-110 cursor-pointer text-white'
+            alt="menu"
+            className="h-4 hover:scale-110 cursor-pointer text-white"
             onClick={handleMenuClick}
           />
           {isMenuOpen && (
             <div
-              className='absolute right-0 top-0 mt-4 mr-4 bg-rewind-dark-primary border border-rewind-dark-tertiary rounded-md'
+              className="absolute right-0 top-0 mt-4 mr-4 bg-rewind-dark-primary border border-rewind-dark-tertiary rounded-md"
               ref={menuRef}
             >
               {!isMe && (
-                <div className='p-2 px-4 border-b border-rewind-dark-tertiary'>
+                <div className="p-2 px-4 border-b border-rewind-dark-tertiary">
                   Report{' '}
                 </div>
               )}
               {isMe && (
-                <div className='p-2 px-4 '>
+                <div className="p-2 px-4 ">
                   <p
-                    className='text-poppins text-red-500 text-sm'
+                    className="text-poppins text-red-500 text-sm"
                     onClick={handleDelete}
                   >
                     Delete
@@ -166,34 +166,34 @@ export default function Post({
         </div>
       </div>
       <PostBody post={post} redirect={redirect} />
-      <div className='mt-6 flex items-center justify-around px-4 text-white'>
-        <div className='flex items-center justify-center'>
+      <div className="mt-6 flex items-center justify-around px-4 text-white">
+        <div className="flex items-center justify-center">
           <img
             src={CommentSVG}
-            className='h-4 hover:scale-110 cursor-pointer mr-2'
+            className="h-4 hover:scale-110 cursor-pointer mr-2"
             onClick={() => {
               setIsCommenting(!isCommenting)
             }}
           />
           {post?.commentCount}
         </div>
-        <div className='flex items-center justify-center'>
+        <div className="flex items-center justify-center">
           <img
             src={ReshareSVG}
-            className='h-4 hover:scale-110 cursor-pointer mr-2'
+            className="h-4 hover:scale-110 cursor-pointer mr-2"
           />
         </div>
-        <div className='flex items-center justify-center'>
+        <div className="flex items-center justify-center">
           {liked ? (
             <img
               src={LikedSVG}
-              className='h-4 hover:scale-110 cursor-pointer mr-2'
+              className="h-4 hover:scale-110 cursor-pointer mr-2"
               onClick={() => likeHandler(false)}
             />
           ) : (
             <img
               src={LikeSVG}
-              className='h-4 hover:scale-110 cursor-pointer mr-2'
+              className="h-4 hover:scale-110 cursor-pointer mr-2"
               onClick={() => likeHandler(true)}
             />
           )}
@@ -202,7 +202,7 @@ export default function Post({
         </div>
       </div>
       {isCommenting && (
-        <div className='mt-4'>
+        <div className="mt-4">
           <CreatePost
             fetchPosts={onComment}
             profileUrl={user?.profileUrl}

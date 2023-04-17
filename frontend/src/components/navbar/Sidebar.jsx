@@ -8,6 +8,7 @@ import explore from './icons/explore.svg'
 import messages from './icons/messages.svg'
 import profile from './icons/profile.svg'
 import voice from './icons/voice.svg'
+import notif from './icons/notif.svg'
 
 export default function Sidebar({ user, setShowBot }) {
   const { logout } = useContext(authContext)
@@ -30,7 +31,7 @@ export default function Sidebar({ user, setShowBot }) {
                   to='/'
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
-                  <img src={home} />
+                  <img src={home} className='h-6' />
                   <span className='ml-2 text-white'>Home</span>
                 </Link>
               </li>
@@ -40,7 +41,7 @@ export default function Sidebar({ user, setShowBot }) {
                   to='/explore'
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
-                  <img src={explore} />
+                  <img src={explore} className='h-6' />
                   <span className='ml-2 text-white'>Explore</span>
                 </Link>
               </li>
@@ -60,10 +61,27 @@ export default function Sidebar({ user, setShowBot }) {
 
               <li>
                 <Link
+                  to='/notifications'
+                  className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
+                >
+                  <div className='relative'>
+                    <img src={notif} className='h-6' />
+                    {user?.notifCount > 0 && (
+                      <div class='absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-rewind-secondary border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900'>
+                        {user?.notifCount}
+                      </div>
+                    )}
+                  </div>
+                  <span className='ml-2 text-white'>Notifications</span>
+                </Link>
+              </li>
+
+              <li>
+                <Link
                   to='/messages'
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
-                  <img src={messages} />
+                  <img src={messages} className='h-6' />
                   <span className='ml-2 text-white'>Messages</span>
                 </Link>
               </li>
@@ -73,7 +91,7 @@ export default function Sidebar({ user, setShowBot }) {
                   to={'/' + user?.username}
                   className='w-full h-10 flex items-center my-2 text text-xl hover:text-rewind-secondary'
                 >
-                  <img src={profile} />
+                  <img src={profile} className='h-6' />
                   <span className='ml-2 text-white'>Profile</span>
                 </Link>
               </li>
@@ -81,7 +99,10 @@ export default function Sidebar({ user, setShowBot }) {
             {/* copyright */}
             <div
               className='w-full lg:w-4/5 text-ubuntu text-red-700 text-sm  text-manrope mb-2 cursor-pointer flex items-center justify-center'
-              onClick={logout}
+              onClick={() => {
+                logout()
+                window.location.reload()
+              }}
             >
               logout..
             </div>
