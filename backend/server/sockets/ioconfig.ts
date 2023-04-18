@@ -7,25 +7,41 @@ import { musicRoom } from "./musicRooms";
 export const ioConfig = (
 	io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
 ) => {
+	io.on("connection", (socket: Socket) => {
+		console.log("connected to main room");
+	});
 	const chatRooms = io.of("/chat");
 	chatRooms.on("connection", (socket: Socket) => {
+		console.log("Connected to chat room");
 		const token = socket.handshake.headers.authorization?.split(" ")[1];
-		const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
-			id: string;
-			type: string;
-			_v: string;
-		};
-		chatSocket(socket, decoded.id);
+		chatSocket(socket, "");
+		try {
+			const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
+				id: string;
+				type: string;
+				_v: string;
+			};
+			console.log(decoded);
+		} catch (err) {
+			console.log("Unauthorized");
+			// return;
+		}
 	});
 
 	const musicRooms = io.of("/music");
 	musicRooms.on("connection", (socket: Socket) => {
+		console.log("Connected to Music room");
 		const token = socket.handshake.headers.authorization?.split(" ")[1];
-		const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
-			id: string;
-			type: string;
-			_v: string;
-		};
-		musicRoom(socket, decoded.id);
+		try {
+			const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
+				id: string;
+				type: string;
+				_v: string;
+			};
+			musicRoom(socket, decoded.id);
+		} catch (err) {
+			console.log("Unauthorized");
+			return;
+		}
 	});
 };

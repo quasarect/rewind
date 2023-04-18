@@ -40,6 +40,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 			? undefined
 			: JSON.parse(req.body.dedicated);
 	const replyTo = req.body?.replyTo;
+	const reshared = req.body?.reshared;
 	let filepath;
 
 	if (!text && !dedicated && !filepath) {
@@ -57,6 +58,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 		dedicated: dedicated,
 		filepath: filepath,
 		replyTo: replyTo,
+		reshared: reshared,
 	});
 	post.save()
 		.then((response) => {
@@ -78,6 +80,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 			dedicated.to,
 			userId,
 			NotificationTypes.comment,
+			post._id,
 		);
 	}
 	// Only a dedication notif
@@ -137,6 +140,7 @@ export const postsByUser: RequestHandler = async (req, res, next) => {
 			path: "likedBy",
 			match: { users: user?._id },
 		})
+		.populate({ path: "reshared" })
 		.populate("dedicated.to")
 		.then((response) => {
 			res.status(200).json({ posts: response });
@@ -160,6 +164,7 @@ export const allPosts: RequestHandler = (req, res, next) => {
 			path: "likedBy",
 			match: { users: userId },
 		})
+		.populate({ path: "reshared" })
 		.populate("dedicated.to")
 		.then((response) => {
 			res.status(200).json({ posts: response });
@@ -279,12 +284,13 @@ export const unlikePost: RequestHandler = async (req, res, next) => {
 export const fetchComments: RequestHandler = (req, res, next) => {
 	const postId = req.params.postId as string;
 	postModel
-		.find({ replyTo: { $in: [postId] } })
+		.find({ replyTo: { $in: [postId] }, reshared: { $exists: false } })
 		.populate({ path: "user", select: "name username profileUrl" })
 		.then((posts) => {
 			res.status(200).json({ posts });
 		})
 		.catch((err) => {
 			console.log(err);
+			console.log("comments error");
 		});
 };

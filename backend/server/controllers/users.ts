@@ -259,10 +259,13 @@ export const getMe: RequestHandler = (req, res, next) => {
 					recipient: user?._id,
 				})
 				.count();
-
 			res.status(200).json({
-				user: user,
-				notifCount: notificationCount || 0,
+				user: {
+					// @ts-ignore
+					...user._doc,
+					notifCount: notificationCount || 0,
+				},
+				
 			});
 		})
 		.catch((err) => {

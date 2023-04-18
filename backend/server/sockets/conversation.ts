@@ -1,8 +1,7 @@
 import { Socket } from "socket.io";
 import conversationModel from "../models/conversationSchema";
-import { createConversation } from "../services/conversations";
+import { createConversation, pushMessage } from "../services/conversations";
 import { IError } from "../types/basic/IError";
-import messageModel from "../models/messageSchema";
 
 export function chatSocket(socket: Socket, userId: string): void {
 	/*
@@ -14,11 +13,11 @@ export function chatSocket(socket: Socket, userId: string): void {
 	}
 	*/
 	socket.on("conversation", async (event) => {
-		console.log("conversation");
 		if (!event.room) {
 			const id = await createConversation(event.users);
 			if (id instanceof IError) {
-				console.log("error");
+				console.log("sokcet error");
+				return;
 			}
 			event.room = id;
 		}
@@ -35,7 +34,7 @@ export function chatSocket(socket: Socket, userId: string): void {
 	*/
 	socket.on("typing", (event) => {
 		console.log("typing");
-		socket.in(event.room).emit("typing", { user: userId });
+		socket.in(event.room).emit("typing", event);
 	});
 	/* 
 	On message sent event we emit to all room connected users.
@@ -47,16 +46,14 @@ export function chatSocket(socket: Socket, userId: string): void {
 		}
 	}
 	*/
-
 	socket.on("message", async (event) => {
-		console.log("message");
 		//store message
 		const message = event.message;
-		await conversationModel.findById(event.room).then((conversation) => {
-			messageModel.findByIdAndUpdate(conversation?.messages[0]._id, {
-				$push: { messages: message },
+		await conversationModel
+			.findById(event.room)
+			.then(async (conversation) => {
+				await pushMessage(conversation!, message);
 			});
-		});
 		socket.in(event.room).emit("message", { message: event.message });
 	});
 

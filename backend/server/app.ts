@@ -13,12 +13,17 @@ import http from "http";
 import { config } from "dotenv";
 import searchRouter from "./routes/searchRoutes";
 import { ioConfig } from "./sockets/ioconfig";
+import morgan from "morgan";
 // import { createAdapter } from "@socket.io/mongo-adapter";
 // import cron from "node-cron";
 config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(morgan("dev"));
+
+// Serve static media folder
 app.use("/media", express.static("media"));
 //Use body-parser
 app.use(express.json());
@@ -42,7 +47,7 @@ app.use("/posts", postRouter);
 app.use("/user", userRouter);
 
 //Conversation routes
-app.use("/convo", convoRouter);
+app.use("/conversation", convoRouter);
 
 //Spotify routes
 app.use("/spotify", spotifyRouter);
@@ -50,19 +55,20 @@ app.use("/spotify", spotifyRouter);
 // Search routes
 app.use("/search", searchRouter);
 
-
-
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 	console.log("Error handler");
-	// console.log(error);
-	res.status(error.code || 500).json({ message: error.message });
+	if (error.location) {
+		console.error(location);
+	}
+	console.error(error.message);
+	res.status(error.code || 500).json({ message: error.text });
 });
 
 // Start the server
 const server = http.createServer(app);
 const io = new Server(server, {
-	path: "app/socket",
+	path: "",
 	cors: {
 		origin: "*",
 		methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],

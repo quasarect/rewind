@@ -18,12 +18,21 @@ const conversationSchema = new Schema<IConversation>(
 				ref: "Message",
 			},
 		],
+		group: {
+			type: {
+				createdBy: {
+					type: mongoose.Types.ObjectId,
+					ref: "User",
+				},
+				name: String,
+				description: String,
+			},
+		},
 	},
 	{
 		timestamps: true,
 	},
 );
-
 
 const conversationModel = model<IConversation>(
 	"Conversation",
