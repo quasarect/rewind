@@ -35,7 +35,7 @@ def check_status(user_id):
         
         return make_response(jsonify({"status" : get_doc(status)}), 200)
     except Exception as e:
-        print(e)
+
         return make_response(jsonify({"message": "server error"}), 500)
 
 #initializing the mongoDB document for the request
@@ -43,42 +43,47 @@ def initialize_status(user_id):
     try:
         initial_status = { "user_id": user_id,"status": "started"}
 
-        res = collection.find_one(
-            {
-                "user_id": user_id
-            }
-        )
+        res = collection.find_one({"user_id": user_id})
 
         if res is None:
             result = collection.insert_one(initial_status)
         else:
             result = collection.replace_one({"user_id": user_id},initial_status, upsert=True)
-
-        #print(result)
         
         return str(result["_id"])
-    except Exception as error:
-        print(error)
-        return error
+    except Exception:
+        
+        return make_response(jsonify({"message": "server error"}), 500)
 
 #take audio file and transcribe into text format. To be edited further
 def take_prompt():
 
-
     try:
+        language_codes = ["en-US", "en-GB"]
         audio_file = request.files['audio']
         audio_file.save(audio_file.filename)
         with open(audio_file.filename, 'rb') as f:
-            transcript = openai.Audio.transcribe("whisper-1", f, response_format="text")
-        
+            transcript = openai.Audio.transcribe("whisper-1", f, models=language_codes, response_format="text")
 
-    except Exception as error:
+    except openai.error.RateLimitError:
         transcript = None
-        print(error)
         filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in transcription"}}
         collection.update_one(filter_query, update_query)
-        pass
+
+        return make_response(jsonify({"message": "Rate limit error. Try again after few seconds."}), 429)
+    
+    except openai.error.AuthenticationError:
+        transcript = None
+        filter_query = {"user_id": request.user_id}
+        update_query = {"$set": {"status": "error", "error": "error in transcription"}}
+        collection.update_one(filter_query, update_query)
+
+        return make_response(jsonify({"message": "Authentication error. Check OPEN AI API key."}), 401)
+    
+    except Exception:
+        
+        return make_response(jsonify({"message": "server error"}), 500)
 
     #update status of in mongoDB
     filter_query = {"user_id": request.user_id}
@@ -91,7 +96,7 @@ def take_prompt():
 #execute the command received from the prompt
 def execute_command(prompt):
 
-    print("prompt",prompt)
+    # print("prompt",prompt)
     
     #get the commands to provide the prompt from the apis.json file
     try:
@@ -106,12 +111,14 @@ def execute_command(prompt):
             command_id.append(x['id'])
             command_name.append(x['name'])
             command_description.append(x['description'])
-    except Exception as err:
-        print(err)
+
+    except Exception:
+        
         filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in finding apis.json"}}
         collection.update_one(filter_query, update_query)
-        return err
+       
+        return make_response(jsonify({"message": "api file not found"}), 404)
         
         
     #user prompt to identify the command    
@@ -135,21 +142,31 @@ def execute_command(prompt):
         response = response['choices'][0]['message']['content']
         id = int(response)
     except ValueError:
+        
         id = 0
-    except Exception as e:
-        print(e)
+    except openai.error.RateLimitError:
+
         filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in extracting api details"}}
         collection.update_one(filter_query, update_query)
-        return e
-     
+        return make_response(jsonify({"message": "Rate limit error. Try again after few seconds."}), 429)
+    
+    except openai.error.AuthenticationError:
 
-    print(api_format[id])
+        filter_query = {"user_id": request.user_id}
+        update_query = {"$set": {"status": "error", "error": "error in extracting api details"}}
+        collection.update_one(filter_query, update_query)
+
+        return make_response(jsonify({"message": "Authentication error. Check OPEN AI API key."}), 401)
+    
+    except Exception:
+        
+        return make_response(jsonify({"message": "server error"}), 500)
+    
         
     #get the format of the api call from the apis.json file
     var = "{{}}"
     user_prompt = f'user prompt: {prompt}.\n Specified format: {api_format[id]}.\n the specified format has variable values in double curly braces, example : {var}. Fill it with appropriate data from user prompt '
-    
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -168,20 +185,34 @@ def execute_command(prompt):
     
     try:
         if eval(response):
+
             response = eval(response)
+    
     except SyntaxError:
+            
             response = api_format[0]
-    except Exception as e:
-        print(e)
+
+    except openai.error.RateLimitError:
+
         filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in extracting formatted response"}}
         collection.update_one(filter_query, update_query)
-        return e
+        return make_response(jsonify({"message": "Rate limit error. Try again after few seconds."}), 429)
     
-    #print(response) 
+    except openai.error.AuthenticationError:
+
+        filter_query = {"user_id": request.user_id}
+        update_query = {"$set": {"status": "error", "error": "error in extracting formatted response"}}
+        collection.update_one(filter_query, update_query)
+
+        return make_response(jsonify({"message": "Authentication error. Check OPEN AI API key."}), 401)
+    
+    except Exception:
+        
+        return make_response(jsonify({"message": "server error"}), 500)
     
     filter_query = {"user_id": request.user_id}
     update_query = {"$set": {"status": "completed", "success": response}}
     collection.update_one(filter_query, update_query)
 
-    return
+    return make_response(jsonify({"message": "success"}), 200)

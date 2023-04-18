@@ -1,25 +1,23 @@
-from flask import Flask, jsonify, request, session, make_response
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS, cross_origin
 from tagline import generate_tagline
 from voicebot import take_prompt, execute_command, initialize_status, check_status
 from decode import decode_jwt
 
 app = Flask(__name__)
-app.secret_key = "jgyfuysavdfuiwieguefsduhgwqoiAJSXHNBUVDB"
-
 
 CORS(app)
 
 #test route
 @app.route('/test', methods=['GET'])
 def test():
-    return jsonify({"message": "Hello World"})
+    return make_response(jsonify({"message": "Hello World"}),200)
 
 #tagline generation route
 @app.route('/tagline', methods=['GET'])
 def tagline():
     user_id = request.headers.get('Authorization').split(' ')[1]
-    #user_id = "643c5295f84864c678dfb5cb"
+    #user_id = "6439bfa512b767882aee8b9b"
     return generate_tagline(user_id)
 
 # voice bot route
@@ -29,7 +27,6 @@ def execute():
     token = request.headers.get('Authorization').split(' ')[1]
     print(token)
     user_id = decode_jwt(token)
-    print("user: ", user_id)
 
     if user_id is None:
         return make_response(jsonify({"message" : "Unauthorizeed"}), 401)
@@ -38,8 +35,8 @@ def execute():
 
     request.user_id = user_id
     prompt = take_prompt()
-    if not prompt:
-        return jsonify({"error": "something went wrong during transcription"})
+    if prompt is None:
+        return  make_response(jsonify({"message" : "something went wrong during transcription"}),404)
     
     execute_command(prompt)
     return str(status_id)
@@ -48,7 +45,6 @@ def execute():
 def get_status():
     token = request.headers.get('Authorization').split(' ')[1]
     user_id = decode_jwt(token)
-    print(user_id)
     if user_id is not None:
         return check_status(user_id) 
     else:

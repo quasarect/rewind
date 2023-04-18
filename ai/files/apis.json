@@ -1,19 +1,8 @@
 [
   {
-    "id": 0,
-    "name": "unavailable function",
-    "description": "user accessed unavailable feature",
-    "endpoint": "/",
-    "body": {
-      "text": null
-    },
-    "type": "unavailable"
-  },
-  {
     "id": 1,
     "name": "create a post",
     "description": "create a post based on the user's input",
-    "endpoint": "/posts/create",
     "body": {
       "text": "{{user_prompt_based_text}}"
     },
@@ -23,7 +12,6 @@
     "id": 2,
     "name": "search for song",
     "description": "search for a song based on the user's input",
-    "endpoint": "/search/song?text={{song_based_on_user}}",
     "body": {
       "text": null
     },
@@ -33,7 +21,6 @@
     "id": 3,
     "name": "search for user",
     "description": "search for a user given username based on the user's input",
-    "endpoint": "/search/username?username={{user_name}}",
     "body": {
       "text": null
     },
@@ -44,10 +31,18 @@
     "id": 4,
     "name": "search for || search",
     "description": "search for a user given username based on the user's input",
-    "endpoint": "/search/global?text={{user_given_text}}",
     "body": {
       "text": null
     },
     "type": "global-search"
+  },
+  {
+    "id": 0,
+    "name": "unavailable function",
+    "description": "user accessed unavailable feature",
+    "body": {
+      "text": null
+    },
+    "type": "unavailable"
   }
 ]
