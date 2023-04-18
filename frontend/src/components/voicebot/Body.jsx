@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 
-function Body() {
+import { useHttpClient } from '../../hooks/httpRequest'
+
+function Body({ setLoading }) {
   // states = "started", 'completed', 'transcribed', 'error'
+
+  const { isLoading, error, sendRequest } = useHttpClient()
 
   const [messages, setMessages] = useState([
     {
@@ -9,6 +13,8 @@ function Body() {
       message: 'Initializing...',
     },
   ])
+
+  const [API, setAPI] = useState(null)
 
   const updateMessages = useCallback((state, message) => {
     setMessages((messages) => {
@@ -21,7 +27,7 @@ function Body() {
       if (flag === 0) {
         return [...messages, { state, message }]
       } else {
-        return messages
+        return [...messages]
       }
     })
   }, [])
@@ -54,11 +60,36 @@ function Body() {
 
       if (data.status === 'completed') {
         clearInterval(interval)
+        setAPI(data?.success)
+        updateMessages('started', 'Extracting necessary APIs...')
 
-        updateMessages('completed', 'Calling necessary APIs...')
+        switch (data?.success?.type) {
+          case 'post':
+            sendRequest(
+              '/posts/create',
+              'POST',
+              JSON.stringify({
+                text: data?.success?.body?.text,
+              })
+            )
+              .then((data) => {
+                console.log('hiiiiii')
+                updateMessages('completed', 'Post Created Successfully')
+                setLoading(false)
+              })
+              .catch((err) => {
+                console.log(err)
+                setLoading(false)
+              })
+
+            break
+          default:
+            updateMessages('error', 'No available API')
+            setLoading(false)
+            break
+        }
       } else if (data.status === 'error') {
         clearInterval(interval)
-
         updateMessages('error', data.error)
       } else if (data.status === 'transcribed') {
         updateMessages('transcribed', data.prompt)
@@ -74,8 +105,6 @@ function Body() {
       setMessages([])
     }
   }, [])
-
-  console.log(messages)
 
   return (
     <div>
@@ -106,6 +135,28 @@ function Body() {
           </div>
         )
       })}
+      {API && (
+        <>
+          <div className="mt-2">
+            API <br />
+            type: {API?.type} <br />
+            name: {API?.name}
+            <br />
+            description: {API?.description}
+            <br />
+            endpoint: {API?.endpoint}
+            <br />
+            body_text: {API?.body?.text}
+            <br />
+          </div>
+        </>
+      )}
+      {error && (
+        <div className="mt-2">
+          Error Occured while calling the API:{' '}
+          <span className="text-red-500">{error}</span>
+        </div>
+      )}
     </div>
   )
 }
