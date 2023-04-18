@@ -11,3 +11,4 @@ cd ../backend/
 pm2 start ./dist/app.js --name "server"
 pm2 restart server
 pm2 restart ai
+sudo service nginx restart
