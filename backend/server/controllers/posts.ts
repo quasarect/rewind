@@ -32,8 +32,8 @@ export const getPost: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const createPost: RequestHandler = (req, res, next) => {
-	const userId = req.user?.id;
+export const createPost: RequestHandler = async (req, res, next) => {
+	const userId = req.user?.id as string;
 	const text = req.body?.text;
 	const dedicated =
 		req.body?.dedicated == undefined
@@ -43,7 +43,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 	const reshared = req.body?.reshared;
 	let filepath;
 
-	if (!text && !dedicated && !filepath) {
+	if (!text && !dedicated && !filepath && !reshared) {
 		return res
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "Invalid post" });
@@ -52,6 +52,15 @@ export const createPost: RequestHandler = (req, res, next) => {
 		filepath = req.body.fileType + "/" + req.body.filename;
 	}
 
+	if (reshared) {
+		console.log("resharing");
+		const reshare = await resharePost(reshared, userId);
+		if (reshare instanceof IError) {
+			return res
+				.status(statusCode.FORBIDDEN)
+				.json({ message: "ALready reposted" });
+		}
+	}
 	const post = new postModel({
 		user: userId,
 		text: text,
@@ -83,6 +92,7 @@ export const createPost: RequestHandler = (req, res, next) => {
 			post._id,
 		);
 	}
+
 	// Only a dedication notif
 	if (dedicated) {
 		sendNotification(
@@ -117,12 +127,27 @@ export const deletePost: RequestHandler = (req, res, next) => {
 	postModel
 		.findOneAndDelete({ _id: postId })
 		.then((result) => {
-			userArrayModel.deleteMany({ _id: { $in: [result?.likedBy] } });
-			fs.unlink(path.resolve() + "/media/" + result?.filepath, (err) => {
-				if (err) {
-					console.log(err + "error deleting file");
-				}
-			});
+			if (result?.resharedBy) {
+				userArrayModel.findByIdAndDelete({
+					_id: result.resharedBy,
+				});
+			}
+			if (result?.reshared) {
+				postModel.findByIdAndUpdate(result.reshared, {
+					$inc: { reshareCount: -1 },
+				});
+			}
+			userArrayModel.findByIdAndDelete({ _id: result?.likedBy });
+			if (result?.filepath) {
+				fs.unlink(
+					path.resolve() + "/media/" + result?.filepath,
+					(err) => {
+						if (err) {
+							console.log(err + "error deleting file");
+						}
+					},
+				);
+			}
 			res.status(200).json({ message: "Post deleted successfully" });
 		})
 		.catch((err) => {
@@ -164,7 +189,11 @@ export const allPosts: RequestHandler = (req, res, next) => {
 			path: "likedBy",
 			match: { users: userId },
 		})
-		.populate({ path: "reshared" })
+		.populate("reshared")
+		.populate({
+			path: "resharedBy",
+			match: { users: userId },
+		})
 		.populate("dedicated.to")
 		.then((response) => {
 			res.status(200).json({ posts: response });
@@ -294,3 +323,51 @@ export const fetchComments: RequestHandler = (req, res, next) => {
 			console.log("comments error");
 		});
 };
+
+async function resharePost(reshared: any, userId: string) {
+	try {
+		let post = await postModel.findById(reshared);
+		const alreadyReposted = await post
+			?.populate({ path: "resharedBy", match: { users: userId } })
+			.then((post) => {
+				if (post.resharedBy) {
+					return new IError("ALready reposted", statusCode.FORBIDDEN);
+				}
+				return post;
+			});
+		if (alreadyReposted instanceof IError) {
+			return alreadyReposted;
+		}
+		post = await postModel.findByIdAndUpdate(reshared, {
+			$inc: { reshareCount: 1 },
+		});
+		if (post?.resharedBy) {
+			console.log("if");
+			await userArrayModel
+				.findByIdAndUpdate(post.resharedBy, {
+					$push: { users: userId },
+				})
+				.then((array) => {
+					console.log("arrray" + array);
+				});
+		} else {
+			const user = new userArrayModel({
+				users: userId,
+			});
+			await user.save();
+			await postModel.findByIdAndUpdate(post?._id, {
+				resharedBy: user._id,
+			});
+		}
+		console.log("reshared");
+		await sendNotification(
+			post?.user,
+			userId,
+			NotificationTypes.reshare,
+			post?._id,
+		);
+	} catch (err) {
+		console.log(err);
+		console.log("reshare errror");
+	}
+}

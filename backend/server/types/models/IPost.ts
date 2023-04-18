@@ -12,4 +12,6 @@ export interface IPost {
 	dedicated: IDedicated;
 	replyTo: Types.ObjectId;
 	reshared: Types.ObjectId;
+	reshareCount: number;
+	resharedBy: Types.ObjectId;
 }
