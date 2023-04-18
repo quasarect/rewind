@@ -8,6 +8,7 @@ import keyModel from "../models/keySchema";
 import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
 import { refreshToken } from "../services/spotify";
+import { getTagline } from "../services/AIServer";
 
 export const refresh: RequestHandler = async (req, res, next) => {
 	const userId = req.user?.id;
@@ -59,6 +60,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 				})
 				.then(async (reply) => {
 					// User data response
+
 					const data = reply.data;
 					if (!data.email) {
 						return res
@@ -76,7 +78,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							accessToken: tokens.data.access_token,
 							refreshToken: tokens.data.refresh_token,
 						});
-
+						getTagline(oldUser._id.toString());
 						return res.status(200).json({
 							token: generateToken(
 								oldUser!._id.toString(),
@@ -105,16 +107,6 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 						);
 					});
 					// for now cause ai server not working for me
-					let tagline;
-					try {
-						tagline = await axios.get(process.env.AI_SERVER_URL!, {
-							headers: {
-								Authorization: "Bearer " + req?.user?.id,
-							},
-						});
-					} catch (err: any) {
-						console.log(err.response);
-					}
 
 					const user = new userModel({
 						username: data.id,
@@ -123,10 +115,10 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 						country: data.country,
 						profileUrl: data.images[0]?.url,
 						spotifyData: keyId.id,
-						aiGeneratedLine: tagline,
 					});
 					//Save user data
-					user.save()
+					await user
+						.save()
 						.then((response) => {
 							res.status(200).json({
 								token: generateToken(
@@ -145,6 +137,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 								),
 							);
 						});
+					getTagline(user._id.toString());
 				})
 				.catch((err) => {
 					console.log(err);

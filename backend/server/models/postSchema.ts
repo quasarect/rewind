@@ -18,6 +18,10 @@ const postSchema = new Schema<IPost>(
 			type: Number,
 			default: 0,
 		},
+		reshareCount: {
+			type: Number,
+			default: 0,
+		},
 		context: [
 			{
 				type: String,
@@ -49,9 +53,14 @@ const postSchema = new Schema<IPost>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Post",
 		},
+		resharedBy: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "UserArray",
+		},
 	},
 	{ timestamps: true },
 );
+
 
 const postModel = model<IPost>("Post", postSchema);
 export default postModel;
