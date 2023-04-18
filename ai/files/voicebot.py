@@ -6,8 +6,9 @@ import os
 from io import BytesIO
 from pydub import AudioSegment
 import openai
+import time
 import json
-from flask import request
+from flask import request, jsonify, make_response
 
 #Load environment variables from .env file
 load_dotenv() 
@@ -19,21 +20,55 @@ db = client["app"]
 collection = db["voicebot_status"]
 
 # voice bot functions
+#check if the response is successful
+
+def get_doc(document):
+    if document:
+        document["_id"] = str(document["_id"])
+        return document
+    else:
+        return None
+
+def check_status(user_id):
+
+    try:
+        # Retrieve the status of the process
+        status = collection.find_one({'user_id': user_id})
+
+        if status is None:
+            return make_response(jsonify({"message" : "not found"}), 404)
+        
+        return make_response(jsonify({"status" : get_doc(status)}), 200)
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({"message": "server error"}), 500)
 
 #initializing the mongoDB document for the request
 def initialize_status(user_id):
     try:
-        initial_status = {"user_id": user_id, "status": "started"}
-        result = collection.insert_one(initial_status)
+        initial_status = { "user_id": user_id,"status": "started"}
 
-        status_id = result.inserted_id
-        return status_id
+        res = collection.find_one(
+            {
+                "user_id": user_id
+            }
+        )
+
+        if res is None:
+            result = collection.insert_one(initial_status)
+        else:
+            result = collection.replace_one({"user_id": user_id},initial_status, upsert=True)
+
+        #print(result)
+        
+        return str(result["_id"])
     except Exception as error:
         print(error)
         return error
 
 #take audio file and transcribe into text format. To be edited further
-def take_prompt(status_id):
+def take_prompt():
+
 
     try:
         audio_file = request.files['audio']
@@ -45,23 +80,23 @@ def take_prompt(status_id):
     except Exception as error:
         transcript = None
         print(error)
-        filter_query = {"_id": status_id}
+        filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in transcription"}}
         collection.update_one(filter_query, update_query)
         pass
 
     #update status of in mongoDB
-    filter_query = {"_id": status_id}
-    update_query = {"$set": {"status": "transcribed"}}
+    filter_query = {"user_id": request.user_id}
+    update_query = {"$set": {"status": "transcribed","prompt": transcript}}
     collection.update_one(filter_query, update_query)
         
-    return transcript, status_id
+    return transcript
 
 
 #execute the command received from the prompt
-def execute_command(prompt, status_id):
+def execute_command(prompt):
 
-    print(prompt)
+    print("prompt",prompt)
     
     #get the commands to provide the prompt from the apis.json file
     try:
@@ -78,7 +113,7 @@ def execute_command(prompt, status_id):
             command_description.append(x['description'])
     except Exception as err:
         print(err)
-        filter_query = {"_id": status_id}
+        filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in finding apis.json"}}
         collection.update_one(filter_query, update_query)
         return err
@@ -109,14 +144,15 @@ def execute_command(prompt, status_id):
         id = 0
     except Exception as e:
         print(e)
-        filter_query = {"_id": status_id}
+        filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in extracting api details"}}
         collection.update_one(filter_query, update_query)
         return e
      
         
     #get the format of the api call from the apis.json file
-    user_prompt = f'{prompt}. Specified format: {api_format[id]}. fill the values in curly braces of the given format.'
+    var = "{{}}"
+    user_prompt = f'user prompt: {prompt}.\n Specified format: {api_format[id]}.\n the specified format has variable values in double curly braces, example : {var}. Fill it with appropriate data from user prompt '
     
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
@@ -130,7 +166,7 @@ def execute_command(prompt, status_id):
         # presence_penalty=0
     )
     response = response['choices'][0]['message']['content']
-    filter_query = {"_id": status_id}
+    filter_query = {"user_id": request.user_id}
     update_query = {"$set": {"status": "processed"}}
     collection.update_one(filter_query, update_query)
     
@@ -141,15 +177,15 @@ def execute_command(prompt, status_id):
             response = api_format[0]
     except Exception as e:
         print(e)
-        filter_query = {"_id": status_id}
+        filter_query = {"user_id": request.user_id}
         update_query = {"$set": {"status": "error", "error": "error in extracting formatted response"}}
         collection.update_one(filter_query, update_query)
         return e
     
     #print(response) 
     
-    filter_query = {"_id": status_id}
-    update_query = {"$set": {"status": "completeed", "success": response}}
+    filter_query = {"user_id": request.user_id}
+    update_query = {"$set": {"status": "completed", "success": response}}
     collection.update_one(filter_query, update_query)
 
     return

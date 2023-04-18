@@ -1,15 +1,5 @@
 [
   {
-    "id": 0,
-    "name": "unavailable function",
-    "description": "user accessed unavailable feature",
-    "endpoint": "/",
-    "body": {
-      "text": null
-    },
-    "type": "unavailable-feature"
-  },
-  {
     "id": 1,
     "name": "create a post",
     "description": "create a post based on the user's input",
@@ -17,7 +7,7 @@
     "body": {
       "text": "{{user_prompt_based_text}}"
     },
-    "type": "create-post"
+    "type": "post"
   },
   {
     "id": 2,
@@ -49,5 +39,15 @@
       "text": null
     },
     "type": "global-search"
+  },
+  {
+    "id": 0,
+    "name": "unavailable function",
+    "description": "user accessed unavailable feature",
+    "endpoint": "/",
+    "body": {
+      "text": null
+    },
+    "type": "unavailable"
   }
 ]
