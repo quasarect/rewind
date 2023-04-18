@@ -125,7 +125,7 @@ def execute_command(prompt):
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "only id as output. No explaination."},
+        messages= [{"role": "system", "content": "only single id as output without extra space. No explaination."},
         {"role": "user", "content": user_prompt}],
         #temperature=0.5,
         max_tokens=9,
@@ -138,7 +138,6 @@ def execute_command(prompt):
         #receive the response from the openai api and convert it to a dictionary
             #response will be in an integer
         response = response['choices'][0]['message']['content']
-        #print(response)
         id = int(response)
     except ValueError:
         id = 0
@@ -149,6 +148,8 @@ def execute_command(prompt):
         collection.update_one(filter_query, update_query)
         return e
      
+
+    print(api_format[id])
         
     #get the format of the api call from the apis.json file
     var = "{{}}"

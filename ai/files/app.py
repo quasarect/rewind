@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, session, make_response
 from flask_cors import CORS, cross_origin
 from tagline import generate_tagline
 from voicebot import take_prompt, execute_command, initialize_status, check_status
@@ -27,8 +27,12 @@ def tagline():
 @cross_origin()
 def execute():
     token = request.headers.get('Authorization').split(' ')[1]
+    print(token)
     user_id = decode_jwt(token)
     print("user: ", user_id)
+
+    if user_id is None:
+        return make_response(jsonify({"message" : "Unauthorizeed"}), 401)
 
     status_id = initialize_status(user_id)
 
@@ -48,7 +52,7 @@ def get_status():
     if user_id is not None:
         return check_status(user_id) 
     else:
-        return 'Status not found!'
+        return make_response(jsonify({"message" : "not found"}), 404)
 
 
 if __name__ == '__main__':

@@ -91,8 +91,8 @@ def generate_tagline(user_id):
         result2 = collection2.find_one({"_id": ObjectId(spotify_id)})
         access_token = result2["accessToken"]
         refresh_token = result2["refreshToken"]
-        print(access_token)
-        print(refresh_token)
+        # print(access_token)
+        # print(refresh_token)
         top_genres = valid_token(spotify_id, access_token, refresh_token)
         print(top_genres)
         prompt = f"Create a catchy tagline that describes the mood of music lovers who enjoy genres like { top_genres } The tagline should create a strong emotional response. Do not use words like you, your, our, us in the tagline. Create a tagline that speaks to the user's personal experience and connection to the music. "
