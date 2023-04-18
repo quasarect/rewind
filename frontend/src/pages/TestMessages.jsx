@@ -5,12 +5,10 @@ function Messages() {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
-    socket.on('message', message => {
-      setMessages(messages => [...messages, message])
+    socket.on('message', (message) => {
+      setMessages((messages) => [...messages, message])
     })
   }, [])
-
-  console.log(messages)
 
   const connect = () => {
     socket.connect()
@@ -33,17 +31,17 @@ function Messages() {
       <div>
         <button
           onClick={connect}
-          className='
+          className="
         px-4 py-2 border border-white  
-      '
+      "
         >
           Connect
         </button>
         <button
           onClick={disconnect}
-          className='
+          className="
         px-4 py-2 border border-white  
-      '
+      "
         >
           Disconnect
         </button>
@@ -51,17 +49,17 @@ function Messages() {
       <div>
         <button
           onClick={sayTyping}
-          className='
+          className="
         px-4 py-2 border border-white
-      '
+      "
         >
           Say Typing
         </button>
         <button
           onClick={sendMessage}
-          className='
+          className="
         px-4 py-2 border border-white
-      '
+      "
         >
           Send Message
         </button>

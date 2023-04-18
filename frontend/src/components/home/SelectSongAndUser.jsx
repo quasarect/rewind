@@ -7,11 +7,10 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
   const { sendRequest: fetchSongs, isLoading: isSongsLoadings } =
     useHttpClient()
 
-  const searchSongs = async e => {
+  const searchSongs = async (e) => {
     try {
       const res = await fetchSongs('/search/song?text=' + e.target.value)
       setSongs(res.tracks)
-      console.log(res.tracks)
     } catch (err) {
       console.log(err)
     }
@@ -21,12 +20,11 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
   const [error, setError] = useState(null)
   const { sendRequest: fetchUsers, isLoading: isUsersLoading } = useHttpClient()
 
-  const searchUsers = async e => {
+  const searchUsers = async (e) => {
     try {
       const res = await fetchUsers('/search/global?text=' + e.target.value)
       setUsers(res?.users)
       setError(null)
-      console.log(res)
     } catch (err) {
       setUsers([])
       setError(err.message)
@@ -36,35 +34,35 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
 
   return (
     <div>
-      <div className='w-full h-full px-6 py-4 text-black'>
+      <div className="w-full h-full px-6 py-4 text-black">
         <div>
-          <label className='text-white pb-2'>SONG -</label>
+          <label className="text-white pb-2">SONG -</label>
           {song?.trackName ? (
             <div
-              className='
+              className="
            flex items-center justify-start border-b border-rewind-dark-secondary py-2 pb-4 cursor-pointer
-           '
+           "
             >
               <img
                 src={song?.imageUrl}
-                alt='song'
-                className='w-12 h-12 rounded-lg'
+                alt="song"
+                className="w-12 h-12 rounded-lg"
               />
-              <div className='ml-4'>
-                <h1 className='text-lg font-semibold font-lato text-white '>
+              <div className="ml-4">
+                <h1 className="text-lg font-semibold font-lato text-white ">
                   {song?.trackName}
                 </h1>
-                <h1 className='text-sm font-lato text-gray-400 '>
+                <h1 className="text-sm font-lato text-gray-400 ">
                   {song?.artist}
                 </h1>
               </div>
             </div>
           ) : (
             <input
-              type='text'
-              className='w-full h-10 px-2 border text-white rounded-lg focus:outline-none focus:border-gray-500 mt-2 bg-transparent '
-              placeholder='Search for a song'
-              onInput={e => {
+              type="text"
+              className="w-full h-10 px-2 border text-white rounded-lg focus:outline-none focus:border-gray-500 mt-2 bg-transparent "
+              placeholder="Search for a song"
+              onInput={(e) => {
                 searchSongs(e)
               }}
               value={song?.trackName}
@@ -72,31 +70,30 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
             />
           )}
         </div>
-        {isSongsLoadings && <span className='text-white'>Loading..</span>}
+        {isSongsLoadings && <span className="text-white">Loading..</span>}
         {!isSongsLoadings &&
           !song?.trackName &&
-          songs.map(song => (
-            <div className='mt-6' key={song?.imageUrl}>
+          songs.map((song) => (
+            <div className="mt-6" key={song?.imageUrl}>
               <div
-                className='
+                className="
                 flex items-center justify-start border-b border-rewind-dark-secondary py-2 pb-4 cursor-pointer
-                '
+                "
                 onClick={() => {
-                  console.log(song)
                   setSong(song)
                   setSongs([])
                 }}
               >
                 <img
                   src={song?.imageUrl}
-                  alt='song'
-                  className='w-12 h-12 rounded-lg'
+                  alt="song"
+                  className="w-12 h-12 rounded-lg"
                 />
-                <div className='ml-4'>
-                  <h1 className='text-lg font-semibold font-lato text-white '>
+                <div className="ml-4">
+                  <h1 className="text-lg font-semibold font-lato text-white ">
                     {song?.trackName}
                   </h1>
-                  <h1 className='text-sm font-lato text-gray-400 '>
+                  <h1 className="text-sm font-lato text-gray-400 ">
                     {song?.artist}
                   </h1>
                 </div>
@@ -104,35 +101,35 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
             </div>
           ))}
       </div>
-      <div className='w-full h-full px-6 py-4 text-black'>
+      <div className="w-full h-full px-6 py-4 text-black">
         <div>
-          <label className='text-white pb-2'>DEDICATE TO -</label>
+          <label className="text-white pb-2">DEDICATE TO -</label>
           {user?._id ? (
             <div
-              className='
+              className="
               flex items-center justify-start border-b border-gray-600 100 py-2 pb-4 cursor-pointer
-              '
+              "
             >
               <img
                 src={user?.profileUrl}
-                alt='song'
-                className='w-12 h-12 rounded-lg'
+                alt="song"
+                className="w-12 h-12 rounded-lg"
               />
-              <div className='ml-4'>
-                <h1 className='text-lg font-semibold font-lato text-white '>
+              <div className="ml-4">
+                <h1 className="text-lg font-semibold font-lato text-white ">
                   {user?.name}
                 </h1>
-                <h1 className='text-sm font-lato text-gray-400 '>
+                <h1 className="text-sm font-lato text-gray-400 ">
                   {user?.username}
                 </h1>
               </div>
             </div>
           ) : (
             <input
-              type='text'
-              className='w-full h-10 px-2 border text-white rounded-lg focus:outline-none focus:border-gray-500 mt-2 bg-transparent '
-              placeholder='Search for a user'
-              onInput={e => searchUsers(e)}
+              type="text"
+              className="w-full h-10 px-2 border text-white rounded-lg focus:outline-none focus:border-gray-500 mt-2 bg-transparent "
+              placeholder="Search for a user"
+              onInput={(e) => searchUsers(e)}
               value={user?.name}
               readOnly={user?._id ? true : false}
             />
@@ -142,12 +139,12 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
         {error && error}
         {!isUsersLoading &&
           !user?._id &&
-          users.map(user => (
-            <div className='mt-6' key={user?._id}>
+          users.map((user) => (
+            <div className="mt-6" key={user?._id}>
               <div
-                className='
+                className="
                 flex items-center justify-start border-b border-gray-600 100 py-2 pb-4 cursor-pointer
-                '
+                "
                 onClick={() => {
                   setUser(user)
                   setUsers([])
@@ -155,14 +152,14 @@ function SelectSongAndUser({ song, setSong, user, setUser }) {
               >
                 <img
                   src={user?.profileUrl}
-                  alt='song'
-                  className='w-12 h-12 rounded-lg'
+                  alt="song"
+                  className="w-12 h-12 rounded-lg"
                 />
-                <div className='ml-4'>
-                  <h1 className='text-lg font-semibold font-lato text-white '>
+                <div className="ml-4">
+                  <h1 className="text-lg font-semibold font-lato text-white ">
                     {user?.name}
                   </h1>
-                  <h1 className='text-sm font-lato text-gray-400 '>
+                  <h1 className="text-sm font-lato text-gray-400 ">
                     {user?.username}
                   </h1>
                 </div>

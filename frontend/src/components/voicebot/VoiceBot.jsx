@@ -57,7 +57,6 @@ export default function VoiceBot({ showBot, setShowBot }) {
       setLoading(true)
       sendAudio(audioRef.current, recordingBlob)
         .then((data) => {
-          console.log(data)
           setShowEvaluating(false)
         })
         .catch((err) => {

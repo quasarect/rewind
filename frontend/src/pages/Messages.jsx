@@ -19,7 +19,7 @@ function Messages() {
 
   const navigate = useNavigate()
 
-  const redirectConversation = async userId => {
+  const redirectConversation = async (userId) => {
     try {
       const response = await sendRequest(
         `/conversation/create?userId=${userId}`
@@ -40,14 +40,13 @@ function Messages() {
 
     try {
       const response = await sendRequest(`/conversation/user`)
-      console.log(response)
 
-      response.conversations.forEach(conversation => {
+      response.conversations.forEach((conversation) => {
         if (conversation?.name) {
           return
         }
 
-        conversation?.participants?.forEach(participant => {
+        conversation?.participants?.forEach((participant) => {
           if (
             participant._id === user._id ||
             participant._id === null ||
@@ -77,11 +76,11 @@ function Messages() {
           !show && 'hidden lg:block lg:w-2/5'
         }`}
       >
-        <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center'>
+        <div className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center">
           <div>Messages</div>
           <div>
             <button
-              className='bg-rewind-dark-tertiary text-gray-200 text-base font-manrope px-4 py-1 rounded-md'
+              className="bg-rewind-dark-tertiary text-gray-200 text-base font-manrope px-4 py-1 rounded-md"
               onClick={() => {
                 setSearchUser(true)
               }}
@@ -91,24 +90,24 @@ function Messages() {
           </div>
         </div>
         <div>
-          {isLoading && <div className='p-4'>Loading...</div>}
-          {conversations.map(conversation => (
+          {isLoading && <div className="p-4">Loading...</div>}
+          {conversations.map((conversation) => (
             <Link
               to={conversation?._id}
               key={conversation._id}
-              className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center'
+              className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center"
             >
-              <div className='flex items-center justify-center'>
+              <div className="flex items-center justify-center">
                 <img
                   src={conversation?.profileUrl}
-                  alt='pfp'
-                  className='h-12 rounded-full'
+                  alt="pfp"
+                  className="h-12 rounded-full"
                 />
-                <div className='ml-4 flex flex-col items-start '>
-                  <div className='text-lg font-semibold'>
+                <div className="ml-4 flex flex-col items-start ">
+                  <div className="text-lg font-semibold">
                     {conversation?.name}
                   </div>
-                  <div className='font-manrope text-base'>last message..</div>
+                  <div className="font-manrope text-base">last message..</div>
                 </div>
               </div>
             </Link>
@@ -117,7 +116,7 @@ function Messages() {
       </div>
       {searchUser && (
         <SearchUser
-          onClose={userId => {
+          onClose={(userId) => {
             redirectConversation(userId)
             setSearchUser(false)
           }}

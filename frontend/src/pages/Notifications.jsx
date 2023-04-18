@@ -14,7 +14,6 @@ function Notifications() {
   const getNotifications = useCallback(async () => {
     try {
       const response = await sendRequest('/user/notifications')
-      console.log(response)
       setNewNotifications(response.notifications.newNotifications)
       setSeenNotifications(response.notifications.seenNotifications)
     } catch (err) {
@@ -34,8 +33,6 @@ function Notifications() {
     })
 
     let id = notifs[0]?._id
-
-    console.log(notifs, id)
 
     try {
       seenNotif('/user/notifications/seen?id=' + id)
