@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from tagline import generate_tagline
 from voicebot import take_prompt, execute_command, initialize_status
+import jwt
+import os
 
 app = Flask(__name__)
 
@@ -23,7 +25,19 @@ def tagline():
 @app.route('/execute', methods=['GET','POST'])
 @cross_origin()
 def execute():
-    user_id = request.headers.get('Authorization').split(' ')[1]
+    token = request.headers.get('Authorization').split(' ')[1]
+
+    try:
+        decoded = jwt.decode(token, os.environ.get('JWT_SECRET'), algorithms=['HS256'])
+        print(decoded)
+        user_id = decoded['user_id']
+    except Exception as error:
+        user_id = None
+        print(error)
+
+    if not user_id:
+        return jsonify({"error": "invalid token"}).status_code(401)
+
     status_id = initialize_status(user_id)
     
     prompt = take_prompt(status_id)

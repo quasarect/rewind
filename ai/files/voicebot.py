@@ -8,6 +8,8 @@ from pydub import AudioSegment
 import openai
 import json
 from flask import request
+import jwt
+
 
 #Load environment variables from .env file
 load_dotenv() 
