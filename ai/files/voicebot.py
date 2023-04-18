@@ -122,12 +122,12 @@ def execute_command(prompt):
         
         
     #user prompt to identify the command    
-    user_prompt = f'categorize {prompt}. id {command_id}. name {command_name}. description {command_description}.'
+    user_prompt = f'categorize prompt: {prompt}. id {command_id}. name {command_name}. description {command_description}.'
     
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "only single id as output without extra space. No explaination."},
+        messages= [{"role": "system", "content": "you are a human trying to categorize the received user prompts into given categories. only single id as output without extra space. No explanation."},
         {"role": "user", "content": user_prompt}],
         #temperature=0.5,
         max_tokens=9,
