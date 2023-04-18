@@ -1,10 +1,7 @@
-import requests
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import os
-from io import BytesIO
-from pydub import AudioSegment
 import openai
 import time
 import json
