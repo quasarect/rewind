@@ -1,9 +1,7 @@
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import os
 import openai
-import time
 import json
 from flask import request, jsonify, make_response
 
