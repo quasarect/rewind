@@ -1,52 +1,37 @@
 [
   {
-    "id": 1,
-    "name": "create a post",
+    "id": 0,
+    "name": "make a post || create a post",
     "description": "create a post based on the user's input",
-    "query": null,
-    "body": {
-      "text": "((user_prompt_based_text))"
-    },
+    "text": null,
     "type": "post"
   },
   {
-    "id": 2,
+    "id": 1,
     "name": "search for song",
     "description": "search for a song based on the user's input",
-    "query": "((user_prompt_based_text))",
-    "body": {
-      "text": null
-    },
+    "query": null,
     "type": "search-song"
   },
   {
-    "id": 3,
+    "id": 2,
     "name": "search for user",
-    "query": "((user_prompt_based_text))",
+    "query": null,
     "description": "search for a user given username based on the user's input",
-    "body": {
-      "text": null
-    },
     "type": "search-user"
   },
 
   {
-    "id": 4,
+    "id": 3,
     "name": "search for || search",
-    "query": "((user_prompt_based_text))",
+    "query": null,
     "description": "search for a user given username based on the user's input",
-    "body": {
-      "text": null
-    },
     "type": "global-search"
   },
   {
-    "id": 0,
+    "id": 4,
     "name": "unavailable function",
     "description": "user accessed unavailable feature",
-    "body": {
-      "text": null
-    },
     "type": "unavailable"
   }
 ]

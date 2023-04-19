@@ -59,7 +59,7 @@ def initialize_status(user_id):
 def take_prompt():
 
     try:
-        language_codes = ["en-US", "en-GB"]
+        language_codes = ["en"]
         audio_file = request.files['audio']
         audio_file.save(audio_file.filename)
         with open(audio_file.filename, 'rb') as f:
@@ -123,7 +123,7 @@ def execute_command(prompt):
         
     #user prompt to identify the command    
     user_prompt = f'categorize prompt: {prompt}. id {command_id}. name {command_name}. description {command_description}.'
-    
+    print("1st prompt",user_prompt)
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -141,9 +141,10 @@ def execute_command(prompt):
             #response will be in an integer
         response = response['choices'][0]['message']['content']
         id = int(response)
+        print("id = ",id )
+        print(api_format[id])
     except ValueError:
-        
-        id = 0
+        id = 4
     except openai.error.RateLimitError:
 
         filter_query = {"user_id": request.user_id}
@@ -166,11 +167,12 @@ def execute_command(prompt):
         
     #get the format of the api call from the apis.json file
     var = "{{}}"
-    user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}.'
+    user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}. fill and update the null values only. Dont change anything else.'
+    print("2nd",user_prompt)
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "You are an examinee substituting the values in double parentheses. do not add or change anything outside the double parentheses in the required format. only format specified as output. No explanation."},
+        messages= [{"role": "system", "content": "You are an examinee replacing only the null values. only format specified as output. No explanation."},
         {"role": "user", "content": user_prompt}],
         #temperature=0.5,
         #max_tokens=9,
@@ -190,7 +192,7 @@ def execute_command(prompt):
     
     except SyntaxError:
             
-            response = api_format[0]
+            response = api_format[4]
 
     except openai.error.RateLimitError:
 
