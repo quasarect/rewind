@@ -31,6 +31,7 @@ function Chat() {
 
   const [conversation, setConversation] = useState(null)
 
+  const [isOnline, setIsOnline] = useState(false)
   const [isTyping, setIsTyping] = useState('')
 
   const [participants, setParticipants] = useState([])
