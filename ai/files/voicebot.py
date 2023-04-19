@@ -123,7 +123,6 @@ def execute_command(prompt):
         
     #user prompt to identify the command    
     user_prompt = f'categorize prompt: {prompt}. id {command_id}. name {command_name}. description {command_description}.'
-    print("1st prompt",user_prompt)
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -141,7 +140,6 @@ def execute_command(prompt):
             #response will be in an integer
         response = response['choices'][0]['message']['content']
         id = int(response)
-        print("id = ",id )
         print(api_format[id])
     except ValueError:
         id = 4
@@ -168,7 +166,6 @@ def execute_command(prompt):
     #get the format of the api call from the apis.json file
     var = "{{}}"
     user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}. fill and update the null values only. Dont change anything else.'
-    print("2nd",user_prompt)
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

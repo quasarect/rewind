@@ -30,6 +30,12 @@
   },
   {
     "id": 4,
+    "name": "update tagline",
+    "description": "update user tagline",
+    "type": "tagline"
+  },
+  {
+    "id": 5,
     "name": "unavailable function",
     "description": "user accessed unavailable feature",
     "type": "unavailable"
