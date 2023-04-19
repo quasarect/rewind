@@ -1,5 +1,6 @@
 import requests
 import pymongo
+import bson
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import os
@@ -88,8 +89,13 @@ def generate_tagline(user_id):
         # get data from db
 
         result1 = collection1.find_one({'_id': ObjectId(user_id)})
+        # if not result1:
+        #     return make_response(jsonify({"message" : "cannot find user"}), 404)
+    
         spotify_id = result1["spotifyData"]
         result2 = collection2.find_one({"_id": ObjectId(spotify_id)})
+        if not result2:
+            return make_response(jsonify({"message": "Cannot get spotify id"}), 404)
         access_token = result2["accessToken"]
         refresh_token = result2["refreshToken"]
         top_genres = valid_token(spotify_id, access_token, refresh_token)
@@ -107,8 +113,8 @@ def generate_tagline(user_id):
         )
 
         generated_text = response.choices[0]['message']['content']
-
-        return {"tagline": generated_text}
+        
+        return make_response(jsonify({"tagline": generated_text}),200)
     
     except TypeError:
         return make_response(jsonify({"message" : "cannot find user"}), 404)
