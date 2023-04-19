@@ -73,7 +73,6 @@ function Body({ setLoading }) {
               })
             )
               .then((data) => {
-                console.log('hiiiiii')
                 updateMessages('completed', 'Post Created Successfully')
                 setLoading(false)
               })
@@ -97,8 +96,6 @@ function Body({ setLoading }) {
         updateMessages('started', 'Sending audio to voicebot...')
       }
     }, 1000)
-
-    console.log(messages)
 
     return () => {
       clearInterval(interval)

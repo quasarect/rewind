@@ -25,7 +25,6 @@ function Post() {
 
       const [res1, res2] = await Promise.all(promises)
 
-      console.log(res1, res2)
       if (res1.post) {
         setPost(res1.post)
       } else {
@@ -53,31 +52,31 @@ function Post() {
   }, [fetchPost, postId])
 
   return (
-    <main className='w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary'>
-      <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary'>
+    <main className="w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary">
+      <div className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary">
         Rewind
       </div>
       {isLoading ? (
         <span
-          className='
+          className="
           flex mt-4 justify-center w-full h-full text-poppins text-gray-200 text-xl
-        '
+        "
         >
           Loading..
         </span>
       ) : (
         <>
           <PostUI post={post} redirect={false} onComment={fetchPost} />
-          <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary bg-rewind-dark-primary'>
+          <div className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary bg-rewind-dark-primary">
             Comments ⇣
           </div>
           {comments.length === 0 && (
-            <div className='p-4 text-manrope text-gray-200 text-md '>
+            <div className="p-4 text-manrope text-gray-200 text-md ">
               No comments yet. Be the first one to comment :)
             </div>
           )}
 
-          {comments.map(comment => (
+          {comments.map((comment) => (
             <PostUI
               key={comment._id}
               post={comment}

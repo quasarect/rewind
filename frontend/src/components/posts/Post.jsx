@@ -21,10 +21,12 @@ export default function Post({
   redirect = true,
   onComment = () => {},
 }) {
+  if (post === null) return ''
+
   const { user } = useContext(authContext)
 
   const [liked, setLiked] = useState(false)
-  const [likeCount, setLikeCount] = useState(post?.likeCount || 0)
+  const [likeCount, setLikeCount] = useState(post?.likeCount)
   const [isMe, setIsMe] = useState(post?.user?._id === user?._id)
 
   const [isCommenting, setIsCommenting] = useState(false)
@@ -59,7 +61,6 @@ export default function Post({
         const response = await sendRequest('/posts/like?id=' + post?._id)
         setLiked(true)
         setLikeCount((likeCount) => likeCount + 1)
-        console.log(response)
       } catch (err) {
         console.log(err)
       }
@@ -68,7 +69,6 @@ export default function Post({
         const response = await sendRequest('/posts/unlike?id=' + post?._id)
         setLiked(false)
         setLikeCount((likeCount) => likeCount - 1)
-        console.log(response)
       } catch (err) {
         console.log(err)
       }
@@ -102,7 +102,6 @@ export default function Post({
 
     try {
       const response = await sendRequest('/posts/' + post?._id, 'DELETE')
-      console.log(response)
       refreshPosts(post?.user?.username)
     } catch (err) {
       console.log(err)

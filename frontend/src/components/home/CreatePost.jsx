@@ -78,7 +78,6 @@ export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
     try {
       const response = await sendRequest('/posts/create', 'POST', body, {})
 
-      console.log(response)
       fetchPosts()
       reset()
     } catch (err) {
@@ -88,23 +87,23 @@ export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
   }
 
   return (
-    <div className='py-2 px-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary w-full min-h-fit'>
-      <div className='flex justify-between py-2'>
+    <div className="py-2 px-4 border-b bg-rewind-dark-primary border-rewind-dark-tertiary w-full min-h-fit">
+      <div className="flex justify-between py-2">
         <img
           src={profileUrl}
-          alt='profile'
-          className='rounded-full h-10 w-10 object-cover'
+          alt="profile"
+          className="rounded-full h-10 w-10 object-cover"
         />
-        <div className='flex-1 ml-2 w-full'>
+        <div className="flex-1 ml-2 w-full">
           <textarea
-            type='text'
-            className='border-0 outline-none bg-transparent text-white text-lg px-2 w-full resize-none py-1 min-h-10  overflow-hidden'
+            type="text"
+            className="border-0 outline-none bg-transparent text-white text-lg px-2 w-full resize-none py-1 min-h-10  overflow-hidden"
             placeholder={
               replyTo ? `Comment your thoughts 👀` : 'What is on your mind?'
             }
             value={post}
             ref={postRef}
-            onChange={e => {
+            onChange={(e) => {
               setPost(e.target.value.substring(0, 250))
               resize()
             }}
@@ -126,8 +125,8 @@ export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
         isDedicated={isDedicated}
         setIsDedicated={setIsDedicated}
       />
-      <div className='w-full flex justify-between items-center px-6 pb-2'>
-        <div className='flex'>
+      <div className="w-full flex justify-between items-center px-6 pb-2">
+        <div className="flex">
           <DedicateButtonUI
             setIsDedicated={setIsDedicated}
             isDedicated={isDedicated}
@@ -141,7 +140,7 @@ export default function CreatePost({ fetchPosts, profileUrl, replyTo = null }) {
           )}
         </div>
         <button
-          className='px-4 py-1 text-lg text-white bg-rewind-dark-tertiary rounded-full text-poppins hover:bg-gray-200 hover:text-rewind-dark-primary transition-colors'
+          className="px-4 py-1 text-lg text-white bg-rewind-dark-tertiary rounded-full text-poppins hover:bg-gray-200 hover:text-rewind-dark-primary transition-colors"
           onClick={postHandler}
         >
           {replyTo ? 'Reply' : 'Post'}

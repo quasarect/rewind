@@ -17,11 +17,9 @@ export const useGetPosts = () => {
             new Date(a?.createdAt ? a.createdAt : a.updatedAt).getTime()
         )
         setPosts(sortedPosts)
-        console.log(sortedPosts)
       }
     } catch (err) {
       console.log(err)
-      // alert(err.message)
     }
   }, [])
 
@@ -32,12 +30,12 @@ export const useGetPosts = () => {
   return { posts, isLoading, error, fetchPosts }
 }
 
-export const useGetUserPosts = username => {
+export const useGetUserPosts = (username) => {
   const [posts, setPosts] = useState([])
 
   const { sendRequest, isLoading, error } = useHttpClient()
 
-  const fetchPosts = useCallback(async username => {
+  const fetchPosts = useCallback(async (username) => {
     try {
       const responseData = await sendRequest('/posts/user/' + username)
       if (responseData.posts) {
@@ -46,7 +44,6 @@ export const useGetUserPosts = username => {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
         setPosts(sortedPosts)
-        console.log(sortedPosts)
       }
     } catch (err) {
       console.log(err)

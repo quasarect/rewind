@@ -19,16 +19,14 @@ function Profile() {
   const { posts, fetchPosts } = useGetUserPosts(username)
 
   const fetchUser = useCallback(
-    async username => {
+    async (username) => {
       try {
         const response = await sendRequest(`/user?username=${username}`)
         if (response.user) {
-          console.log(response)
           setUser(response.user)
           setTopTrack(response.topTrack)
           setIsMe(response.isMe)
         } else {
-          console.log(response)
           navigate('/404')
         }
       } catch (error) {
@@ -50,8 +48,8 @@ function Profile() {
   }
 
   return (
-    <div className='w-full md:w-4/5 h-fit bg-rewind-dark-primary '>
-      <div className=' flex flex-col md:flex-row md:justify-evenly p-4 pb-6 border-b border-rewind-dark-tertiary'>
+    <div className="w-full md:w-4/5 h-fit bg-rewind-dark-primary ">
+      <div className=" flex flex-col md:flex-row md:justify-evenly p-4 pb-6 border-b border-rewind-dark-tertiary">
         {isLoading ? (
           'loading..'
         ) : (
@@ -61,7 +59,7 @@ function Profile() {
           </>
         )}
       </div>
-      <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
+      <div className="p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary">
         Posts ⇣
       </div>
       {posts.map((post, index) => (

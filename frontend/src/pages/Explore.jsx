@@ -18,7 +18,7 @@ export default function Home() {
 
   let timerId = null
 
-  const handleSearch = async e => {
+  const handleSearch = async (e) => {
     setSearchInitiated(true)
 
     const { value } = e.target
@@ -32,22 +32,20 @@ export default function Home() {
     }
   }
 
-  console.log(posts, users)
-
   return (
-    <main className='w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary'>
-      <div className='p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary'>
+    <main className="w-full md:w-4/5 lg:w-2/5 bg-rewind-dark-primary">
+      <div className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary">
         Explore Rewind
       </div>
       <div>
-        <div className='p-4'>
+        <div className="p-4">
           <input
-            type='text'
-            className='
+            type="text"
+            className="
             w-full  bg-rewind-dark-primary text-poppins text-gray-200 text-md border border-rewind-dark-tertiary rounded-md p-2
-          '
-            placeholder='Search for people, posts and more'
-            onChange={e => {
+          "
+            placeholder="Search for people, posts and more"
+            onChange={(e) => {
               clearTimeout(timerId)
               timerId = setTimeout(() => {
                 handleSearch(e)
@@ -57,16 +55,16 @@ export default function Home() {
         </div>
       </div>
       {isLoading && (
-        <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
+        <div className="p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary">
           Loading...
         </div>
       )}
       {!isLoading && users.length > 0 && (
         <>
-          <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
+          <div className="p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary">
             Users ⇣
           </div>
-          {users.map(user => {
+          {users.map((user) => {
             return <User user={user} key={user?._id} />
           })}
         </>
@@ -74,10 +72,10 @@ export default function Home() {
 
       {!isLoading && posts.length > 0 && (
         <>
-          <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
+          <div className="p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary">
             Posts ⇣
           </div>
-          {posts.map(post => {
+          {posts.map((post) => {
             return <Post post={post} key={post?._id} />
           })}
         </>
@@ -86,12 +84,12 @@ export default function Home() {
         users.length === 0 &&
         !isLoading &&
         serachInitiated && (
-          <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
+          <div className="p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary">
             No results found
           </div>
         )}
       {!serachInitiated && (
-        <div className='p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary'>
+        <div className="p-4 text-poppins text-gray-200 text-xl  border-rewind-dark-tertiary">
           Search for people, posts and more
         </div>
       )}

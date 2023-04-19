@@ -13,7 +13,7 @@ export { authContext }
 
 import { useHttpClient } from '../hooks/httpRequest'
 
-const AuthContextProvider = props => {
+const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState(null)
   const [user, setUser] = useState(null)
@@ -23,7 +23,6 @@ const AuthContextProvider = props => {
   const fetchMe = async () => {
     const res = await sendRequest('/user/me')
     setUser(res.user)
-    console.log(res.user)
   }
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const AuthContextProvider = props => {
     }
   }, [])
 
-  const login = token => {
+  const login = (token) => {
     localStorage.setItem('token', token)
     setToken(token)
     setIsAuthenticated(true)
