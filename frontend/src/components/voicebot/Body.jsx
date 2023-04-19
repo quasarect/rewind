@@ -32,6 +32,26 @@ function Body({ setLoading }) {
     })
   }, [])
 
+  const functions = {
+    post: (text, cb) => {
+      sendRequest(
+        '/posts/create',
+        'POST',
+        JSON.stringify({
+          text,
+        })
+      )
+        .then((data) => {
+          cb(data)
+          setLoading(false)
+        })
+        .catch((err) => {
+          console.log(err)
+          setLoading(false)
+        })
+    },
+  }
+
   useEffect(() => {
     let counter = 0
 
@@ -65,21 +85,13 @@ function Body({ setLoading }) {
 
         switch (data?.success?.type) {
           case 'post':
-            sendRequest(
-              '/posts/create',
-              'POST',
-              JSON.stringify({
-                text: data?.success?.body?.text,
-              })
-            )
-              .then((data) => {
-                updateMessages('completed', 'Post Created Successfully')
-                setLoading(false)
-              })
-              .catch((err) => {
-                console.log(err)
-                setLoading(false)
-              })
+            functions.post(data?.success?.text, (data) => {
+              if (data) {
+                updateMessages('completed', 'Post created successfully')
+              } else {
+                updateMessages('error', data.error)
+              }
+            })
 
             break
           default:
@@ -143,7 +155,7 @@ function Body({ setLoading }) {
             <br />
             endpoint: {API?.endpoint}
             <br />
-            body_text: {API?.body?.text}
+            body_text: {API?.text}
             <br />
           </div>
         </>

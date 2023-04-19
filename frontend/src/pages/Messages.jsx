@@ -59,6 +59,8 @@ function Messages() {
         })
       })
 
+      console.log(response.conversations)
+
       setConversations(response.conversations)
     } catch (err) {
       console.log(err)
@@ -76,7 +78,7 @@ function Messages() {
           !show && 'hidden lg:block lg:w-2/5'
         }`}
       >
-        <div className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center">
+        <div className="p-4 text-poppins text-gray-200 text-xl border-b border-rewind-dark-tertiary w-full flex justify-between items-center ">
           <div>Messages</div>
           <div>
             <button
@@ -89,7 +91,7 @@ function Messages() {
             </button>
           </div>
         </div>
-        <div>
+        <div className="bg-rewind-dark-primary">
           {isLoading && <div className="p-4">Loading...</div>}
           {conversations.map((conversation) => (
             <Link
@@ -107,7 +109,9 @@ function Messages() {
                   <div className="text-lg font-semibold">
                     {conversation?.name}
                   </div>
-                  <div className="font-manrope text-base">last message..</div>
+                  <div className="font-manrope text-base">
+                    {conversation?.lastMessage}
+                  </div>
                 </div>
               </div>
             </Link>
