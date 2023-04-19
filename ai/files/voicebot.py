@@ -166,11 +166,11 @@ def execute_command(prompt):
         
     #get the format of the api call from the apis.json file
     var = "{{}}"
-    user_prompt = f'user prompt: {prompt}.\n Specified format: {api_format[id]}.\n the specified format has variable values in double curly braces, example : {var}. Fill it with appropriate data from user prompt '
+    user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}.'
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "only format specified as output. No explaination."},
+        messages= [{"role": "system", "content": "You are an examinee substituting the values in double parentheses. do not add or change anything outside the double parentheses in the required format. only format specified as output. No explanation."},
         {"role": "user", "content": user_prompt}],
         #temperature=0.5,
         #max_tokens=9,
