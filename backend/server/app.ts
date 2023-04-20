@@ -68,7 +68,7 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
 // Start the server
 const server = http.createServer(app);
 const io = new Server(server, {
-	path: process.env.NODE_ENV === "production" ? "/api" : "",
+	path: "",
 	cors: {
 		origin: "*",
 		methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
