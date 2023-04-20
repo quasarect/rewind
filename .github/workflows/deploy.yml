@@ -27,7 +27,7 @@ jobs:
           tsc
           echo "Tests Ran Successfully."
 
-  server:
+  client:
     runs-on: self-hosted
     defaults:
       run:
