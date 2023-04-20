@@ -13,7 +13,7 @@ import http from "http";
 import { config } from "dotenv";
 import searchRouter from "./routes/searchRoutes";
 import { ioConfig } from "./sockets/ioconfig";
-import morgan from "morgan";
+// import morgan from "morgan";
 // import { createAdapter } from "@socket.io/mongo-adapter";
 // import cron from "node-cron";
 config();
@@ -21,7 +21,7 @@ config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(morgan("dev"));
+// app.use(morgan("short"));
 
 // Serve static media folder
 app.use("/media", express.static("media"));
@@ -33,7 +33,7 @@ app.use(cors());
 //test route
 app.use("/test", (req, res, next) => {
 	console.log("Recieved the request");
-	res.json({ message: "Recieved" });
+	res.status(200).json({ message: "Recieved" });
 });
 
 // Call to get token and check auth
@@ -97,3 +97,5 @@ server.listen(port, async () => {
 });
 
 ioConfig(io);
+
+export default app;

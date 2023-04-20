@@ -12,16 +12,16 @@ export const ioConfig = (
 	});
 	const chatRooms = io.of("/chat");
 	chatRooms.on("connection", (socket: Socket) => {
-		console.log("Connected to chat room");
+		// console.log("Connected to chat room");
 		const token = socket.handshake.headers.authorization?.split(" ")[1];
-		chatSocket(socket, "");
 		try {
+			//@ts-ignore
 			const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
 				id: string;
 				type: string;
 				_v: string;
 			};
-			console.log(decoded);
+			chatSocket(socket, decoded.id);
 		} catch (err) {
 			console.log("Unauthorized");
 			// return;
@@ -43,5 +43,9 @@ export const ioConfig = (
 			console.log("Unauthorized");
 			return;
 		}
+	});
+
+	io.on("disconnect", (socket: Socket) => {
+		console.log("disconnected");
 	});
 };

@@ -1,20 +1,21 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { IMessage } from "../types/models/IMessage";
 
 const messageSchema = new Schema<IMessage>({
 	messages: [
 		{
 			userId: {
-				type: String,
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
 			},
 			message: {
 				type: String,
 			},
 			timestamp: {
-				type: Date,
-				default: Date.now(),
+				type: String,
 			},
 		},
+		{ _id: false },
 	],
 });
 

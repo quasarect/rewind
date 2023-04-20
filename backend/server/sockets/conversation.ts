@@ -1,7 +1,18 @@
 import { Socket } from "socket.io";
 import conversationModel from "../models/conversationSchema";
-import { createConversation, pushMessage } from "../services/conversations";
-import { IError } from "../types/basic/IError";
+import { pushMessage } from "../services/conversations";
+
+function createTime() {
+	let d = new Date();
+	let hours = d.getUTCHours();
+	let minutes: any = d.getUTCMinutes();
+	let ampm = hours >= 12 ? "PM" : "AM";
+	hours = hours % 12;
+	hours = hours ? hours : 12; // the hour '0' should be '12'
+	minutes = minutes < 10 ? "0" + minutes : minutes;
+	let timeString = hours + ":" + minutes + " " + ampm;
+	return timeString;
+}
 
 export function chatSocket(socket: Socket, userId: string): void {
 	/*
@@ -13,13 +24,9 @@ export function chatSocket(socket: Socket, userId: string): void {
 	}
 	*/
 	socket.on("conversation", async (event) => {
-		if (!event.room) {
-			const id = await createConversation(event.users);
-			if (id instanceof IError) {
-				console.log("sokcet error");
-				return;
-			}
-			event.room = id;
+		if (event.room == null) {
+			console.log("no room id");
+			return;
 		}
 		await socket.join(event.room);
 		socket.in(event.room).emit("online", { user: userId });
@@ -33,8 +40,9 @@ export function chatSocket(socket: Socket, userId: string): void {
 		}
 	*/
 	socket.on("typing", (event) => {
-		console.log("typing");
-		socket.in(event.room).emit("typing", event);
+		// console.log("typing");
+		// console.log(event.text);
+		socket.in(event.room).emit("typing", userId);
 	});
 	/* 
 	On message sent event we emit to all room connected users.
@@ -48,13 +56,32 @@ export function chatSocket(socket: Socket, userId: string): void {
 	*/
 	socket.on("message", async (event) => {
 		//store message
-		const message = event.message;
-		await conversationModel
-			.findById(event.room)
-			.then(async (conversation) => {
-				await pushMessage(conversation!, message);
-			});
-		socket.in(event.room).emit("message", { message: event.message });
+		if (event.message.text == null) {
+			console.log("no text");
+			return;
+		}
+		// return;
+		const timestamp = createTime();
+		try {
+			await conversationModel
+				.findById(event.room)
+				.then(async (conversation) => {
+					await pushMessage(conversation!, {
+						userId: userId,
+						message: event.message.text,
+						timestamp: timestamp,
+					});
+				});
+		} catch (err) {
+			console.log(err);
+		}
+		socket.in(event.room).emit("message", {
+			message: {
+				...event.message,
+				timestamp: timestamp,
+			},
+			userId: userId,
+		});
 	});
 
 	socket.on("leave", async (event) => {
