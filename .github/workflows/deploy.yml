@@ -5,7 +5,7 @@ on:
     branches: ['main']
 
 jobs:
-  server:
+  build:
     runs-on: self-hosted
     defaults:
       run:
@@ -21,8 +21,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          # cache: 'npm'
       - run: |
+          pwd
           npm ci
           tsc
-          echo "Tests Ran Successfully."
+          echo "done"
