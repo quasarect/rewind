@@ -26,3 +26,4 @@ jobs:
           pwd
           npm ci
           tsc
+          echo "done"
