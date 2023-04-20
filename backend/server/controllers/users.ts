@@ -189,7 +189,8 @@ export const followUser: RequestHandler = async (req, res, next) => {
 					console.log("err" + err);
 				}),
 		]);
-		sendNotification(
+		console.log("following");
+		await sendNotification(
 			//@ts-ignore
 			following,
 			followerId,

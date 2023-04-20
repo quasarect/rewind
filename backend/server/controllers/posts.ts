@@ -42,14 +42,14 @@ export const createPost: RequestHandler = async (req, res, next) => {
 	const replyTo = req.body?.replyTo;
 	const reshared = req.body?.reshared;
 	let filepath;
+	if (req.body.filename && req.body.fileType) {
+		filepath = req.body.fileType + "/" + req.body.filename;
+	}
 
 	if (!text && !dedicated && !filepath && !reshared) {
 		return res
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "Invalid post" });
-	}
-	if (req.body.filename && req.body.fileType) {
-		filepath = req.body.fileType + "/" + req.body.filename;
 	}
 
 	if (reshared) {
