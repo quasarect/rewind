@@ -104,7 +104,9 @@ function Chat() {
   useEffect(() => {
     if (!id) return
     fetchMessages()
-    chatSocket.connect()
+    chatSocket.connect(() => {
+      console.log('connected to socket')
+    })
 
     chatSocket.emit('conversation', { room: id })
 

@@ -10,11 +10,11 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className='hidden lg:block lg:w-2/5 '></div>
+      <div className="hidden lg:block lg:w-2/5 "></div>
 
-      <div className='w-2/5 h-screen hidden lg:block fixed right-0 top-0'>
-        <aside className='flex w-full h-full bg-rewind-dark-primary flex-col items-end border-l border-rewind-dark-tertiary'>
-          <div className='w-full  flex items-center justify-center p-4 '>
+      <div className="w-2/5 h-screen hidden lg:block fixed right-0 top-0">
+        <aside className="flex w-full h-full bg-rewind-dark-primary flex-col items-end border-l border-rewind-dark-tertiary">
+          <div className="w-full  flex items-center justify-center p-4 ">
             {user?.spotifyData?.accessToken && (
               <SpotifyPlayer
                 ref={playerRef}
