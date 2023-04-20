@@ -25,7 +25,7 @@ def tagline():
 @cross_origin()
 def execute():
     token = request.headers.get('Authorization').split(' ')[1]
-    print(token)
+    #print(token)
     user_id = decode_jwt(token)
 
     if user_id is None:

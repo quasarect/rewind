@@ -142,7 +142,7 @@ def execute_command(prompt):
         id = int(response)
         print(api_format[id])
     except ValueError:
-        id = 4
+        id = 5
     except openai.error.RateLimitError:
 
         filter_query = {"user_id": request.user_id}
@@ -189,7 +189,7 @@ def execute_command(prompt):
     
     except SyntaxError:
             
-            response = api_format[4]
+            response = api_format[5]
 
     except openai.error.RateLimitError:
 
