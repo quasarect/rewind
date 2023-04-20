@@ -53,7 +53,14 @@ export default function Bottom({ user, setShowBot }) {
 
           <li>
             <Link to="/messages" className="hover:text-rewind-secondary">
-              <img src={messages} />
+              <div className="relative">
+                <img src={messages} />
+                {user?.messageCount > 0 && (
+                  <div class="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-rewind-secondary border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
+                    {user?.messageCount}
+                  </div>
+                )}
+              </div>
             </Link>
           </li>
 
