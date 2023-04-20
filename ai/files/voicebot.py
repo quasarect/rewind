@@ -96,7 +96,7 @@ def take_prompt():
 #execute the command received from the prompt
 def execute_command(prompt):
 
-    # print("prompt",prompt)
+    print("prompt",prompt)
     
     #get the commands to provide the prompt from the apis.json file
     try:
@@ -106,6 +106,7 @@ def execute_command(prompt):
         command_description = []
 
         api_format = json.load(file)
+        
 
         for x in api_format:
             command_id.append(x['id'])
@@ -123,10 +124,11 @@ def execute_command(prompt):
         
     #user prompt to identify the command    
     user_prompt = f'categorize prompt: {prompt}. id {command_id}. name {command_name}. description {command_description}.'
+    print(user_prompt)
     #provide the prompt to the openai api
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "you are a human trying to categorize the received user prompts into given categories. only single id as output without extra space. No explanation."},
+        messages= [{"role": "system", "content": "you are a human child trying to categorize the received user prompts into given categories. give only single id as output without extra space. No other explanation."},
         {"role": "user", "content": user_prompt}],
         #temperature=0.5,
         max_tokens=9,
@@ -140,9 +142,14 @@ def execute_command(prompt):
             #response will be in an integer
         response = response['choices'][0]['message']['content']
         id = int(response)
-        print(api_format[id])
+        print("id :", id)
     except ValueError:
         id = 5
+        filter_query = {"user_id": request.user_id}
+        update_query = {"$set": {"status": "error", "error": "Couldn't get proper prompt. Try again!"}}
+        collection.update_one(filter_query, update_query)
+        return make_response(jsonify({"message" : "Couldn't get proper prompt. Try again!"}))
+    
     except openai.error.RateLimitError:
 
         filter_query = {"user_id": request.user_id}
@@ -167,6 +174,7 @@ def execute_command(prompt):
     var = "{{}}"
     user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}. fill and update the null values only. Dont change anything else.'
     #provide the prompt to the openai api
+    print("2nd",user_prompt)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages= [{"role": "system", "content": "You are an examinee replacing only the null values. only format specified as output. No explanation."},
@@ -190,6 +198,10 @@ def execute_command(prompt):
     except SyntaxError:
             
             response = api_format[5]
+            filter_query = {"user_id": request.user_id}
+            update_query = {"$set": {"status": "error", "error": "Couldn't get proper prompt. Try again!"}}
+            collection.update_one(filter_query, update_query)
+            return make_response(jsonify({"message" : "Couldn't get proper prompt. Try again!"}))
 
     except openai.error.RateLimitError:
 

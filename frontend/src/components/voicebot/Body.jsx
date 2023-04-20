@@ -102,6 +102,7 @@ function Body({ setLoading }) {
       } else if (data.status === 'error') {
         clearInterval(interval)
         updateMessages('error', data.error)
+        setLoading(false)
       } else if (data.status === 'transcribed') {
         updateMessages('transcribed', data.prompt)
       } else if (data.status === 'started') {

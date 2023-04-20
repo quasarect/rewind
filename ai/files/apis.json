@@ -36,8 +36,8 @@
   },
   {
     "id": 5,
-    "name": "unavailable function",
-    "description": "user accessed unavailable feature",
+    "name": "unavailable",
+    "description": "unavailable feature accessed",
     "type": "unavailable"
   }
 ]
