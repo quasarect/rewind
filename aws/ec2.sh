@@ -1,0 +1,1 @@
+ssh -i "rewind.pem" ubuntu@ec2-65-2-182-155.ap-south-1.compute.amazonaws.com
