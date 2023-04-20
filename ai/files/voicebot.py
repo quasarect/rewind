@@ -68,10 +68,10 @@ def take_prompt():
     except openai.error.RateLimitError:
         transcript = None
         filter_query = {"user_id": request.user_id}
-        update_query = {"$set": {"status": "error", "error": "error in transcription"}}
+        update_query = {"$set": {"status": "error", "error": "Rate limit exceeded. Try again after few seconds."}}
         collection.update_one(filter_query, update_query)
 
-        return make_response(jsonify({"message": "Rate limit error. Try again after few seconds."}), 429)
+        return make_response(jsonify({"message": "Rate limit error."}), 429)
     
     except openai.error.AuthenticationError:
         transcript = None
@@ -153,7 +153,7 @@ def execute_command(prompt):
     except openai.error.RateLimitError:
 
         filter_query = {"user_id": request.user_id}
-        update_query = {"$set": {"status": "error", "error": "error in extracting api details"}}
+        update_query = {"$set": {"status": "error", "error": "Rate limit exceeded. Try again after few seconds"}}
         collection.update_one(filter_query, update_query)
         return make_response(jsonify({"message": "Rate limit error. Try again after few seconds."}), 429)
     
@@ -169,28 +169,27 @@ def execute_command(prompt):
         
         return make_response(jsonify({"message": "server error"}), 500)
     
-        
+    try:   
     #get the format of the api call from the apis.json file
-    var = "{{}}"
-    user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}. fill and update the null values only. Dont change anything else.'
-    #provide the prompt to the openai api
-    print("2nd",user_prompt)
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages= [{"role": "system", "content": "You are an examinee replacing only the null values. only format specified as output. No explanation."},
-        {"role": "user", "content": user_prompt}],
-        #temperature=0.5,
-        #max_tokens=9,
-        # top_p=1,
-        # frequency_penalty=0,
-        # presence_penalty=0
-    )
-    response = response['choices'][0]['message']['content']
-    filter_query = {"user_id": request.user_id}
-    update_query = {"$set": {"status": "processed"}}
-    collection.update_one(filter_query, update_query)
+        user_prompt = f'user prompt: {prompt}.\n Required format: {api_format[id]}. fill and update the null values only. Dont change anything else.'
+        #provide the prompt to the openai api
+        print("2nd",user_prompt)
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages= [{"role": "system", "content": "You are an examinee replacing only the null values. only format specified as output. No explanation."},
+            {"role": "user", "content": user_prompt}],
+            temperature=0.5,
+            #max_tokens=9,
+            # top_p=1,
+            # frequency_penalty=0,
+            # presence_penalty=0
+        )
+        response = response['choices'][0]['message']['content']
+        filter_query = {"user_id": request.user_id}
+        update_query = {"$set": {"status": "processed"}}
+        collection.update_one(filter_query, update_query)
     
-    try:
+    
         if eval(response):
 
             response = eval(response)
@@ -206,7 +205,7 @@ def execute_command(prompt):
     except openai.error.RateLimitError:
 
         filter_query = {"user_id": request.user_id}
-        update_query = {"$set": {"status": "error", "error": "error in extracting formatted response"}}
+        update_query = {"$set": {"status": "error", "error": "Rate limit exceeded. Try again after few seconds"}}
         collection.update_one(filter_query, update_query)
         return make_response(jsonify({"message": "Rate limit error. Try again after few seconds."}), 429)
     
