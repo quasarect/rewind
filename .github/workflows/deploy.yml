@@ -19,10 +19,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           # cache: 'npm'
-      - working-directory: ./backend
-      - run: pwd
-      - run: npm i
-      - run: tsc
-      - run: cd ../frontend
-      - run: yarn
-      - run: yarn build
+        working-directory: ./backend
+      - run: |
+          pwd
+          npm ci
+          tsc
