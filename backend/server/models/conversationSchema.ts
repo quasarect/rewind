@@ -6,6 +6,13 @@ const conversationSchema = new Schema<IConversation>(
 		lastMessage: {
 			type: String,
 		},
+		seen: {
+			type: Boolean,
+		},
+		by: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		},
 		participants: {
 			type: [mongoose.Schema.Types.ObjectId],
 			ref: "User",

@@ -7,6 +7,7 @@ import { IError } from "../types/basic/IError";
 import { sendNotification } from "../services/notifications";
 import { NotificationTypes } from "../enums/notificationEnums";
 import notificationModel from "../models/notificationSchema";
+import conversationModel from "../models/conversationSchema";
 
 export const userByFields: RequestHandler = async (req, res, next) => {
 	const username = req.query.username;
@@ -256,7 +257,7 @@ export const getMe: RequestHandler = (req, res, next) => {
 		.populate("spotifyData")
 		.populate("lastNotif")
 		.then(async (user) => {
-			let notificationCount, createdAt;
+			let notificationCount, createdAt, messageCount;
 			if (user?.lastNotif) {
 				//@ts-ignore
 				createdAt = user.lastNotif.createdAt;
@@ -270,11 +271,15 @@ export const getMe: RequestHandler = (req, res, next) => {
 					recipient: user?._id,
 				})
 				.count();
+			messageCount = await conversationModel
+				.find({ by: { $ne: user?._id }, seen: false })
+				.count();
 			res.status(200).json({
 				user: {
 					// @ts-ignore
 					...user._doc,
 					notifCount: notificationCount || 0,
+					messageCount: messageCount || 0,
 				},
 			});
 		})

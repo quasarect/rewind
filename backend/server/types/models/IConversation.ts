@@ -7,4 +7,6 @@ export interface IConversation {
 	participants: Array<Types.ObjectId>;
 	messages: Array<Types.ObjectId>;
 	group: IGroup;
+	seen: boolean;
+	by: Types.ObjectId;
 }

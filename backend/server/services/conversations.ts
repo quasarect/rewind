@@ -96,11 +96,17 @@ export const pushMessage = async (
 				$push: { messages: message },
 			})
 			.then((mess) => {
-				// console.log("message pushed");
+				console.log("message pushed");
 			});
+		console.log("message pushed");
 		await conversationModel.findByIdAndUpdate(conversation._id, {
-			$set: { lastMessage: message.message },
+			$set: {
+				lastMessage: message.message,
+				by: message.userId,
+				seen: false,
+			},
 		});
+		console.log(message.userId);
 		return true;
 	} catch (err) {
 		console.log(err);

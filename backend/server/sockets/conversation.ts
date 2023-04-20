@@ -29,6 +29,9 @@ export function chatSocket(socket: Socket, userId: string): void {
 			return;
 		}
 		await socket.join(event.room);
+		await conversationModel.findByIdAndUpdate(event.room, {
+			$set: { seen: true },
+		});
 		socket.in(event.room).emit("online", { user: userId });
 	});
 	/* On typing and stoptyping event we emit typing action and array of users

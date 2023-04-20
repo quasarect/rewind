@@ -19,6 +19,7 @@ export const globalSearch: RequestHandler = async (req, res, next) => {
 					{ username: { $regex: searchText, $options: "i" } },
 					{ email: { $regex: searchText, $options: "i" } },
 					{ userId: { $regex: searchText, $options: "i" } },
+					{ name: { $regex: searchText, $options: "i" } },
 				],
 			})
 			.select("name username email profileUrl"),
