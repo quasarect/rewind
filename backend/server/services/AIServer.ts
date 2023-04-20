@@ -19,7 +19,7 @@ export const setTagline = async (userId: string) => {
 				console.log("tagline updated");
 			})
 			.catch((err) => {
-				console.error(err);
+				console.error(err.message);
 				console.log("tagline update error");
 			});
 		return tagline.data.tagline;

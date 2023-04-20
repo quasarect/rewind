@@ -15,6 +15,7 @@ def test():
 
 #tagline generation route
 @app.route('/tagline', methods=['GET'])
+@cross_origin()
 def tagline():
     user_id = request.headers.get('Authorization').split(' ')[1]
     #user_id = "6439bfa512b767882aee8b9b"

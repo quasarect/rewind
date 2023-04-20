@@ -1,14 +1,18 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 
 import PostUI from '../components/posts/Post'
 
 import { useHttpClient } from '../hooks/httpRequest'
 
+import { authContext } from '../store/authContext'
+
 function Post() {
   const { postId } = useParams()
 
   const { sendRequest, isLoading } = useHttpClient()
+
+  const { setSongs } = useContext(authContext)
 
   const navigate = useNavigate()
 
@@ -27,6 +31,17 @@ function Post() {
 
       if (res1.post) {
         setPost(res1.post)
+
+        if (post?.dedicated?.songUrl) {
+          let track = post?.dedicated?.songUrl.replace(
+            'https://open.spotify.com/track/',
+            'spotify:track:'
+          )
+
+          console.log(track)
+
+          setSongs((prev) => [track])
+        }
       } else {
         navigate('/404')
       }

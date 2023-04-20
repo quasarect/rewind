@@ -16,6 +16,8 @@ function Body({ setLoading }) {
 
   const [API, setAPI] = useState(null)
 
+  const [users, setUsers] = useState([])
+
   const updateMessages = useCallback((state, message) => {
     setMessages((messages) => {
       let flag = 0
@@ -41,6 +43,18 @@ function Body({ setLoading }) {
           text,
         })
       )
+        .then((data) => {
+          cb(data)
+          setLoading(false)
+        })
+        .catch((err) => {
+          console.log(err)
+          setLoading(false)
+        })
+    },
+
+    searchUser: (text, cb) => {
+      sendRequest('/search/global?text=' + text)
         .then((data) => {
           cb(data)
           setLoading(false)
@@ -85,6 +99,8 @@ function Body({ setLoading }) {
 
         switch (data?.success?.type) {
           case 'post':
+            updateMessages('started', 'Post Body: ' + data?.success?.text)
+            updateMessages('started', 'Creating post...')
             functions.post(data?.success?.text, (data) => {
               if (data) {
                 updateMessages('completed', 'Post created successfully')
@@ -92,7 +108,27 @@ function Body({ setLoading }) {
                 updateMessages('error', data.error)
               }
             })
-
+            break
+          case 'search-user':
+            updateMessages('started', 'Search Query: ' + data?.success?.query)
+            functions.searchUser(data?.success?.query, (data) => {
+              if (data) {
+                updateMessages('completed', 'Fetching Users..')
+                setUsers(data.users)
+                if (data.users.length === 0) {
+                  updateMessages('error', 'No users found')
+                } else {
+                  updateMessages(
+                    'completed',
+                    'Users fetched successfully. Found ' +
+                      data.users.length +
+                      ' users'
+                  )
+                }
+              } else {
+                updateMessages('error', data.error)
+              }
+            })
             break
           default:
             updateMessages('error', 'No available API')
@@ -145,22 +181,35 @@ function Body({ setLoading }) {
           </div>
         )
       })}
-      {API && (
-        <>
-          <div className="mt-2">
-            API <br />
-            type: {API?.type} <br />
-            name: {API?.name}
-            <br />
-            description: {API?.description}
-            <br />
-            endpoint: {API?.endpoint}
-            <br />
-            body_text: {API?.text}
-            <br />
-          </div>
-        </>
-      )}
+
+      <div className="mt-4 w-full">
+        {users?.length > 0 &&
+          users.map((user, index) => {
+            return (
+              <div
+                className="
+            flex items-center justify-start border-b border-gray-600 100 py-2 pb-4 cursor-pointer
+            "
+                key={index}
+              >
+                <img
+                  src={user?.profileUrl}
+                  alt="song"
+                  className="w-12 h-12 rounded-lg"
+                />
+                <div className="ml-4">
+                  <h1 className="text-lg font-semibold font-lato text-white ">
+                    {user?.name}
+                  </h1>
+                  <h1 className="text-sm font-lato text-gray-400 ">
+                    {user?.username}
+                  </h1>
+                </div>
+              </div>
+            )
+          })}
+      </div>
+
       {error && (
         <div className="mt-2">
           Error Occured while calling the API:{' '}

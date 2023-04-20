@@ -59,7 +59,21 @@ function Messages() {
         })
       })
 
-      console.log(response.conversations)
+      response?.conversations
+        ?.sort((a, b) => {
+          // sort by updatedAt first
+          const dateA = new Date(a.updatedAt)
+          const dateB = new Date(b.updatedAt)
+          if (dateA > dateB) return -1
+          if (dateA < dateB) return 1
+          return 0
+        })
+        .sort((a, b) => {
+          // sort by seen = false at the top
+          if (a.seen === false && b.seen === true) return -1
+          if (a.seen === true && b.seen === false) return 1
+          return 0
+        })
 
       setConversations(response.conversations)
     } catch (err) {
@@ -109,9 +123,15 @@ function Messages() {
                   <div className="text-lg font-semibold">
                     {conversation?.name}
                   </div>
-                  <div className="font-manrope text-base">
-                    {conversation?.lastMessage}
-                  </div>
+                  {conversation?.seen ? (
+                    <div className="font-manrope text-base">
+                      {conversation?.lastMessage}
+                    </div>
+                  ) : (
+                    <div className="font-manrope text-base text-purple-400">
+                      {conversation?.lastMessage}
+                    </div>
+                  )}
                 </div>
               </div>
             </Link>

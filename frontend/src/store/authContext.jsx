@@ -5,6 +5,8 @@ const authContext = createContext({
   login: () => {},
   logout: () => {},
   fetchMe: () => {},
+  setSongs: () => {},
+  songs: [],
   token: null,
   user: null,
 })
@@ -17,6 +19,8 @@ const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState(null)
   const [user, setUser] = useState(null)
+
+  const [songs, setSongs] = useState(['spotify:track:2pUpNOgJBIBCcjyQZQ00qU'])
 
   const { sendRequest } = useHttpClient()
 
@@ -53,6 +57,8 @@ const AuthContextProvider = (props) => {
         fetchMe,
         login,
         logout,
+        songs,
+        setSongs,
       }}
     >
       {props.children}
