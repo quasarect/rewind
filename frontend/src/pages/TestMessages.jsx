@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { socket } from '../socket'
+import { chatSocket as socket } from '../socket'
 
 function Messages() {
   const [messages, setMessages] = useState([])
 
-  useEffect(() => {
-    socket.on('message', (message) => {
-      setMessages((messages) => [...messages, message])
-    })
-  }, [])
+  // useEffect(() => {
+  //   socket.on('message', (message) => {
+  //     setMessages((messages) => [...messages, message])
+  //   })
+  // }, [])
 
   const connect = () => {
     socket.connect()

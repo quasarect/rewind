@@ -32,12 +32,12 @@ function App() {
   }, [])
 
   return (
-    <div className='flex h-screen bg-rewind-dark-primary text-white '>
+    <div className="flex h-screen bg-rewind-dark-primary text-white ">
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/callback' element={<Callback />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/callback" element={<Callback />} />
         <Route
-          path='/'
+          path="/"
           element={
             <NavbarSidebarWrapper>
               <Home />
@@ -45,7 +45,7 @@ function App() {
           }
         />
         <Route
-          path='/explore'
+          path="/explore"
           element={
             <NavbarSidebarWrapper>
               <Explore />
@@ -53,7 +53,7 @@ function App() {
           }
         />
         <Route
-          path='/post/:postId'
+          path="/post/:postId"
           element={
             <NavbarSidebarWrapper>
               <Post />
@@ -62,18 +62,18 @@ function App() {
         />
 
         <Route
-          path='/messages'
+          path="/messages"
           element={
             <NavbarSidebarWrapper showSidebar={false}>
               <Messages />
             </NavbarSidebarWrapper>
           }
         >
-          <Route path=':coversationId' element={<Chat />} />
+          <Route path=":conversationId" element={<Chat />} />
         </Route>
 
         <Route
-          path='/notifications'
+          path="/notifications"
           element={
             <NavbarSidebarWrapper>
               <Notifications />
@@ -81,10 +81,10 @@ function App() {
           }
         />
 
-        <Route path='/test-messages' element={<TestMessage />} />
-        <Route path='/404' element={<NotFound404 />} />
+        <Route path="/test-messages" element={<TestMessage />} />
+        <Route path="/404" element={<NotFound404 />} />
         <Route
-          path='/:username'
+          path="/:username"
           element={
             <NavbarSidebarWrapper showSidebar={false}>
               <Profile />

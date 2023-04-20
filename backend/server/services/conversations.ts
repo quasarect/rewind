@@ -36,7 +36,10 @@ export const createConversation = async (users: Array<string>) => {
  */
 export const getConversation = async (conversationId: string) => {
 	try {
-		const data = conversationModel.find({ _id: conversationId });
+		const data = conversationModel
+			.findById({ _id: conversationId })
+			.populate({ path: "participants" })
+			.populate({ path: "messages" });
 		return data;
 	} catch (err) {
 		new IError(
@@ -73,12 +76,16 @@ export const pushMessage = async (
 					},
 				],
 			});
-			newMessage.save();
-			conversationModel.findByIdAndUpdate(conversation._id, {
-				$push: {
-					messages: newMessage._id,
-				},
-			});
+			await newMessage.save();
+			await conversationModel
+				.findByIdAndUpdate(conversation._id, {
+					$push: {
+						messages: newMessage._id,
+					},
+				})
+				.then((con) => {
+					// console.log("pushed messages id");
+				});
 			length = 0;
 			messageId = newMessage._id;
 		} else {
@@ -89,8 +96,11 @@ export const pushMessage = async (
 				$push: { messages: message },
 			})
 			.then((mess) => {
-				console.log("message pushed");
+				// console.log("message pushed");
 			});
+		await conversationModel.findByIdAndUpdate(conversation._id, {
+			$set: { lastMessage: message.message },
+		});
 		return true;
 	} catch (err) {
 		console.log(err);

@@ -86,97 +86,108 @@ export const followUser: RequestHandler = async (req, res, next) => {
 		return next(new IError("Already followed", statusCode.BAD_REQUEST));
 	}
 	try {
-		//Add in following of follower
-		userModel
-			.findByIdAndUpdate(
-				{ _id: followerId },
-				{ $inc: { followingCount: 1 } },
-			)
-			.then(async (user) => {
-				// If objectId already exists for user array direct push
-				if (user?.following) {
-					return await userArrayModel
-						.updateOne(
-							{ _id: user.following },
-							{ $addToSet: { users: following } },
-						)
-						.then((up) => {})
+		await Promise.all([
+			//Add in following of follower
+
+			userModel
+				.findByIdAndUpdate(
+					{ _id: followerId },
+					{ $inc: { followingCount: 1 } },
+				)
+				.then(async (user) => {
+					// If objectId already exists for user array direct push
+					if (user?.following) {
+						return await userArrayModel
+							.updateOne(
+								{ _id: user.following },
+								{ $addToSet: { users: following } },
+							)
+							.then((up) => {})
+							.catch((err) => {
+								console.log(err);
+							});
+					}
+					//creat new array of following
+					const follow = new userArrayModel({ users: following });
+					follow
+						.save()
+						.then((follow) => {
+							console.log("following adedd");
+						})
 						.catch((err) => {
 							console.log(err);
 						});
-				}
-				//creat new array of following
-				const follow = new userArrayModel({ users: following });
-				follow
-					.save()
-					.then((follow) => {
-						console.log("following adedd");
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-				//Update the id of the following array users
-				userModel
-					.updateOne({ _id: followerId }, { following: follow._id })
-					.then((up) => {
-						console.log("_id updated");
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-		// Add in follower of following
-		userModel
-			.findOneAndUpdate(
-				{ _id: following },
-				{ $inc: { followerCount: 1 } },
-			)
-			.then(async (user) => {
-				// If objectId already exists for user array direct push
-
-				if (user?.followers) {
-					return await userArrayModel
+					//Update the id of the following array users
+					userModel
 						.updateOne(
-							{ _id: user.followers },
-							{ $addToSet: { users: followerId } },
+							{ _id: followerId },
+							{ following: follow._id },
 						)
-						.then((rep) => {
+						.then((up) => {
+							console.log("_id updated");
+						})
+						.catch((err) => {
+							console.log(err);
+						});
+				})
+				.catch((err) => {
+					console.log(err);
+				}),
+			// Add in follower of following
+			userModel
+				.findOneAndUpdate(
+					{ _id: following },
+					{ $inc: { followerCount: 1 } },
+				)
+				.then(async (user) => {
+					// If objectId already exists for user array direct push
+
+					if (user?.followers) {
+						return await userArrayModel
+							.updateOne(
+								{ _id: user.followers },
+								{ $addToSet: { users: followerId } },
+							)
+							.then((rep) => {
+								res.status(200).json({
+									message: "follower added",
+								});
+							})
+							.catch((err) => {
+								console.log(err);
+							});
+					}
+					// create new array of followers
+					const followers = new userArrayModel({
+						users: followerId,
+					});
+					followers
+						.save()
+						.then((user) => {
+							console.log("Followers created");
+						})
+						.catch((err) => {
+							console.log("dup");
+							console.log(err);
+						});
+					// update the id of the array ka object
+					userModel
+						.updateOne(
+							{ _id: following },
+							{ followers: followers._id },
+						)
+						.then((user) => {
+							console.log("updated user" + user);
 							res.status(200).json({ message: "follower added" });
 						})
 						.catch((err) => {
 							console.log(err);
 						});
-				}
-				// create new array of followers
-				const followers = new userArrayModel({
-					users: followerId,
-				});
-				followers
-					.save()
-					.then((user) => {
-						console.log("Followers created");
-					})
-					.catch((err) => {
-						console.log("dup");
-						console.log(err);
-					});
-				// update the id of the array ka object
-				userModel
-					.updateOne({ _id: following }, { followers: followers._id })
-					.then((user) => {
-						console.log("updated user" + user);
-						res.status(200).json({ message: "follower added" });
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			})
-			.catch((err) => {
-				console.log("err" + err);
-			});
+				})
+				.catch((err) => {
+					console.log("err" + err);
+				}),
+		]);
 		sendNotification(
 			//@ts-ignore
 			following,
@@ -265,7 +276,6 @@ export const getMe: RequestHandler = (req, res, next) => {
 					...user._doc,
 					notifCount: notificationCount || 0,
 				},
-				
 			});
 		})
 		.catch((err) => {
