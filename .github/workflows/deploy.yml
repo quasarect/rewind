@@ -19,7 +19,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           # cache: 'npm'
-      - run: cd backend
+      - run: cd ./backend
+      - run: echo "cded to backend"
       - run: npm i
       - run: tsc
       - run: cd ../frontend
