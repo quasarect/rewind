@@ -61,6 +61,17 @@ export const handleOauth: RequestHandler = async (
 	// First exhange code for tokens
 	axios(config)
 		.then(async (tokens) => {
+			console.log("test request");
+			axios
+				.get(process.env.AI_SERVER_URL + "/test")
+				.then((reply) => {
+					console.log("test request success");
+					console.log(reply.data);
+				})
+				.catch((err) => {
+					console.log(process.env.AI_SERVER_URL + "/test");
+					console.log(err);
+				});
 			// Once tokens are received hit me endpoint for user details
 			axios
 				.get(Spotify.ME, {
