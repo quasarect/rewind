@@ -25,7 +25,7 @@ const AuthContextProvider = (props) => {
   const { sendRequest } = useHttpClient()
 
   const fetchMe = async () => {
-    const res = await sendRequest('/user/me')
+    let res = await sendRequest('/user/me')
     setUser(res.user)
   }
 
