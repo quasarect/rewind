@@ -58,11 +58,13 @@ export const updateUser: RequestHandler = (req: Authenticated, res, next) => {
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "name or username cannot be empty" });
 	}
+
 	userModel
 		.findByIdAndUpdate(userId, {
-			name: userUpdates.name,
-			bio: userUpdates.bio,
-			username: userUpdates.username,
+			name: userUpdates?.name,
+			bio: userUpdates?.bio,
+			username: userUpdates?.username,
+			aiGeneratedLine: userUpdates?.tagline,
 		})
 		.then((updated) => {
 			res.status(200).json({ message: "User updated" });
