@@ -24,6 +24,6 @@ jobs:
           # cache: 'npm'
       - run: |
           pwd
-          npm ci
           tsc
+          npm run test
           echo "done"

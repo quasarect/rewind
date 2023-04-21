@@ -10,6 +10,5 @@ describe("GET /test", () => {
 		const response = await chai.request(app).get("/test");
 		expect(response.status).to.equal(200);
 		expect(response.body.message).to.equal("Recieved");
-		console.log("success");
 	});
 });

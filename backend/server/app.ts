@@ -32,7 +32,6 @@ app.use(cors());
 
 //test route
 app.use("/test", (req, res, next) => {
-	console.log("Recieved the request");
 	res.status(200).json({ message: "Recieved" });
 });
 
@@ -57,11 +56,9 @@ app.use("/search", searchRouter);
 
 // Error handling
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
-	console.log("Error handler");
 	if (error.location) {
 		console.error(location);
 	}
-	console.error(error.message);
 	res.status(error.code || 500).json({ message: error.text });
 });
 
