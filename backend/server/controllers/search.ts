@@ -4,8 +4,13 @@ import { statusCode } from "../enums/statusCodes";
 import { IError } from "../types/basic/IError";
 import { searchGlobalTracks } from "../services/spotify";
 import postModel from "../models/postSchema";
+import { Authenticated } from "../types/declarations/jwt";
 
-export const globalSearch: RequestHandler = async (req, res, next) => {
+export const globalSearch: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const searchText: string = req.query.text as string;
 	await Promise.all([
 		postModel
@@ -32,7 +37,11 @@ export const globalSearch: RequestHandler = async (req, res, next) => {
 		});
 };
 
-export const searchbyUsername: RequestHandler = (req, res, next) => {
+export const searchbyUsername: RequestHandler = (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const username = req.query.username as string;
 	const regexp = new RegExp(username, "i");
 	userModel
@@ -56,7 +65,11 @@ export const searchbyUsername: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const searchSong: RequestHandler = async (req, res, next) => {
+export const searchSong: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	try {
 		const songText = req.query.text as string;
 		const userId = req.user?.id;

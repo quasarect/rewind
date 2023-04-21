@@ -6,10 +6,12 @@
 	"scripts": {
 		"start": "nodemon dist/app.js",
 		"lint": "eslint --ext .ts --config .eslintrc.json ./server/**/*.ts",
+		"lint-fix": "eslint --ext .ts --config .eslintrc.json ./server/**/*.ts --fix",
 		"prettier-check": "prettier --check **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore",
 		"prettier-format": "prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore",
 		"server-lock": "netstat -punta | grep 3000 \n echo \"Now use kill -9 <pid>\"",
-		"test": "mocha --require ts-node/register 'tests/**/*.test.ts'"
+		"testscript": "mocha --require ts-node/register server/tests/**/*.test.ts",
+		"test": "prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore && eslint --ext .ts --config .eslintrc.json ./server/**/*.ts --fix && mocha --require ts-node/register server/tests/**/*.test.ts"
 	},
 	"author": "",
 	"license": "ISC",

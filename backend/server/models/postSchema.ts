@@ -61,6 +61,5 @@ const postSchema = new Schema<IPost>(
 	{ timestamps: true },
 );
 
-
 const postModel = model<IPost>("Post", postSchema);
 export default postModel;

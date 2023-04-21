@@ -719,13 +719,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"automation-events@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "automation-events@npm:5.0.3"
+"automation-events@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "automation-events@npm:6.0.0"
   dependencies:
     "@babel/runtime": ^7.21.0
     tslib: ^2.5.0
-  checksum: 8a9334e89d8cc4628e4db93e9e1dcce9f62ee41cfd7c4691f52f81eb0850b3f8f54a3dd89b36d1a45d9966bf1e4a17697178b1afdfa074e9bfd02ed181d75ba9
+  checksum: b0897c33a7ea709adda1cd3446281610a343f30b8e1a2edb8fd0e4d7d5f58bd4c4740256b1da04603760eef31bbfbf3cc289fd13b8d9db519a9d833643d334d1
   languageName: node
   linkType: hard
 
@@ -789,7 +789,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"broker-factory@npm:^3.0.75":
+"broker-factory@npm:^3.0.75, broker-factory@npm:^3.0.76":
   version: 3.0.76
   resolution: "broker-factory@npm:3.0.76"
   dependencies:
@@ -849,9 +849,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001449, caniuse-lite@npm:^1.0.30001464":
-  version: 1.0.30001480
-  resolution: "caniuse-lite@npm:1.0.30001480"
-  checksum: c0b40f02f45ee99c73f732a3118028b2ab1544962d473d84f2afcb898a5e3099bd4c45f316ebc466fb1dbda904e86b72695578ca531a0bfa9d6337e7aad1ee2a
+  version: 1.0.30001481
+  resolution: "caniuse-lite@npm:1.0.30001481"
+  checksum: 8200a043c191b4fd4fe0beda37a58fd61869c895ab93f87bdd0420e5927453f48434d716ce9da8552ff6c3ecc4dcd1366354cda3a134f3cc844af741574a7cab
   languageName: node
   linkType: hard
 
@@ -1243,38 +1243,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extendable-media-recorder-wav-encoder-broker@npm:^7.0.77":
-  version: 7.0.77
-  resolution: "extendable-media-recorder-wav-encoder-broker@npm:7.0.77"
+"extendable-media-recorder-wav-encoder-broker@npm:^7.0.78":
+  version: 7.0.78
+  resolution: "extendable-media-recorder-wav-encoder-broker@npm:7.0.78"
   dependencies:
     "@babel/runtime": ^7.21.0
-    broker-factory: ^3.0.75
-    extendable-media-recorder-wav-encoder-worker: ^8.0.76
+    broker-factory: ^3.0.76
+    extendable-media-recorder-wav-encoder-worker: ^8.0.77
     tslib: ^2.5.0
-  checksum: 6bf063169e56ef65e94cee27c701e3052b29d6bd28d51548e91b07947256d008cf8d2338fd90f673061ba80a694cb74c4c3983023063234319c4c10f6fa3315f
+  checksum: 603148107f407de10d6a761069a56acfdeb8eecc4b99f9b0e1f32b61ff25ce5a6ee4739b680d222de5cc01ed90321170259043f4df3875a58f8634109f4bb4c8
   languageName: node
   linkType: hard
 
-"extendable-media-recorder-wav-encoder-worker@npm:^8.0.76":
-  version: 8.0.76
-  resolution: "extendable-media-recorder-wav-encoder-worker@npm:8.0.76"
+"extendable-media-recorder-wav-encoder-worker@npm:^8.0.77":
+  version: 8.0.77
+  resolution: "extendable-media-recorder-wav-encoder-worker@npm:8.0.77"
   dependencies:
     "@babel/runtime": ^7.21.0
     tslib: ^2.5.0
-    worker-factory: ^6.0.76
-  checksum: fecdd6ccc3b16ba31d2edcc411a2def678151a2bc702b4a5a621a206548003d80f73c2f05793947f3961bd361b96ad994d2f1adfecf478ffb0baf7eadfb9b972
+    worker-factory: ^7.0.0
+  checksum: 2208a00fdc0f9c0e77c54925475a8a9347eddbfa4f115048dbaf6d395891ee23979cf78fc2b2d72b01a923ebc09117e177453594170de400d91b3134ca384ab0
   languageName: node
   linkType: hard
 
 "extendable-media-recorder-wav-encoder@npm:^7.0.68":
-  version: 7.0.85
-  resolution: "extendable-media-recorder-wav-encoder@npm:7.0.85"
+  version: 7.0.86
+  resolution: "extendable-media-recorder-wav-encoder@npm:7.0.86"
   dependencies:
     "@babel/runtime": ^7.21.0
-    extendable-media-recorder-wav-encoder-broker: ^7.0.77
-    extendable-media-recorder-wav-encoder-worker: ^8.0.76
+    extendable-media-recorder-wav-encoder-broker: ^7.0.78
+    extendable-media-recorder-wav-encoder-worker: ^8.0.77
     tslib: ^2.5.0
-  checksum: 3c58fa5e4167fab4d10e31a17f7f5533ed38d40457d4ccb78858e42b62146d3e20eba127e1d373dfdc55763c4b20f55ee2554fc8e1cb1898c347052f1425ccf4
+  checksum: 94b3ff18db6f353b41e0e42e1bf588470dda79af5e4e45ff04ccb76d2c2a54e0014a0bd9c8d145a5f2c68baf1bdadf5212eb5323d5ad48bf491be0e0afc08821
   languageName: node
   linkType: hard
 
@@ -1848,40 +1848,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"media-encoder-host-broker@npm:^7.0.78":
-  version: 7.0.78
-  resolution: "media-encoder-host-broker@npm:7.0.78"
+"media-encoder-host-broker@npm:^7.0.79":
+  version: 7.0.79
+  resolution: "media-encoder-host-broker@npm:7.0.79"
   dependencies:
     "@babel/runtime": ^7.21.0
-    broker-factory: ^3.0.75
-    fast-unique-numbers: ^7.0.2
-    media-encoder-host-worker: ^9.1.0
+    broker-factory: ^3.0.76
+    fast-unique-numbers: ^8.0.0
+    media-encoder-host-worker: ^9.1.1
     tslib: ^2.5.0
-  checksum: d39c310b50cb1aa304fb74efffe91fad9fe7e81084540fa6de505579e5c6829a432fe371539228cf830cb0aff78fec8c3863cf15ff5aba9fef4e4bb19992654e
+  checksum: bd2a36ab3c09e21696d5c93c53680b1a453b6c9777137a2ecdfded192fbbf0fb5c55195e561ea62e1cd08fc8716c0a561c6d30f1ac7f778ff99cfeb9867ede31
   languageName: node
   linkType: hard
 
-"media-encoder-host-worker@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "media-encoder-host-worker@npm:9.1.0"
+"media-encoder-host-worker@npm:^9.1.1":
+  version: 9.1.1
+  resolution: "media-encoder-host-worker@npm:9.1.1"
   dependencies:
     "@babel/runtime": ^7.21.0
-    extendable-media-recorder-wav-encoder-broker: ^7.0.77
+    extendable-media-recorder-wav-encoder-broker: ^7.0.78
     tslib: ^2.5.0
-    worker-factory: ^6.0.76
-  checksum: 760f46f446ab825996fd785405a71fe44aa67af2dbb050d9f14e614baffbbfa62b1f5abcc9c44e0e7e70dc4e2516099d0e2a0e584217f0897e3e155e683a8426
+    worker-factory: ^7.0.0
+  checksum: 9327cb4ceeeee0b0e32b3a558475d8042022696cf7d25ea0bd0301e1cff4ad7d753f6bfe8217dd2fdd5e07dd824fee30dd86095c10b24339a7909c07d89ace5a
   languageName: node
   linkType: hard
 
 "media-encoder-host@npm:^8.0.76":
-  version: 8.0.88
-  resolution: "media-encoder-host@npm:8.0.88"
+  version: 8.0.89
+  resolution: "media-encoder-host@npm:8.0.89"
   dependencies:
     "@babel/runtime": ^7.21.0
-    media-encoder-host-broker: ^7.0.78
-    media-encoder-host-worker: ^9.1.0
+    media-encoder-host-broker: ^7.0.79
+    media-encoder-host-worker: ^9.1.1
     tslib: ^2.5.0
-  checksum: 0c7e5bed73a2f95ba15044b6e866136422a22e6b32f7ad1aae27acfcb084dfa99841e5d2a02c783dd0edc831b9e0aeb8b5b65a2cc5780d080bba4a1acd4eb7b8
+  checksum: 3e1be4034ef8ffaee0f1495ebe7e0fdd39d2327354e520d917b488e345bfe022050b9d3cac9577ba22f6abcd8f7a1a5ecd29a26cf8278bafdea95e65887ff337
   languageName: node
   linkType: hard
 
@@ -2292,13 +2292,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.0.9, postcss@npm:^8.4.21":
-  version: 8.4.22
-  resolution: "postcss@npm:8.4.22"
+  version: 8.4.23
+  resolution: "postcss@npm:8.4.23"
   dependencies:
     nanoid: ^3.3.6
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
-  checksum: 7473dfb7ac5b4cb03576c39d687d7fc02c826ab08af97df15b5d3970662532d44a18a0994f392a9c3658ee17c292e7a55990e586b90ca0afcc9f36df13e07029
+  checksum: 8bb9d1b2ea6e694f8987d4f18c94617971b2b8d141602725fedcc2222fdc413b776a6e1b969a25d627d7b2681ca5aabb56f59e727ef94072e1b6ac8412105a2f
   languageName: node
   linkType: hard
 
@@ -2523,9 +2523,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^3.18.0":
-  version: 3.20.6
-  resolution: "rollup@npm:3.20.6"
+"rollup@npm:^3.20.2":
+  version: 3.20.7
+  resolution: "rollup@npm:3.20.7"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -2533,7 +2533,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: fa30f1e1d214b8c62e631d3c181a75d61bc9c20fca38220d6f938bb3bf734a874e407cd641c90f550dc2b127df5029dfb3108be08934a654f1f40b50f368b0c2
+  checksum: 443f26aa6e42b94b4b137fbc3a07c78254cafc4ae53e0547bf5a94337b0658ca100d4e1c7e24870e399e5c7068a419cc0d367bfd35f4b1552d0b5e6d3482c517
   languageName: node
   linkType: hard
 
@@ -2744,13 +2744,13 @@ __metadata:
   linkType: hard
 
 "standardized-audio-context@npm:^25.3.29, standardized-audio-context@npm:^25.3.41":
-  version: 25.3.43
-  resolution: "standardized-audio-context@npm:25.3.43"
+  version: 25.3.44
+  resolution: "standardized-audio-context@npm:25.3.44"
   dependencies:
     "@babel/runtime": ^7.21.0
-    automation-events: ^5.0.3
+    automation-events: ^6.0.0
     tslib: ^2.5.0
-  checksum: 041ff9e2b956c6a5a03410a3f5f6e888ab34d5136567438b237aa7a1f99f04359e15860d2d251e3c74b6b41ebbf0e4ead3bb184a3c9c88ff1ede131411789633
+  checksum: 41fc01c3f85a6756298e24a30753ca0aa1e81c87cfd13c648aea1c8a5a47a2f3e7801b9e135a79deef24089ec8a622443c80e88d96173bf645fcceefdc32dae6
   languageName: node
   linkType: hard
 
@@ -2974,14 +2974,13 @@ __metadata:
   linkType: hard
 
 "vite@npm:^4.2.0":
-  version: 4.2.2
-  resolution: "vite@npm:4.2.2"
+  version: 4.3.1
+  resolution: "vite@npm:4.3.1"
   dependencies:
     esbuild: ^0.17.5
     fsevents: ~2.3.2
     postcss: ^8.4.21
-    resolve: ^1.22.1
-    rollup: ^3.18.0
+    rollup: ^3.20.2
   peerDependencies:
     "@types/node": ">= 14"
     less: "*"
@@ -3007,7 +3006,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 7fff9d046f6091c02e030aa5f45e68939b9bec1dd15d4e2c3c084d82ec185300295f3db26f537daf2e19f9ad191be260bf70e5fe0e2d9054f174a7ad457623f8
+  checksum: e58ba33ec10af6167686c1c43c61f31fcbc6b3b6a1f16ed03fb6cc8278700c6edaf4ff394ef454291ee35924054c7772feac159f1acf3af1a33d289fe8494d9c
   languageName: node
   linkType: hard
 

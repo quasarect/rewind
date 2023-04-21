@@ -9,3 +9,7 @@ declare global {
 		}
 	}
 }
+
+export interface Authenticated extends Request {
+	user?: { id: string | Types.ObjectId; type: string; _v: string };
+}

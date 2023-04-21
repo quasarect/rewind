@@ -9,8 +9,14 @@ import userModel from "../models/userSchema";
 import { generateToken } from "../middlewares/auth";
 import { refreshToken } from "../services/spotify";
 import { setTagline } from "../services/AIServer";
+import { Authenticated } from "../types/declarations/jwt";
 
-export const refresh: RequestHandler = async (req, res, next) => {
+export const refresh: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
+	//@ts-ignore
 	const userId = req.user?.id;
 	const data = await userModel.findById(userId).populate("spotifyData");
 	const tokens = await refreshToken(
@@ -22,7 +28,11 @@ export const refresh: RequestHandler = async (req, res, next) => {
 	res.status(200).json({ accessToken: tokens.accessToken });
 };
 
-export const handleOauth: RequestHandler = async (req, res, next) => {
+export const handleOauth: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	// Recieive request from front end extract code
 	const code = req.body.code;
 	if (!code) {
@@ -78,7 +88,7 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 							accessToken: tokens.data.access_token,
 							refreshToken: tokens.data.refresh_token,
 						});
-						setTagline(oldUser._id.toString());
+						await setTagline(oldUser._id.toString());
 						return res.status(200).json({
 							token: generateToken(
 								oldUser!._id.toString(),
@@ -137,10 +147,9 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 								),
 							);
 						});
-					setTagline(user._id.toString());
+					await setTagline(user._id.toString());
 				})
 				.catch((err) => {
-					console.log(err);
 					next(
 						new IError(
 							"Couldnt get user data",
@@ -150,7 +159,6 @@ export const handleOauth: RequestHandler = async (req, res, next) => {
 				});
 		})
 		.catch((err) => {
-			console.log(err);
 			next(
 				new IError(
 					"Couldnt get tokens for code",

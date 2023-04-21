@@ -23,6 +23,7 @@ export function isAuth(
 		// 		.status(statusCode.UNAUTHORIZED)
 		// 		.json({ message: "Outdated version" });
 		// }
+		//@ts-ignore
 		req.user = decoded;
 		if (req.body.test) {
 			return res.status(statusCode.OK).json({ message: "Auhtorized" });
@@ -41,6 +42,7 @@ export function passAuth(req: Request, res: Response, next: NextFunction) {
 		type: string;
 		_v: string;
 	};
+	//@ts-ignore
 	req.user = decoded;
 
 	next();
@@ -53,7 +55,6 @@ export function testToken(req: Request, res: Response): void {
 
 export function generateToken(id: string, type: string): string {
 	const user = { id: id, username: type, _v: process.env.VERSION };
-	console.log(process.env.VERSION)
 	const token = jwt.sign(user, process.env.JWT_SECRET!, { expiresIn: "7d" });
 	return token;
 }

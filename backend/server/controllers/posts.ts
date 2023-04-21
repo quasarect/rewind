@@ -9,8 +9,9 @@ import path from "path";
 import { sendNotification } from "../services/notifications";
 import { NotificationTypes } from "../enums/notificationEnums";
 import { Types } from "mongoose";
+import { Authenticated } from "../types/declarations/jwt";
 
-export const getPost: RequestHandler = (req, res, next) => {
+export const getPost: RequestHandler = (req: Authenticated, res, next) => {
 	const postId = req.params.id;
 	const userId = req.user?.id;
 	postModel
@@ -32,11 +33,15 @@ export const getPost: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const createPost: RequestHandler = async (req, res, next) => {
+export const createPost: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const userId = req.user?.id as string;
 	const text = req.body?.text;
 	const dedicated =
-		req.body?.dedicated == undefined
+		req.body?.dedicated === undefined
 			? undefined
 			: JSON.parse(req.body.dedicated);
 	const replyTo = req.body?.replyTo;
@@ -122,7 +127,7 @@ export const createPost: RequestHandler = async (req, res, next) => {
 	}
 };
 
-export const deletePost: RequestHandler = (req, res, next) => {
+export const deletePost: RequestHandler = (req: Authenticated, res, next) => {
 	const postId = req.params.id;
 	postModel
 		.findOneAndDelete({ _id: postId })
@@ -155,7 +160,11 @@ export const deletePost: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const postsByUser: RequestHandler = async (req, res, next) => {
+export const postsByUser: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const username = req.params.username;
 	const user = await userModel.findOne({ username: username });
 	postModel
@@ -180,7 +189,7 @@ export const postsByUser: RequestHandler = async (req, res, next) => {
 		});
 };
 
-export const allPosts: RequestHandler = (req, res, next) => {
+export const allPosts: RequestHandler = (req: Authenticated, res, next) => {
 	const userId = req.user?.id;
 	postModel
 		.find({ replyTo: { $exists: false } })
@@ -203,7 +212,11 @@ export const allPosts: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const likePost: RequestHandler = async (req, res, next) => {
+export const likePost: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const userId = req.user?.id as Types.ObjectId;
 	const post = await postModel
 		.findById(req.query.id)
@@ -237,27 +250,17 @@ export const likePost: RequestHandler = async (req, res, next) => {
 					.save()
 					.then((users) => {
 						post!.likedBy = users._id;
-						post?.save()
-							.then((post) => {})
-							.catch((err) => {
-								console.log("id store error");
-								console.log(err);
-							});
+						post?.save();
 					})
 					.catch((err) => {
 						console.log("likeby store array erroe");
 						console.log(err);
 					});
 			} else {
-				userArrayModel
-					.updateOne(
-						{ _id: post.likedBy._id },
-						{ $addToSet: { users: userId } },
-					)
-					.then((users) => {})
-					.catch((err) => {
-						console.log("Could not push user");
-					});
+				userArrayModel.updateOne(
+					{ _id: post.likedBy._id },
+					{ $addToSet: { users: userId } },
+				);
 			}
 		})
 		.catch((err) => {
@@ -266,7 +269,11 @@ export const likePost: RequestHandler = async (req, res, next) => {
 	sendNotification(post?.user!, userId, NotificationTypes.like, post?._id);
 };
 
-export const unlikePost: RequestHandler = async (req, res, next) => {
+export const unlikePost: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const userId = req.user?.id;
 	const post = await postModel
 		.findById(req.query.id)
@@ -310,7 +317,11 @@ export const unlikePost: RequestHandler = async (req, res, next) => {
 	});
 };
 
-export const fetchComments: RequestHandler = (req, res, next) => {
+export const fetchComments: RequestHandler = (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const postId = req.params.postId as string;
 	postModel
 		.find({ replyTo: { $in: [postId] }, reshared: { $exists: false } })
@@ -324,7 +335,7 @@ export const fetchComments: RequestHandler = (req, res, next) => {
 		});
 };
 
-async function resharePost(reshared: any, userId: string) {
+async function resharePost(reshared: any, userId: string): Promise<any> {
 	try {
 		let post = await postModel.findById(reshared);
 		const alreadyReposted = await post

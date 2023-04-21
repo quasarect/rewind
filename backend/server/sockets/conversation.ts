@@ -2,15 +2,15 @@ import { Socket } from "socket.io";
 import conversationModel from "../models/conversationSchema";
 import { pushMessage } from "../services/conversations";
 
-function createTime() {
-	let d = new Date();
+function createTime(): any {
+	const d = new Date();
 	let hours = d.getUTCHours();
 	let minutes: any = d.getUTCMinutes();
-	let ampm = hours >= 12 ? "PM" : "AM";
+	const ampm = hours >= 12 ? "PM" : "AM";
 	hours = hours % 12;
 	hours = hours ? hours : 12; // the hour '0' should be '12'
 	minutes = minutes < 10 ? "0" + minutes : minutes;
-	let timeString = hours + ":" + minutes + " " + ampm;
+	const timeString = hours + ":" + minutes + " " + ampm;
 	return timeString;
 }
 
@@ -24,7 +24,7 @@ export function chatSocket(socket: Socket, userId: string): void {
 	}
 	*/
 	socket.on("conversation", async (event) => {
-		if (event.room == null) {
+		if (event.room === null) {
 			console.log("no room id");
 			return;
 		}
@@ -59,7 +59,7 @@ export function chatSocket(socket: Socket, userId: string): void {
 	*/
 	socket.on("message", async (event) => {
 		//store message
-		if (event.message.text == null) {
+		if (event.message.text === null) {
 			console.log("no text");
 			return;
 		}

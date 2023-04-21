@@ -127,7 +127,5 @@ describe("GET /user/me", () => {
 		expect(response.status).to.equal(200);
 		expect(response.body).to.be.an("object");
 		expect(response.body).to.have.property("user");
-    });
-    
-    
+	});
 });

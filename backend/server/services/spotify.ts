@@ -2,10 +2,10 @@ import axios from "axios";
 import { Spotify } from "../enums/spotifyEnums";
 import keyModel from "../models/keySchema";
 /**
- * 
+ *
  * @param objectId spotifyData _id tokens ka _id
  * @param refresh_token refresh token to refresh
- * @returns 
+ * @returns
  */
 export async function refreshToken(objectId: string, refresh_token: string) {
 	try {
@@ -45,7 +45,7 @@ export async function refreshToken(objectId: string, refresh_token: string) {
 	}
 }
 /**
- * 
+ *
  * @param term The term for the track short,med,long
  * @param limit limit on responses
  * @param spotifyData spotifyData object populated one
@@ -71,7 +71,7 @@ export const getUserTopTrack = async (
 			image_url: track.data.items[0].album.images[0].url,
 		};
 	} catch (err: any) {
-		if (err.response?.data.error?.status == 401) {
+		if (err.response?.data.error?.status === 401) {
 			const newtokens = await refreshToken(
 				spotifyData._id,
 				spotifyData.refreshToken,
@@ -86,12 +86,12 @@ export const getUserTopTrack = async (
 	}
 };
 /**
- * 
+ *
  * @param spotifyData spotifyData populated one
  * @param query string query for search
  * @param type type like "tracks","albums","playlists"
  * @param limit response limit
- * @returns 
+ * @returns
  */
 export const searchGlobalTracks = async (
 	spotifyData: any,
@@ -112,7 +112,7 @@ export const searchGlobalTracks = async (
 		);
 		return track.data;
 	} catch (err: any) {
-		if (err.response?.data.error?.status == 401) {
+		if (err.response?.data.error?.status === 401) {
 			const newtokens = await refreshToken(
 				spotifyData._id,
 				spotifyData.refreshToken,
@@ -124,7 +124,7 @@ export const searchGlobalTracks = async (
 				return await searchGlobalTracks(newtokens, query, type, limit);
 			}
 		}
-		if (err.response?.error?.status == 400) {
+		if (err.response?.error?.status === 400) {
 			return { error: { message: err.response?.error?.message } };
 		}
 	}

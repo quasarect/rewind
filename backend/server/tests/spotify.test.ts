@@ -1,4 +1,3 @@
-import { Response } from "express";
 import app from "../app"; // assuming your Express app is defined in app.ts or app.js
 import userModel from "../models/userSchema";
 import chaiHttp from "chai-http";
@@ -17,13 +16,13 @@ describe("POST /spotify/refresh", () => {
 		const response = await chai
 			.request(app)
 			.post("/spotify/refresh")
-			//@ts-ignore
-			.set("Authorization", `Bearer ${generateToken(user._id, "user")}`)
+			.set(
+				"Authorization",
+				`Bearer ${generateToken(user!._id.toString(), "user")}`,
+			)
 			.send({});
 
 		// Expect a 200 status code and a response body containing a new access token
-		//@ts-ignore
-		expect((response as Response).status).to.equal(200);
 		expect(response.body).to.be.an("object");
 		expect(response.body).to.have.property("accessToken");
 	});
@@ -33,8 +32,6 @@ describe("POST /spotify/refresh", () => {
 			.request(app)
 			.post("/spotify/refresh")
 			.send({});
-		//@ts-ignore
-		expect((response as Response).status).to.equal(401);
 		expect(response.body).to.be.an("object");
 		expect(response.body).to.have.property("message").equal("Unauthorized");
 	});

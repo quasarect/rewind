@@ -8,8 +8,13 @@ import { sendNotification } from "../services/notifications";
 import { NotificationTypes } from "../enums/notificationEnums";
 import notificationModel from "../models/notificationSchema";
 import conversationModel from "../models/conversationSchema";
+import { Authenticated } from "../types/declarations/jwt";
 
-export const userByFields: RequestHandler = async (req, res, next) => {
+export const userByFields: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const username = req.query.username;
 	const userId = req.query.userId;
 	const email = req.query.email;
@@ -22,7 +27,7 @@ export const userByFields: RequestHandler = async (req, res, next) => {
 		.populate({ path: "spotifyData" })
 		.then(async (user) => {
 			if (req.user?.id) {
-				if (req.user.id == user?._id.toString()) {
+				if (req.user.id === user?._id.toString()) {
 					isMe = true;
 				}
 			}
@@ -44,7 +49,7 @@ export const userByFields: RequestHandler = async (req, res, next) => {
 		});
 };
 
-export const updateUser: RequestHandler = (req, res, next) => {
+export const updateUser: RequestHandler = (req: Authenticated, res, next) => {
 	const userId = req.user?.id;
 	const userUpdates = req.body;
 	// Add a validation later in middleware
@@ -72,11 +77,15 @@ export const updateUser: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const followUser: RequestHandler = async (req, res, next) => {
+export const followUser: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const followerId = req.user?.id;
 	const following = req.query.id;
 	// Return if follow for self
-	if (followerId == following) {
+	if (followerId === following) {
 		return next(new IError("Cannot follow self", statusCode.BAD_REQUEST));
 	}
 	// check if already followed
@@ -103,7 +112,6 @@ export const followUser: RequestHandler = async (req, res, next) => {
 								{ _id: user.following },
 								{ $addToSet: { users: following } },
 							)
-							.then((up) => {})
 							.catch((err) => {
 								console.log(err);
 							});
@@ -191,7 +199,6 @@ export const followUser: RequestHandler = async (req, res, next) => {
 		]);
 		console.log("following");
 		await sendNotification(
-			//@ts-ignore
 			following,
 			followerId,
 			NotificationTypes.follow,
@@ -203,10 +210,14 @@ export const followUser: RequestHandler = async (req, res, next) => {
 	}
 };
 
-export const unfollow: RequestHandler = async (req, res, next) => {
+export const unfollow: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const follower = req.user?.id;
 	const following = req.query.id;
-	if (follower == following) {
+	if (follower === following) {
 		return res
 			.status(statusCode.BAD_REQUEST)
 			.json({ message: "Cannot unfolow self" });
@@ -251,14 +262,14 @@ export const unfollow: RequestHandler = async (req, res, next) => {
 		});
 };
 
-export const getMe: RequestHandler = (req, res, next) => {
+export const getMe: RequestHandler = (req: Authenticated, res, next) => {
 	const userId = req.user?.id;
 	userModel
 		.findById(userId)
 		.populate("spotifyData")
 		.populate("lastNotif")
 		.then(async (user) => {
-			let notificationCount, createdAt, messageCount;
+			let createdAt;
 			if (user?.lastNotif) {
 				//@ts-ignore
 				createdAt = user.lastNotif.createdAt;
@@ -266,13 +277,13 @@ export const getMe: RequestHandler = (req, res, next) => {
 				//@ts-ignore
 				createdAt = user?.createdAt;
 			}
-			notificationCount = await notificationModel
+			const notificationCount = await notificationModel
 				.find({
 					createdAt: { $gt: createdAt },
 					recipient: user?._id,
 				})
 				.count();
-			messageCount = await conversationModel
+			const messageCount = await conversationModel
 				.find({ by: { $ne: user?._id }, seen: false })
 				.count();
 			res.status(200).json({
@@ -295,7 +306,11 @@ export const getMe: RequestHandler = (req, res, next) => {
 		});
 };
 
-export const usernameUnique: RequestHandler = (req, res, next) => {
+export const usernameUnique: RequestHandler = (
+	req: Authenticated,
+	res,
+	next,
+) => {
 	const username = req.query.username;
 	if (username == undefined) {
 		return res.status(statusCode.FORBIDDEN);
