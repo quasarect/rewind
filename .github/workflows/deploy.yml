@@ -25,6 +25,6 @@ jobs:
       - run: |
           pwd
           npm i
-          tsc
           npm run test
+          tsc
           echo "done"
