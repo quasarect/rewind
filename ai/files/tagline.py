@@ -114,7 +114,7 @@ def generate_tagline(user_id):
 
         generated_text = response.choices[0]['message']['content']
         
-        return make_response(jsonify({"tagline": generated_text}),200)
+        return {"tagline": generated_text}
     
     except TypeError:
         return make_response(jsonify({"message" : "cannot find user"}), 404)

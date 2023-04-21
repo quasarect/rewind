@@ -17,7 +17,13 @@ def test():
 @app.route('/tagline', methods=['GET'])
 @cross_origin()
 def tagline():
-    user_id = request.headers.get('Authorization').split(' ')[1]
+    try:
+        
+        user_id = request.headers.get('Authorization').split(' ')[1]
+
+    except AttributeError:
+
+        return make_response(jsonify({"message": "no user found"}), 404)
     #user_id = "6439bfa512b767882aee8b9b"
     return generate_tagline(user_id)
 
