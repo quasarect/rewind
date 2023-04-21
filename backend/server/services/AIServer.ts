@@ -2,6 +2,7 @@ import axios from "axios";
 import userModel from "../models/userSchema";
 
 export const setTagline = async (userId: string) => {
+	console.log(process.env.AI_SERVER_URL! + "/tagline");
 	try {
 		const tagline = await axios.get(
 			process.env.AI_SERVER_URL! + "/tagline",
