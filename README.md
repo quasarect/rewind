@@ -14,7 +14,7 @@ The existing music-based social platforms have limited features for user interac
 
 The proposed social platform is implemented keeping in mind the lack of opportunities for the music-loving community to exchange their views and ideas over a platform specially dedicated to the music community.
 The proposed web-based social platform will be heavily dependent on the data provided by Spotify, including user profile information and music streaming capabilities
-It will also have some AI based features like recommendation systems, playlist generator, etc. to improve the user experience.
+It will also have some AI based features like recommendation systems, tagline generator,voice bot, etc. to improve the user experience.
 The primary target audience for this project is the young adults across the country who are a greater part of users on the music streaming platform, Spotify. The platform will be designed & developed by keeping them in mind.
 
 # Tech
@@ -23,7 +23,7 @@ The primary target audience for this project is the young adults across the coun
 
 ● The platform will be heavily dependent on the data provided by Spotify, including real-time music streaming capabilities and user profile details which will be retrieved by integrating the platform with Spotify’s API.
 
-● Features like AI-powered recommendation system, voice bot, and playlist generator will be implemented to enhance user experience.
+● Features like AI-powered recommendation system, voice bot, and tagline generator will be implemented to enhance user experience.
 
 ● After reviewing the various technologies, the plan is to use the MERN stack with NextJS as the React framework to build the social platform.
 
