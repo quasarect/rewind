@@ -92,7 +92,7 @@ export const searchSong: RequestHandler = async (
 			["track"],
 			5,
 		);
-		const songs: any = [];
+		const songs: Array<any> = [];
 		if (tracks?.error) {
 			return res
 				.status(statusCode.BAD_REQUEST)

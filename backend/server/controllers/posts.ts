@@ -348,7 +348,7 @@ export const fetchComments: RequestHandler = async (
  * @param userId The post reshared by the user
  * @returns
  */
-async function resharePost(reshared: any, userId: string): Promise<any> {
+async function resharePost(reshared: Types.ObjectId, userId: string): Promise<any> {
 	try {
 		// Find the post to be reshared
 		let post = await postModel.findById(reshared);
