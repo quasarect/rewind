@@ -4,10 +4,9 @@ import {
 	getMe,
 	unfollow,
 	updateUser,
-	userByFields,
 	usernameUnique,
 } from "../controllers/users";
-import { isAuth, passAuth } from "../middlewares/auth";
+import { isAuth } from "../middlewares/auth";
 import { getNotifications, updateNotifViewed } from "../services/notifications";
 import { IError } from "../types/basic/IError";
 
@@ -29,8 +28,6 @@ userRouter.get("/notifications", isAuth, async (req, res, next) => {
 userRouter.get("/follow", isAuth, followUser);
 
 userRouter.get("/unfollow", isAuth, unfollow);
-// To reteive data with multiple fields
-userRouter.get("", passAuth, userByFields);
 
 userRouter.get("/me", isAuth, getMe);
 

@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import userModel from "../models/userSchema";
 import { statusCode } from "../enums/statusCodes";
 import { IError } from "../types/basic/IError";
-import { searchGlobalTracks } from "../services/spotify";
+import { getUserTopTrack, searchGlobalTracks } from "../services/spotify";
 import postModel from "../models/postSchema";
 import { Authenticated } from "../types/declarations/jwt";
 
@@ -13,11 +13,13 @@ export const globalSearch: RequestHandler = async (
 ) => {
 	const searchText: string = req.query.text as string;
 	await Promise.all([
+		// Search posts using regex
 		postModel
 			.find({
 				$or: [{ text: { $regex: searchText, $options: "i" } }],
 			})
 			.populate({ path: "user", select: "name username profileUrl" }),
+		// Search users using regex
 		userModel
 			.find({
 				$or: [
@@ -33,36 +35,46 @@ export const globalSearch: RequestHandler = async (
 			res.status(200).json({ users: global[1], posts: global[0] });
 		})
 		.catch((err) => {
-			console.log(err);
-		});
-};
-
-export const searchbyUsername: RequestHandler = (
-	req: Authenticated,
-	res,
-	next,
-) => {
-	const username = req.query.username as string;
-	const regexp = new RegExp(username, "i");
-	userModel
-		.find({ username: regexp })
-		.select("name username profileUrl email")
-		.then((users) => {
-			if (users.length == 0) {
-				return res
-					.status(statusCode.NOT_FOUND)
-					.json({ message: "No user found" });
-			}
-			res.status(200).json({ users: users });
-		})
-		.catch((err) => {
 			next(
 				new IError(
-					"Couldnt get users",
+					"Couldnt search globally",
 					statusCode.INTERNAL_SERVER_ERROR,
 				),
 			);
 		});
+};
+
+export const userByFields: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
+	try {
+		const username = req.query.username;
+		const userId = req.query.userId;
+		const email = req.query.email;
+		let isMe = false;
+		const user = await userModel
+			.findOne({
+				$or: [{ username }, { _id: userId }, { email }],
+			})
+			.populate({ path: "followers", match: { users: req.user?.id } })
+			.populate({ path: "spotifyData" });
+
+		if (req.user?.id) {
+			if (req.user.id === user?._id.toString()) {
+				isMe = true;
+			}
+		}
+		const track = await getUserTopTrack("short_term", 1, user?.spotifyData);
+		// Change frontend for the object changes here and then delete this comment
+		//@ts-ignore
+		res.status(200).json({ ...user?._doc, isMe, track: track });
+	} catch (err) {
+		next(
+			new IError("Error fetching User", statusCode.INTERNAL_SERVER_ERROR),
+		);
+	}
 };
 
 export const searchSong: RequestHandler = async (
@@ -99,7 +111,11 @@ export const searchSong: RequestHandler = async (
 			return res.status(200).json({ tracks: songs });
 		}
 	} catch (err) {
-		console.log(err);
-		res.status(statusCode.INTERNAL_SERVER_ERROR).json({ err: err });
+		next(
+			new IError(
+				"Couldnt search for songs",
+				statusCode.INTERNAL_SERVER_ERROR,
+			),
+		);
 	}
 };
