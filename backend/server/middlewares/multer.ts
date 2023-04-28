@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { IError } from "../types/basic/IError";
 import multer from "multer";
 import path from "path";
-// import uuid from "uuid";
 
 const baseDir = path.resolve();
 
@@ -32,16 +31,11 @@ const upload = multer({ storage: storage });
 export const fileUpload: RequestHandler = (req, res, next) => {
 	upload.single("file")(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
-			// A Multer error occurred when uploading.
-			console.log(err);
 			next(new IError("Multer file Upload file error", 500));
 		} else if (err) {
-			// An unknown error occurred when uploading.
-			console.log(err);
 			next(new IError("Unknow file upload error", 500));
 		} else {
 			next();
-			// res.status(200).json({ message: "file uploaded" });
 		}
 	});
 };

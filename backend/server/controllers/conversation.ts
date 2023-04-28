@@ -49,18 +49,20 @@ export const getConvo: RequestHandler = async (
 	}
 };
 
-export const userConvos: RequestHandler = (req: Authenticated, res, next) => {
-	const userId = req.user?.id;
-	conversationModel
-		.find({ participants: { $in: [userId] } })
-		.populate("participants")
-		.then((conversations) => {
-			res.status(200).json({ conversations });
-		})
-		.catch((err) => {
-			console.log(err);
-			next(new IError("No conversations found", statusCode.NOT_FOUND));
-		});
+export const userConvos: RequestHandler = async (
+	req: Authenticated,
+	res,
+	next,
+) => {
+	try {
+		const userId = req.user?.id;
+		const conversations = await conversationModel
+			.find({ participants: { $in: [userId] } })
+			.populate("participants");
+		res.status(200).json({ conversations });
+	} catch (err) {
+		next(new IError("Couldnt search for user conversations", 500));
+	}
 };
 
 export const sendMessage: RequestHandler = async (
@@ -74,7 +76,7 @@ export const sendMessage: RequestHandler = async (
 		await conversationModel.findById(conversationId).then((con) => {
 			pushMessage(con!, message);
 		});
-		res.status(200).json({ message: "message added" });
+		res.status(200).json({ message: "Message Sent" });
 	} catch (err) {
 		next(new IError("Message send error", 500));
 	}

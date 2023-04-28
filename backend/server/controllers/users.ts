@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import userModel from "../models/userSchema";
 import { statusCode } from "../enums/statusCodes";
 import userArrayModel from "../models/userArraySchema";
-import { getUserTopTrack } from "../services/spotify";
 import { IError } from "../types/basic/IError";
 import { sendNotification } from "../services/notifications";
 import { NotificationTypes } from "../enums/notificationEnums";
@@ -10,73 +9,37 @@ import notificationModel from "../models/notificationSchema";
 import conversationModel from "../models/conversationSchema";
 import { Authenticated } from "../types/declarations/jwt";
 
-export const userByFields: RequestHandler = async (
+export const updateUser: RequestHandler = async (
 	req: Authenticated,
 	res,
 	next,
 ) => {
-	const username = req.query.username;
-	const userId = req.query.userId;
-	const email = req.query.email;
-	let isMe = false;
-	userModel
-		.findOne({
-			$or: [{ username }, { _id: userId }, { email }],
-		})
-		.populate({ path: "followers", match: { users: req.user?.id } })
-		.populate({ path: "spotifyData" })
-		.then(async (user) => {
-			if (req.user?.id) {
-				if (req.user.id === user?._id.toString()) {
-					isMe = true;
-				}
-			}
-			const track = await getUserTopTrack(
-				"short_term",
-				1,
-				user?.spotifyData,
-			);
-			res.status(200).json({ user: user, isMe: isMe, topTrack: track });
-		})
-		.catch((err) => {
-			console.log(err);
-			next(
-				new IError(
-					"Error fetching User",
-					statusCode.INTERNAL_SERVER_ERROR,
-				),
-			);
-		});
-};
+	try {
+		const userId = req.user?.id;
+		const userUpdates = req.body;
+		// Add a validation later in middleware
+		if (!userUpdates.name || !userUpdates.username) {
+			return res
+				.status(statusCode.BAD_REQUEST)
+				.json({ message: "Name or Username cannot be empty" });
+		}
 
-export const updateUser: RequestHandler = (req: Authenticated, res, next) => {
-	const userId = req.user?.id;
-	const userUpdates = req.body;
-	// Add a validation later in middleware
-	if (!userUpdates.name || !userUpdates.username) {
-		return res
-			.status(statusCode.BAD_REQUEST)
-			.json({ message: "name or username cannot be empty" });
-	}
-
-	userModel
-		.findByIdAndUpdate(userId, {
+		await userModel.findByIdAndUpdate(userId, {
 			name: userUpdates?.name,
 			bio: userUpdates?.bio,
 			username: userUpdates?.username,
 			aiGeneratedLine: userUpdates?.tagline,
-		})
-		.then((updated) => {
-			res.status(200).json({ message: "User updated" });
-		})
-		.catch((err) => {
-			next(
-				new IError(
-					"Error updating the user",
-					statusCode.INTERNAL_SERVER_ERROR,
-				),
-			);
 		});
+
+		res.status(200).json({ message: "User updated" });
+	} catch (err) {
+		next(
+			new IError(
+				"Error updating the user",
+				statusCode.INTERNAL_SERVER_ERROR,
+			),
+		);
+	}
 };
 
 export const followUser: RequestHandler = async (
@@ -100,7 +63,6 @@ export const followUser: RequestHandler = async (
 	try {
 		await Promise.all([
 			//Add in following of follower
-
 			userModel
 				.findByIdAndUpdate(
 					{ _id: followerId },
@@ -109,40 +71,21 @@ export const followUser: RequestHandler = async (
 				.then(async (user) => {
 					// If objectId already exists for user array direct push
 					if (user?.following) {
-						return await userArrayModel
-							.updateOne(
-								{ _id: user.following },
-								{ $addToSet: { users: following } },
-							)
-							.catch((err) => {
-								console.log(err);
-							});
+						return await userArrayModel.updateOne(
+							{ _id: user.following },
+							{ $addToSet: { users: following } },
+						);
 					}
 					//creat new array of following
-					const follow = new userArrayModel({ users: following });
-					follow
-						.save()
-						.then((follow) => {
-							console.log("following adedd");
-						})
-						.catch((err) => {
-							console.log(err);
-						});
+					const follow = await new userArrayModel({
+						users: following,
+					}).save();
+
 					//Update the id of the following array users
-					userModel
-						.updateOne(
-							{ _id: followerId },
-							{ following: follow._id },
-						)
-						.then((up) => {
-							console.log("_id updated");
-						})
-						.catch((err) => {
-							console.log(err);
-						});
-				})
-				.catch((err) => {
-					console.log(err);
+					userModel.updateOne(
+						{ _id: followerId },
+						{ following: follow._id },
+					);
 				}),
 			// Add in follower of following
 			userModel
@@ -154,61 +97,33 @@ export const followUser: RequestHandler = async (
 					// If objectId already exists for user array direct push
 
 					if (user?.followers) {
-						return await userArrayModel
-							.updateOne(
-								{ _id: user.followers },
-								{ $addToSet: { users: followerId } },
-							)
-							.then((rep) => {
-								res.status(200).json({
-									message: "follower added",
-								});
-							})
-							.catch((err) => {
-								console.log(err);
-							});
+						return await userArrayModel.updateOne(
+							{ _id: user.followers },
+							{ $addToSet: { users: followerId } },
+						);
 					}
 					// create new array of followers
 					const followers = new userArrayModel({
 						users: followerId,
 					});
-					followers
-						.save()
-						.then((user) => {
-							console.log("Followers created");
-						})
-						.catch((err) => {
-							console.log("dup");
-							console.log(err);
-						});
+					followers.save();
+
 					// update the id of the array ka object
-					userModel
-						.updateOne(
-							{ _id: following },
-							{ followers: followers._id },
-						)
-						.then((user) => {
-							console.log("updated user" + user);
-							res.status(200).json({ message: "follower added" });
-						})
-						.catch((err) => {
-							console.log(err);
-						});
-				})
-				.catch((err) => {
-					console.log("err" + err);
+					userModel.updateOne(
+						{ _id: following },
+						{ followers: followers._id },
+					);
 				}),
 		]);
-		console.log("following");
-		await sendNotification(
-			following,
-			followerId,
-			NotificationTypes.follow,
-		).then(() => {
-			console.log("Notification sent");
-		});
+		res.status(200).json({ message: "Followed" });
+		await sendNotification(following, followerId, NotificationTypes.follow);
 	} catch (err) {
-		next(err);
+		next(
+			new IError(
+				"Error following the user",
+				statusCode.INTERNAL_SERVER_ERROR,
+			),
+		);
 	}
 };
 
@@ -217,95 +132,87 @@ export const unfollow: RequestHandler = async (
 	res,
 	next,
 ) => {
-	const follower = req.user?.id;
-	const following = req.query.id;
-	if (follower === following) {
-		return res
-			.status(statusCode.BAD_REQUEST)
-			.json({ message: "Cannot unfolow self" });
-	}
-	await Promise.all([
-		userModel
-			.findOneAndUpdate(
-				{ _id: follower },
-				{ $inc: { followingCount: -1 } },
-			)
-			.then((user) => {
-				userArrayModel
-					.findOneAndUpdate(
+	try {
+		const follower = req.user?.id;
+		const following = req.query.id;
+		if (follower === following) {
+			return res
+				.status(statusCode.BAD_REQUEST)
+				.json({ message: "Cannot unfollow self" });
+		}
+		await Promise.all([
+			userModel
+				.findOneAndUpdate(
+					{ _id: follower },
+					{ $inc: { followingCount: -1 } },
+				)
+				.then((user) => {
+					userArrayModel.findOneAndUpdate(
 						{ _id: user?.following },
 						{ $pull: { users: following } },
-					)
-					.then((up) => {
-						console.log("removde following");
-					});
-			}),
-		userModel
-			.findOneAndUpdate(
-				{ _id: following },
-				{ $inc: { followerCount: -1 } },
-			)
-			.then((user) => {
-				userArrayModel
-					.findOneAndUpdate(
+					);
+				}),
+			userModel
+				.findOneAndUpdate(
+					{ _id: following },
+					{ $inc: { followerCount: -1 } },
+				)
+				.then((user) => {
+					userArrayModel.findOneAndUpdate(
 						{ _id: user?.followers },
 						{ $pull: { users: follower } },
-					)
-					.then((up) => {
-						console.log("removde follower");
-					});
-			}),
-	])
-		.then((response) => {
-			res.status(200).json({ message: "Unfollowed" });
-		})
-		.catch((err) => {
-			next(err);
-		});
+					);
+				}),
+		]);
+
+		res.status(200).json({ message: "Unfollowed" });
+	} catch (err) {
+		next(
+			new IError(
+				"Error unfollowing the user",
+				statusCode.INTERNAL_SERVER_ERROR,
+			),
+		);
+	}
 };
 
-export const getMe: RequestHandler = (req: Authenticated, res, next) => {
-	const userId = req.user?.id;
-	userModel
-		.findById(userId)
-		.populate("spotifyData")
-		.populate("lastNotif")
-		.then(async (user) => {
-			let createdAt;
-			if (user?.lastNotif) {
-				//@ts-ignore
-				createdAt = user.lastNotif.createdAt;
-			} else {
-				//@ts-ignore
-				createdAt = user?.createdAt;
-			}
-			const notificationCount = await notificationModel
-				.find({
-					createdAt: { $gt: createdAt },
-					recipient: user?._id,
-				})
-				.count();
-			const messageCount = await conversationModel
-				.find({ by: { $ne: user?._id }, seen: false })
-				.count();
-			res.status(200).json({
-				user: {
-					// @ts-ignore
-					...user._doc,
-					notifCount: notificationCount || 0,
-					messageCount: messageCount || 0,
-				},
-			});
-		})
-		.catch((err) => {
-			console.log(err);
-			next(
-				new IError(
-					"Couldnt get me user",
-					statusCode.INTERNAL_SERVER_ERROR,
-				),
-			);
+export const getMe: RequestHandler = async (req: Authenticated, res, next) => {
+	try {
+		const userId = req.user?.id;
+		const user = await userModel
+			.findById(userId)
+			.populate("spotifyData")
+			.populate("lastNotif");
+		let createdAt;
+		if (user?.lastNotif) {
+			//@ts-ignore
+			createdAt = user.lastNotif.createdAt;
+		} else {
+			//@ts-ignore
+			createdAt = user?.createdAt;
+		}
+		const notificationCount = await notificationModel
+			.find({
+				createdAt: { $gt: createdAt },
+				recipient: user?._id,
+			})
+			.count();
+		const messageCount = await conversationModel
+			.find({ by: { $ne: user?._id }, seen: false })
+			.count();
+		res.status(200).json({
+			user: {
+				// @ts-ignore
+				...user._doc,
+				notifCount: notificationCount || 0,
+				messageCount: messageCount || 0,
+			},
 		});
+	} catch (err) {
+		next(
+			new IError("Error getting user", statusCode.INTERNAL_SERVER_ERROR),
+		);
+	}
 };
 
 export const usernameUnique: RequestHandler = (
@@ -315,7 +222,7 @@ export const usernameUnique: RequestHandler = (
 ) => {
 	const username = req.query.username;
 	if (username == undefined) {
-		return res.status(statusCode.FORBIDDEN);
+		return res.status(statusCode.FORBIDDEN).json({ message: "Invalid" });
 	}
 	userModel.findOne({ username: username }).then((user) => {
 		if (user) {
