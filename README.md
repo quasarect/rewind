@@ -35,4 +35,4 @@ Patil Smruti Milind - 21BCS082 - [@smrutipatil](https://www.github.com/smrutipat
 
 Pratik Prakash Pakhale - 21BCS085 - [@pratikpakhale](https://www.github.com/pratikpakhale)
 
-Shewale Chinmay Vijay - 21BCS109 - [@chinma-yyy](https://www.github.com/chinma-yyy)
+Shewale Chinmay Vijay - 21BCS109 - [@chinma-yyy](https://www.github.com/chinma-yyy) 
