@@ -3,7 +3,7 @@
 <h2>Demo Video</h2>
 
 <video width="320" height="240" controls>
-  <source src="./docs/Demo.m4v" style="width:100%;" type="video/mp4">
+  <source src="./docs/Demo.m4v" style="width:100%;" type="video/m4v">
   Your browser does not support the video tag.
 </video>
 
