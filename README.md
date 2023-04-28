@@ -1,4 +1,18 @@
-# AIM AND DESCRIPTION
+# DEMO & DOCS
+
+<h2>Demo Video</h2>
+
+<video width="320" height="240" controls>
+  <source src="./docs/Demo.mp4" style="width:100%;" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<br/>
+<h2>Download All Docs [Report | Servicec Architecture | Voice Bot Architecture] → 
+  <a href="" download>ZIP File</a>
+</h2>
+
+<br /><br />
 
 # Rewind
 
@@ -35,4 +49,4 @@ Patil Smruti Milind - 21BCS082 - [@smrutipatil](https://www.github.com/smrutipat
 
 Pratik Prakash Pakhale - 21BCS085 - [@pratikpakhale](https://www.github.com/pratikpakhale)
 
-Shewale Chinmay Vijay - 21BCS109 - [@chinma-yyy](https://www.github.com/chinma-yyy) 
+Shewale Chinmay Vijay - 21BCS109 - [@chinma-yyy](https://www.github.com/chinma-yyy)
