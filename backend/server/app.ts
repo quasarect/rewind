@@ -15,7 +15,6 @@ import searchRouter from "./routes/searchRoutes";
 import { ioConfig } from "./sockets/ioconfig";
 // import morgan from "morgan";
 // import { createAdapter } from "@socket.io/mongo-adapter";
-// import cron from "node-cron";
 config();
 
 const app = express();
