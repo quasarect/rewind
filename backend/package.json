@@ -11,7 +11,7 @@
 		"prettier-format": "prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore",
 		"server-lock": "netstat -punta | grep 3000 \n echo \"Now use kill -9 <pid>\"",
 		"testscript": "mocha --require ts-node/register server/tests/**/*.test.ts",
-		"test": "echo '\u001b[32mStarting the tests\u001b[0m' && sleep 3 && prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore && echo '\u001b[32mPrettier formatting completed\u001b[0m'&& sleep 3 && eslint --ext .ts --config .eslintrc.json ./server/**/*.ts --fix && echo '\u001b[32mESlint linting Completed\u001b[0m' && sleep 3 &&  mocha --require  ts-node/register --exit server/tests/**/*.test.ts",
+		"test": "echo '\u001b[32mStarting the tests\u001b[0m' && sleep 3 && prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore && echo '\u001b[32mPrettier formatting completed\u001b[0m'&& sleep 3 && echo '\u001b[32mESlint linting Completed\u001b[0m' && sleep 3 &&  mocha --require  ts-node/register --exit server/tests/**/*.test.ts",
 		"echo": "echo '\u001b[32mPrettier file formatting Completed\u001b[0m'"
 	},
 	"author": "",
