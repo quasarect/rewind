@@ -2,14 +2,11 @@
 
 <h2>Demo Video</h2>
 
-<video width="320" height="240" controls>
-  <source src="./docs/Demo.mp4" style="width:100%;" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![Alt text](https://img.youtube.com/vi/gna01G1rxFA/0.jpg)](https://www.youtube.com/watch?v=gna01G1rxFA)
 
 <br/>
 <h2>Download All Docs [Report | Servicec Architecture | Voice Bot Architecture] → 
-  <a href="" download>ZIP File</a>
+  <a href="./REWIND.zip" download>ZIP File</a>
 </h2>
 
 <br /><br />
