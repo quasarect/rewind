@@ -30,8 +30,8 @@ jobs:
         run: prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore
       - name: Run server 
         run: |
-        tsc
-        npm start
+          tsc
+          npm start
       - name: Run tests
         run : npm run test:nocoverage
       - name: Exit
