@@ -25,14 +25,24 @@ jobs:
       - run: |
           pwd
       - name: Install dependencies
-        run : npm ci
+        run : |
+          npm ci
+          npm install prettier
       # - name: Format the files
       #   run: prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore
       - name: Run server 
         run: |
           tsc
-          npm start
+          npm start &
       - name: Run tests
         run : npm run test:nocoverage
+      - name: Stop Express server
+        run: |
+          # Find and kill the Express server process
+          server_pid=$(pgrep -f "node.*your-express-server.js")
+          if [[ -n "$server_pid" ]]; then
+            echo "Stopping Express server"
+            kill "$server_pid"
+          fi
       - name: Exit
         run : echo "DONE"
