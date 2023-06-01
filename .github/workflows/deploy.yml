@@ -26,6 +26,12 @@ jobs:
           pwd
       - name: Install dependencies
         run : npm ci
+      - name: Format the files
+        run: prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore
+      - name: Run server 
+        run: |
+        tsc
+        npm start
       - name: Run tests
         run : npm run test:nocoverage
       - name: Exit
