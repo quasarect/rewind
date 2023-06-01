@@ -8,7 +8,6 @@ import {
 	pushMessage,
 } from "../services/conversations";
 import { Authenticated } from "../types/declarations/jwt";
-
 export const createConvo: RequestHandler = async (
 	req: Authenticated,
 	res,

@@ -13,7 +13,7 @@
 		"noUnusedLocals": true,
 		"noFallthroughCasesInSwitch": true,
 		"allowUnreachableCode": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
 	},
-	"exclude": ["node_modules", "tests"]
+	"exclude": ["node_modules", "./server/tests"]
 }
