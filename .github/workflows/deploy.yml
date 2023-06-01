@@ -39,7 +39,7 @@ jobs:
       - name: Stop Express server
         run: |
           # Find and kill the Express server process
-          server_pid=$(pgrep -f "node.*your-express-server.js")
+          server_pid=$(pgrep -f "node.*app.js")
           if [[ -n "$server_pid" ]]; then
             echo "Stopping Express server"
             kill "$server_pid"
