@@ -26,8 +26,8 @@ jobs:
           pwd
       - name: Install dependencies
         run : npm ci
-      - name: Format the files
-        run: prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore
+      # - name: Format the files
+      #   run: prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore
       - name: Run server 
         run: |
           tsc
