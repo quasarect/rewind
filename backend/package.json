@@ -12,6 +12,7 @@
     "server-lock": "netstat -punta | grep 3000 \n echo \"Now use kill -9 <pid>\"",
     "testscript": "mocha --require ts-node/register server/tests/**/*.test.ts",
     "test": "jest --coverage",
+    "test:nocoverage":"jest",
     "echo": "echo '\u001b[32mPrettier file formatting Completed\u001b[0m'"
   },
   "author": "",
