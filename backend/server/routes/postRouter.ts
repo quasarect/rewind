@@ -9,7 +9,7 @@ import {
 	postsByUser,
 	unlikePost,
 } from "../controllers/posts";
-import { isAuth } from "../middlewares/auth";
+import { isAuth, passAuth } from "../middlewares/auth";
 import { fileUpload } from "../middlewares/multer";
 
 const postRouter = express.Router();
@@ -26,7 +26,7 @@ postRouter.get("/unlike", isAuth, unlikePost);
 
 postRouter.get("/:postId/comments", fetchComments);
 
-postRouter.get("/:id", isAuth, getPost);
+postRouter.get("/:id", passAuth, getPost);
 
 postRouter.delete("/:id", isAuth, deletePost);
 

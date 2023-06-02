@@ -20,6 +20,7 @@ config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const env = process.env.NODE_ENV;
 
 // app.use(morgan("short"));
 
@@ -74,9 +75,14 @@ const io = new Server(server, {
 	cleanupEmptyChildNamespaces: true,
 });
 
+const mongoUrl =
+	env == "development"
+		? process.env.MONGO_URL!
+		: "http:localhost:27107/rewind";
+
 server.listen(port, async () => {
 	mongoose
-		.connect(process.env.MONGO_URL!)
+		.connect(mongoUrl)
 		.then(() => {
 			// mongoose.connection
 			// 	.collection("socket-io")
