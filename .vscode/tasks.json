@@ -1,80 +1,80 @@
-{
-  "version": "2.0.0",
-  "presentation": {
-    "echo": false,
-    "reveal": "always",
-    "focus": false,
-    "panel": "dedicated",
-    "showReuseMessage": true
-  },
-  "tasks": [
-    {
-      "label": "Create Terminals",
-      "dependsOn": ["client", "server", "tsc", "ai"],
-      // Mark as the default build task so cmd/ctrl+shift+b will create them
-      "group": {
-        "isDefault": true
-      },
-      // Try start the task on folder open
-      "runOptions": {
-        "runOn": "folderOpen"
-      }
-    },
-    {
-      // The name that shows up in terminal tab
-      "label": "client",
-      // The task will launch a shell
-      "type": "shell",
-      "command": "cd frontend && yarn && yarn dev --host",
-      // Mark as a background task to avoid the spinner animation on the terminal tab
-      "isBackground": true,
-      "problemMatcher": [],
-      // Create the tasks in a terminal group
-      "presentation": {
-        "group": "my-group"
-      }
-    },
-    {
-      // The name that shows up in terminal tab
-      "label": "ai",
-      // The task will launch a shell
-      "type": "shell",
-      "command": "cd ai && pip install -r requirements.txt && python ./files/app.py",
-      // Mark as a background task to avoid the spinner animation on the terminal tab
-      "isBackground": true,
-      "problemMatcher": [],
-      // Create the tasks in a terminal group
-      "presentation": {
-        "group": "my-group"
-      }
-    },
-    {
-      // The name that shows up in terminal tab
-      "label": "server",
-      // The task will launch a shell
-      "type": "shell",
-      "command": "cd backend && npm install && npm start",
-      // Mark as a background task to avoid the spinner animation on the terminal tab
-      "isBackground": true,
-      "problemMatcher": [],
-      // Create the tasks in a terminal group
-      "presentation": {
-        "group": "my-group"
-      }
-    },
-    {
-      // The name that shows up in terminal tab
-      "label": "tsc",
-      // The task will launch a shell
-      "type": "shell",
-      "command": "cd backend && tsc -w",
-      // Mark as a background task to avoid the spinner animation on the terminal tab
-      "isBackground": true,
-      "problemMatcher": [],
-      // Create the tasks in a terminal group
-      "presentation": {
-        "group": "my-group"
-      }
-    }
-  ]
-}
+// {
+//   "version": "2.0.0",
+//   "presentation": {
+//     "echo": false,
+//     "reveal": "always",
+//     "focus": false,
+//     "panel": "dedicated",
+//     "showReuseMessage": true
+//   },
+//   "tasks": [
+//     {
+//       "label": "Create Terminals",
+//       "dependsOn": ["client", "server", "tsc", "ai"],
+//       // Mark as the default build task so cmd/ctrl+shift+b will create them
+//       "group": {
+//         "isDefault": true
+//       },
+//       // Try start the task on folder open
+//       "runOptions": {
+//         "runOn": "folderOpen"
+//       }
+//     },
+//     {
+//       // The name that shows up in terminal tab
+//       "label": "client",
+//       // The task will launch a shell
+//       "type": "shell",
+//       "command": "cd frontend && yarn && yarn dev --host",
+//       // Mark as a background task to avoid the spinner animation on the terminal tab
+//       "isBackground": true,
+//       "problemMatcher": [],
+//       // Create the tasks in a terminal group
+//       "presentation": {
+//         "group": "my-group"
+//       }
+//     },
+//     {
+//       // The name that shows up in terminal tab
+//       "label": "ai",
+//       // The task will launch a shell
+//       "type": "shell",
+//       "command": "cd ai && pip install -r requirements.txt && python ./files/app.py",
+//       // Mark as a background task to avoid the spinner animation on the terminal tab
+//       "isBackground": true,
+//       "problemMatcher": [],
+//       // Create the tasks in a terminal group
+//       "presentation": {
+//         "group": "my-group"
+//       }
+//     },
+//     {
+//       // The name that shows up in terminal tab
+//       "label": "server",
+//       // The task will launch a shell
+//       "type": "shell",
+//       "command": "cd backend && npm install && npm start",
+//       // Mark as a background task to avoid the spinner animation on the terminal tab
+//       "isBackground": true,
+//       "problemMatcher": [],
+//       // Create the tasks in a terminal group
+//       "presentation": {
+//         "group": "my-group"
+//       }
+//     },
+//     {
+//       // The name that shows up in terminal tab
+//       "label": "tsc",
+//       // The task will launch a shell
+//       "type": "shell",
+//       "command": "cd backend && tsc -w",
+//       // Mark as a background task to avoid the spinner animation on the terminal tab
+//       "isBackground": true,
+//       "problemMatcher": [],
+//       // Create the tasks in a terminal group
+//       "presentation": {
+//         "group": "my-group"
+//       }
+//     }
+//   ]
+// }

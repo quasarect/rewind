@@ -1,24 +1,19 @@
-version: '3.8'
+version: '3.1'
 services:
-  monogdb:
+  mongo:
     image: 'mongo'
+    ports:
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: secret 
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - ./backend/db-init.js:/docker-entrypoint-initdb.d/insertData.js:ro
+      - mongodbdata:/data/db
+    command: mongod --bind_ip_all 
   backend:
-    # image: cshewale23/rewind-backend
     build: ./backend
     ports:
-      - 3000:3000
-    env_file:
-      - ./backend/.env
-    depends_on:
-      - monogdb
-  # ai-server:
-  frontend:
-    build: ./frontend
-    ports:
-      - 5000:5173
-    env_file:
-      - ./frontend/.env
-      
+      - "3000:3000"
+volumes:
+  mongodbdata:

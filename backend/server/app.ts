@@ -13,6 +13,8 @@ import http from "http";
 import { config } from "dotenv";
 import searchRouter from "./routes/searchRoutes";
 import { ioConfig } from "./sockets/ioconfig";
+import userModel from "./models/userSchema";
+import postModel from "./models/postSchema";
 // import morgan from "morgan";
 // import { createAdapter } from "@socket.io/mongo-adapter";
 // import cron from "node-cron";
@@ -32,8 +34,15 @@ app.use(express.json());
 app.use(cors());
 
 //test route
-app.use("/test", (req, res, next) => {
-	res.status(200).json({ message: "Recieved" });
+app.use("/test", async (req, res, next) => {
+	console.log("aaya");
+	try {
+		const posts = await postModel.find();
+		const users = await userModel.find();
+		res.status(200).json({ message: "Recieved", users, posts });
+	} catch (e) {
+		res.status(200).json({ message: "Error" });
+	}
 });
 
 // Call to get token and check auth
@@ -78,20 +87,21 @@ const io = new Server(server, {
 const mongoUrl =
 	env == "development"
 		? process.env.MONGO_URL!
-		: "http:localhost:27107/rewind";
+		: `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/rewind-test?authSource=admin`;
 
 server.listen(port, async () => {
+	console.log(mongoUrl);
 	mongoose
 		.connect(mongoUrl)
 		.then(() => {
-			// mongoose.connection
-			// 	.collection("socket-io")
-			// 	.createIndex({ expireAfterSeconds: 20 });
-			// io.adapter(
-			// 	createAdapter(mongoose.connection.collection("socket-io"), {
-			// 		addCreatedAtField: true,
-			// 	}),
-			// );
+	// 		// mongoose.connection
+	// 		// 	.collection("socket-io")
+	// 		// 	.createIndex({ expireAfterSeconds: 20 });
+	// 		// io.adapter(
+	// 		// 	createAdapter(mongoose.connection.collection("socket-io"), {
+	// 		// 		addCreatedAtField: true,
+	// 		// 	}),
+	// 		// );
 			console.log("Connected to mongo db");
 		})
 		.catch((err: Error) =>
