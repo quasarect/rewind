@@ -1,9 +1,7 @@
 {
 	"users": {
 		"user1": {
-			"_id": {
-				"$oid": "6438cf8bad843d1a0b782c55"
-			},
+			"_id": "6438cf8bad843d1a0b782c55",
 			"name": "pratik",
 			"username": "pratz",
 			"country": "IN",
@@ -40,9 +38,7 @@
 			}
 		},
 		"user2": {
-			"_id": {
-				"$oid": "643d37740bebbc75840aaa1a"
-			},
+			"_id": "643d37740bebbc75840aaa1a",
 			"name": "Chinmay Shewale",
 			"username": "chinma_yyy",
 			"country": "IN",
@@ -80,9 +76,7 @@
 	},
 	"posts": {
 		"post1": {
-			"_id": {
-				"$oid": "644061fc65ba43ce36fcc31e"
-			},
+			"_id": "644061fc65ba43ce36fcc31e",
 			"user": {
 				"$oid": "6438cf8bad843d1a0b782c55"
 			},
@@ -104,9 +98,7 @@
 			"__v": 0
 		},
 		"post2": {
-			"_id": {
-				"$oid": "6440628565ba43ce36fcc333"
-			},
+			"_id": "6440628565ba43ce36fcc333",
 			"user": {
 				"$oid": "643d37740bebbc75840aaa1a"
 			},

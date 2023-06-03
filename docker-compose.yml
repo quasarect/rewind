@@ -7,13 +7,18 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: secret
-    volumes:
-      - ./backend/db-init.js:/docker-entrypoint-initdb.d/insertData.js:ro
-      - mongodbdata:/data/db
-    command: mongod --bind_ip_all 
+      # MONGO_INITDB_DATABASE: rewind-test
+    command: |
+      mongod --bind_ip_all 
+  dbinit:
+    build: ./backend/db-init
+    depends_on:
+      - mongo
+      
   backend:
     build: ./backend
     ports:
       - "3000:3000"
-volumes:
-  mongodbdata:
+    depends_on:
+      - mongo
+      - dbinit

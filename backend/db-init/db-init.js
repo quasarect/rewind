@@ -1,8 +1,9 @@
+console.log("Start#############################################")
 const { MongoClient } = require('mongodb');
 const fs = require("fs");
 
 // MongoDB connection URL
-const url = 'mongodb://root:secret@localhost:27017';
+const url = 'mongodb://root:secret@mongo:27017';
 
 // Database and collection names
 const dbName = 'rewind-test';
@@ -36,6 +37,7 @@ async function insertData() {
         let collection = db.collection("users");
 
         // Insert the dummy data
+
         await collection.insertOne(dummyData.users.user1);
         await collection.insertOne(dummyData.users.user2);
 

@@ -12,7 +12,7 @@ COPY . .
 
 EXPOSE 3000
 
-RUN ["npm","run","compile"]
+# RUN ["npm","run","compile"]
 
 CMD ["npm","run","dev:test"]
 
