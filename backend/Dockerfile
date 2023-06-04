@@ -19,3 +19,4 @@ RUN ["tsc"]
 
 CMD ["npm","run","dev:test"]
 
+##Lets gooo
