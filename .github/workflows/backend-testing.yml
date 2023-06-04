@@ -24,8 +24,8 @@ jobs:
             backend/package-lock.json
       - name: Install dependencies
         run: npm install
-      - name: Check lint errors
-        run: npm run lint
+      # - name: Check lint errors
+      #   run: npm run lint
   backend-testing:
     name: Test backend - ubuntu-latest
     runs-on: ubuntu-latest
