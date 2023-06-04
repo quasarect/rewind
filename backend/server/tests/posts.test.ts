@@ -8,7 +8,7 @@ import { generateToken } from "../middlewares/auth";
 describe("For posts", () => {
 	let authToken: string, postId: string;
 	let Headers: object;
-
+	const baseUrl: string = "http://localhost:3000/posts";
 	beforeAll(async () => {
 		authToken = generateToken("643d37740bebbc75840aaa1a", "chinma_yyy");
 		Headers = {
@@ -20,7 +20,7 @@ describe("For posts", () => {
 
 	test("should create post", async () => {
 		const post = await axios.post(
-			"http://localhost:3000/posts/create",
+			`${baseUrl}/create`,
 			{
 				text: "This is a test post",
 			},
@@ -35,7 +35,7 @@ describe("For posts", () => {
 
 	test("should reply to a post", async () => {
 		const post = await axios.post(
-			"http://localhost:3000/posts/create",
+			`${baseUrl}/create`,
 			{
 				replyTo: postId,
 				text: "This a reply from the testing department",
@@ -48,18 +48,12 @@ describe("For posts", () => {
 		expect(post.data.message).toEqual("Post created successfully");
 	});
 	test("should fetch comments", async () => {
-		const post = await axios.get(
-			`http://localhost:3000/posts/${postId}/comments`,
-			Headers,
-		);
+		const post = await axios.get(`${baseUrl}/${postId}/comments`, Headers);
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty("posts");
 	});
 	test("should get a post from postId", async () => {
-		const post = await axios.get(
-			`http://localhost:3000/posts/${postId}`,
-			Headers,
-		);
+		const post = await axios.get(`${baseUrl}/${postId}`, Headers);
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty(["post"]);
 		expect(post.data.post).toHaveProperty("likeCount");
@@ -68,21 +62,18 @@ describe("For posts", () => {
 		expect(post.data.post).toHaveProperty("_id");
 	});
 	test("should like a post", async () => {
-		const post = await axios.get(
-			`http://localhost:3000/posts/like?id=${postId}`,
-			{
-				headers: {
-					Authorization: `Bearer ${authToken}`,
-				},
+		const post = await axios.get(`${baseUrl}/like?id=${postId}`, {
+			headers: {
+				Authorization: `Bearer ${authToken}`,
 			},
-		);
+		});
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty("message");
 		expect(post.data.message).toEqual("Like count incremented");
 	});
 	test("should throw error on liking already liked post", async () => {
 		axios
-			.get(`http://localhost:3000/posts/like?id=${postId}`, {
+			.get(`${baseUrl}/like?id=${postId}`, {
 				headers: {
 					Authorization: `Bearer ${authToken}`,
 				},
@@ -95,17 +86,12 @@ describe("For posts", () => {
 			});
 	});
 	test("should fetch posts made by user", async () => {
-		const post = await axios.get(
-			"http://localhost:3000/posts/user/chinma_yyy",
-		);
+		const post = await axios.get(`${baseUrl}/user/chinma_yyy`);
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty("posts");
 	});
 	test("should get a post liked by user by postId", async () => {
-		const post = await axios.get(
-			`http://localhost:3000/posts/${postId}`,
-			Headers,
-		);
+		const post = await axios.get(`${baseUrl}/${postId}`, Headers);
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty(["post"]);
 		expect(post.data.post).toHaveProperty("_id");
@@ -114,21 +100,18 @@ describe("For posts", () => {
 		expect(post.data.post).toHaveProperty("reshareCount");
 	});
 	test("should unlike a post", async () => {
-		const post = await axios.get(
-			`http://localhost:3000/posts/unlike?id=${postId}`,
-			{
-				headers: {
-					Authorization: `Bearer ${authToken}`,
-				},
+		const post = await axios.get(`${baseUrl}/unlike?id=${postId}`, {
+			headers: {
+				Authorization: `Bearer ${authToken}`,
 			},
-		);
+		});
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty("message");
 		expect(post.data.message).toEqual("Unliked the post");
 	});
 	test("should throw error on unliking already unliked post", async () => {
 		axios
-			.get(`http://localhost:3000/posts/unlike?id=${postId}`, {
+			.get(`${baseUrl}/unlike?id=${postId}`, {
 				headers: {
 					Authorization: `Bearer ${authToken}`,
 				},
@@ -147,10 +130,7 @@ describe("For posts", () => {
 		//Later
 	});
 	test("should delete a post", async () => {
-		const post = await axios.delete(
-			`http://localhost:3000/posts/${postId}`,
-			Headers,
-		);
+		const post = await axios.delete(`${baseUrl}/${postId}`, Headers);
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty("message");
 		expect(post.data.message).toEqual("Post deleted successfully");
@@ -165,10 +145,7 @@ describe("For posts", () => {
 			});
 	});
 	test("should fetch all posts", async () => {
-		const post = await axios.get(
-			"http://localhost:3000/posts/all",
-			Headers,
-		);
+		const post = await axios.get(`${baseUrl}/all`, Headers);
 		expect(post.status).toBe(200);
 		expect(post.data).toHaveProperty("posts");
 	});
