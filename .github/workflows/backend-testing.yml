@@ -1,0 +1,26 @@
+name: "Backend testing"
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+jobs:
+  backend-testing:
+    name: Test backend - ubuntu-latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Install dependencies
+        run : |
+          cd backend
+          npm install 
+      # - name: Run tests
+      #   run: |
+      #     npm run test

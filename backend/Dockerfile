@@ -6,13 +6,13 @@ COPY package.json .
 
 COPY package-lock.json .
 
-# RUN npm ci
+RUN npm install
 
 COPY . .
 
 EXPOSE 3000
 
-# RUN ["npm","run","compile"]
+RUN ["tsc"]
 
 CMD ["npm","run","dev:test"]
 
