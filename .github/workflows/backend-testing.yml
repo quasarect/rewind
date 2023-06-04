@@ -6,9 +6,25 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
 
 jobs:
+  formatting-linting:
+    name: Check formatting and lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+      - name: Check lint errors
+        run: npm run lint
   backend-testing:
     name: Test backend - ubuntu-latest
     runs-on: ubuntu-latest
+    needs: [formatting-linting]
     defaults:
       run:
         working-directory: ./backend
@@ -20,11 +36,13 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
       - name: Install dependencies
-        run : |
-          npm install 
+        run: |
+          npm install
       - name: Compile
-        run: tsc 
+        run: tsc
       # - name: Run tests
       #   run: |
       #     npm run test
