@@ -390,6 +390,7 @@ async function resharePost(
 				resharedBy: user._id,
 			});
 		}
+		
 		// Send notification for reshare
 		await sendNotification(
 			post?.user,

@@ -8,9 +8,9 @@ After tests :
 
 */
 describe("For users", () => {
-    let naav: string;
+    // let naav: string;
     beforeAll(async () => {
-        naav = "chinu";
+        // naav = "chinu";
     });
     test("should update user details", () => {
     });
