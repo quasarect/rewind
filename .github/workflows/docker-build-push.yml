@@ -11,21 +11,34 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      #   - name: Set up QEMU
+      #     uses: docker/setup-qemu-action@v2
+      #   - name: Set up Docker Buildx
+      #     uses: docker/setup-buildx-action@v2
       - name: Changes
         run: echo "${{toJson(github.event)}}"
+      - name: Check if file is changed
+        id: check-file
+        run: |
+          if [[ $(git diff --name-only HEAD^ HEAD) == *'${{matrix.dockerfile}}'* ]]; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+      - name: Do something if file is changed
+        if: steps.check-file.outputs.changed == 'true'
+        run: |
+          # Add steps to execute if the file is changed
+          echo "File has changed!"
     #   - name: Check
     #     run: echo "Detected ${{matrix.dockerfile}}"
     #     if: ${{ contains(github.event_path, matrix.dockerfile) }}
-    # strategy:
-    #   matrix:
-    #     dockerfile:
-    #       - ./backend/Dockerfile
-    #       - ./frontend/Dockerfile
-    #       - ./backend/db-init/Dockerfile
+    strategy:
+      matrix:
+        dockerfile:
+          - backend/Dockerfile
+          - frontend/Dockerfile
+          - backend/db-init/Dockerfile
 
     #   - name: Login to Docker Hub
     #     uses: docker/login-action@v2
