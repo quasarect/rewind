@@ -9,6 +9,8 @@ COPY package-lock.json .
 
 RUN npm install
 
+RUN npm install typescript -g
+
 COPY . .
 
 EXPOSE 3000

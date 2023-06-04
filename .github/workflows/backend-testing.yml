@@ -22,8 +22,10 @@ jobs:
           cache: "npm"
           cache-dependency-path: |
             backend/package-lock.json
+      - name: Install dependencies
+        run: npm install
       - name: Check lint errors
-        run: pwd
+        run: npm run lint
   backend-testing:
     name: Test backend - ubuntu-latest
     runs-on: ubuntu-latest
@@ -41,11 +43,9 @@ jobs:
           cache: "npm"
           cache-dependency-path: |
             backend/package-lock.json
-      - name: Install dependencies
+      - name: Install docker-compose
         run: |
-          npm install
-      - name: Compile
-        run: tsc
-      # - name: Run tests
-      #   run: |
-      #     npm run test
+          sudo apt-get update
+          sudo apt-get install docker-compose-plugin
+      - name: Run test and docker
+        run: npm run test
