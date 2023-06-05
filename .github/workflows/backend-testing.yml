@@ -43,9 +43,9 @@ jobs:
           cache: "npm"
           cache-dependency-path: |
             backend/package-lock.json
-      - name: Install docker-compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose-plugin
+      # - name: Install docker-compose
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install docker-compose-plugin
       - name: Run test and docker
         run: npm run test
