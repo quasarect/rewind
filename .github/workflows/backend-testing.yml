@@ -48,4 +48,6 @@ jobs:
       #     sudo apt-get update
       #     sudo apt-get install docker-compose-plugin
       - name: Run test and docker
-        run: npm run test
+        run: |
+          npm install cross-env
+          npm run test
