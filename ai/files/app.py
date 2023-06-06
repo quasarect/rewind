@@ -5,7 +5,7 @@ from voicebot import take_prompt, execute_command, initialize_status, check_stat
 from decode import decode_jwt
 
 app = Flask(__name__)
-CORS(app, origins='* http://localhost:3000')
+CORS(app, origins='* http://localhost:3000 http://localhost:5173')
 
 #test route
 @app.route('/test', methods=['GET'])
