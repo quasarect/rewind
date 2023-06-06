@@ -1,0 +1,123 @@
+{
+	"users": {
+		"user1": {
+			"_id": "6438cf8bad843d1a0b782c55",
+			"name": "pratik",
+			"username": "pratz",
+			"country": "IN",
+			"status": "Offline",
+			"email": "pratikpakhale20@gmail.com",
+			"profileUrl": "https://i.scdn.co/image/ab6775700000ee8594bea1051d2779b498198e9f",
+			"private": false,
+			"artist": false,
+			"followerCount": 1,
+			"followingCount": 0,
+			"postCount": 0,
+			"spotifyData": {
+				"$oid": "6438cf8bad843d1a0b782c53"
+			},
+			"createdAt": {
+				"$date": {
+					"$numberLong": "1681444747822"
+				}
+			},
+			"updatedAt": {
+				"$date": {
+					"$numberLong": "1682065801782"
+				}
+			},
+			"__v": 0,
+			"bio": "this is sample bio",
+			"tag": "\"Discovering the Sounds of Gen Z Pop!\"",
+			"aiGeneratedLine": "\"Let the beat take you higher: Where music meets the soul.\"",
+			"lastNotif": {
+				"$oid": "644157a921d7131ec638ac5b"
+			},
+			"followers": {
+				"$oid": "64416325db6821542c20539e"
+			}
+		},
+		"user2": {
+			"_id": "643d37740bebbc75840aaa1a",
+			"name": "Chinmay Shewale",
+			"username": "chinma_yyy",
+			"country": "IN",
+			"status": "Offline",
+			"email": "shewalechinmay54@gmail.com",
+			"profileUrl": "https://i.scdn.co/image/ab6775700000ee85cd630054875de555b50aba3a",
+			"aiGeneratedLine": "\"Feel the beat, live the emotion.\"",
+			"private": false,
+			"artist": false,
+			"followerCount": 0,
+			"followingCount": 1,
+			"postCount": 0,
+			"spotifyData": {
+				"$oid": "643d37740bebbc75840aaa18"
+			},
+			"lastNotif": {
+				"$oid": "643ef36d89a88ccb51cce66f"
+			},
+			"createdAt": {
+				"$date": {
+					"$numberLong": "1681733492567"
+				}
+			},
+			"updatedAt": {
+				"$date": {
+					"$numberLong": "1682079394105"
+				}
+			},
+			"__v": 0,
+			"bio": "Bio ?? Nothing || Default",
+			"following": {
+				"$oid": "64416325db6821542c20539b"
+			}
+		}
+	},
+	"posts": {
+		"post1": {
+			"_id": "644061fc65ba43ce36fcc31e",
+			"user": {
+				"$oid": "6438cf8bad843d1a0b782c55"
+			},
+			"text": "Try to post on Elon Musk",
+			"likeCount": 0,
+			"commentCount": 0,
+			"reshareCount": 0,
+			"context": [],
+			"createdAt": {
+				"$date": {
+					"$numberLong": "1681940988693"
+				}
+			},
+			"updatedAt": {
+				"$date": {
+					"$numberLong": "1681940988693"
+				}
+			},
+			"__v": 0
+		},
+		"post2": {
+			"_id": "6440628565ba43ce36fcc333",
+			"user": {
+				"$oid": "643d37740bebbc75840aaa1a"
+			},
+			"text": "I want to write a post on how beautiful my bottle is.",
+			"likeCount": 0,
+			"commentCount": 0,
+			"reshareCount": 0,
+			"context": [],
+			"createdAt": {
+				"$date": {
+					"$numberLong": "1681941125496"
+				}
+			},
+			"updatedAt": {
+				"$date": {
+					"$numberLong": "1681941125496"
+				}
+			},
+			"__v": 0
+		}
+	}
+}

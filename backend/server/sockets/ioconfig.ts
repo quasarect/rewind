@@ -27,6 +27,5 @@ export const ioConfig = (
 		}
 	});
 
-	io.on("disconnect", (socket: Socket) => {
-	});
+	io.on("disconnect", (socket: Socket) => {});
 };

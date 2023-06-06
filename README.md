@@ -5,7 +5,7 @@
 [![Alt text](https://img.youtube.com/vi/gna01G1rxFA/0.jpg)](https://www.youtube.com/watch?v=gna01G1rxFA)
 
 <br/>
-<h2>Download All Docs [Report | Servicec Architecture | Voice Bot Architecture] → 
+<h2>Download All Docs [Report | Service Based Architecture | Voice Bot Architecture] → 
   <a href="./REWIND.zip" download>ZIP File</a>
 </h2>
 

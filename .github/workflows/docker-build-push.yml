@@ -1,0 +1,49 @@
+name: Docker build and push
+
+on:
+  push:
+    paths:
+      - "**/Dockerfile"
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      #   - name: Set up QEMU
+      #     uses: docker/setup-qemu-action@v2
+      #   - name: Set up Docker Buildx
+      #     uses: docker/setup-buildx-action@v2
+      - name: Check if file is changed
+        uses: tj-actions/verify-changed-files@v14
+        id: verify-changed-files
+        with:
+          files: |
+            ${{matrix.dockerfile}}
+      - name: List all changed files
+        run: |
+          echo "Changed files: ${{ steps.verify-changed-files.outputs.changed_files }}"
+      - name: Run step only when any of the above files change.
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          echo "Changed files: ${{ steps.verify-changed-files.outputs.changed_files }}"
+    strategy:
+      matrix:
+        dockerfile:
+          - backend/Dockerfile
+          - frontend/Dockerfile
+          - backend/db-init/Dockerfile
+
+    #   - name: Login to Docker Hub
+    #     uses: docker/login-action@v2
+    #     with:
+    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+    # #   - name: Build and push
+    #     uses: docker/build-push-action@v4
+    #     with:
+    #       push: true
+    #       tags: chsewale23/rewind-backend:latest
+    #       context: ./backend
+    #       file: ./Dockerfile

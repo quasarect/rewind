@@ -118,8 +118,6 @@ export const handleOauth: RequestHandler = async (
 
 		await setTagline(user._id.toString());
 	} catch (err) {
-		next(
-			new IError("Login Error", statusCode.INTERNAL_SERVER_ERROR),
-		);
+		next(new IError("Login Error", statusCode.INTERNAL_SERVER_ERROR));
 	}
 };

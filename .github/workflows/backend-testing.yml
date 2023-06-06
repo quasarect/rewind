@@ -1,0 +1,53 @@
+name: "Backend testing"
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+jobs:
+  formatting-linting:
+    name: Check formatting and lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      # - name: Check lint errors
+      #   run: npm run lint
+  backend-testing:
+    name: Test backend - ubuntu-latest
+    runs-on: ubuntu-latest
+    needs: [formatting-linting]
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Setup repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+      # - name: Install docker-compose
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install docker-compose-plugin
+      - name: Run test and docker
+        run: |
+          npm install cross-env
+          npm run test

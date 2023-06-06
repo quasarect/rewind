@@ -54,7 +54,18 @@ export const createPost: RequestHandler = async (
 		const replyTo = req.body?.replyTo;
 		const reshared = req.body?.reshared;
 		let filepath;
-		// If file is uplaoded then save the path of the file in db
+		// Check if already shared and increment the count and send notification
+		if (reshared) {
+			const reshare = await resharePost(reshared, userId);
+			// This doesnt creates a new post so dont return the post will be created below
+			if (reshare instanceof IError) {
+				return res
+					.status(statusCode.FORBIDDEN)
+					.json({ message: "Already reposted" });
+			}
+			return res.status(201).json({ message: "Post reshared" });
+		}
+		// If file is uploaded then save the path of the file in db
 		if (req.body.filename && req.body.fileType) {
 			filepath = req.body.fileType + "/" + req.body.filename;
 		}
@@ -64,16 +75,7 @@ export const createPost: RequestHandler = async (
 				.status(statusCode.BAD_REQUEST)
 				.json({ message: "Invalid post" });
 		}
-		// Check if already shared and increment the count and send notification
-		if (reshared) {
-			const reshare = await resharePost(reshared, userId);
-			// This doesnt creates a new post so dont return the post will be created below
-			if (reshare instanceof IError) {
-				return res
-					.status(statusCode.FORBIDDEN)
-					.json({ message: "ALready reposted" });
-			}
-		}
+
 		const post = new postModel({
 			user: userId,
 			text: text,
@@ -83,7 +85,10 @@ export const createPost: RequestHandler = async (
 			reshared: reshared,
 		});
 		await post.save();
-		res.status(201).json({ message: "Post created successfully" });
+		res.status(201).json({
+			message: "Post created successfully",
+			postId: post._id,
+		});
 
 		// Comment on a post dedicating a song notif
 		if (replyTo && dedicated) {
@@ -304,14 +309,12 @@ export const unlikePost: RequestHandler = async (
 		const post = await postModel.findByIdAndUpdate(req.query.id, {
 			$inc: { likeCount: -1 },
 		});
-		if (!post) {
-			throw new IError("Post not found", statusCode.NOT_FOUND);
-		}
 		// Remove the user from the likedBy array
 		await userArrayModel.findByIdAndUpdate(
 			{ _id: post?.likedBy },
 			{ $pull: { users: userId } },
 		);
+		res.status(200).json({ message: "Unliked the post" });
 	} catch (err) {
 		next(
 			new IError(
@@ -348,7 +351,10 @@ export const fetchComments: RequestHandler = async (
  * @param userId The post reshared by the user
  * @returns
  */
-async function resharePost(reshared: Types.ObjectId, userId: string): Promise<any> {
+async function resharePost(
+	reshared: Types.ObjectId,
+	userId: string,
+): Promise<any> {
 	try {
 		// Find the post to be reshared
 		let post = await postModel.findById(reshared);
@@ -384,6 +390,7 @@ async function resharePost(reshared: Types.ObjectId, userId: string): Promise<an
 				resharedBy: user._id,
 			});
 		}
+		
 		// Send notification for reshare
 		await sendNotification(
 			post?.user,

@@ -16,9 +16,9 @@ convoRouter.get("/create", isAuth, createConvo);
 // Get conversations of user with userId
 convoRouter.get("/user", isAuth, userConvos);
 
-convoRouter.post("/send", sendMessage);
+convoRouter.post("/send", isAuth, sendMessage);
 
 //Get conversation by ID
-convoRouter.get("", getConvo);
+convoRouter.get("", isAuth, getConvo);
 
 export default convoRouter;
