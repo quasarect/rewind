@@ -13,7 +13,7 @@
 		"prettier:format": "prettier --write **/*.{js,jsx,ts,tsx,json} --ignore-path .gitignore",
 		"server-lock": "netstat -punta | grep 3000 \n echo \"Now use kill -9 <pid>\"",
 		"pretest": "docker compose up -d --build",
-		"test": "cross-env NODE_ENV=test VERSION='1.0.0' JWT_SECRET='somesecret' jest --maxWorkers 1 ",
+		"test": "cross-env NODE_ENV=test MONGO_INITDB_ROOT_PASSWORD=secret MONGO_INITDB_ROOT_USER=root VERSION='1.0.0' JWT_SECRET='somesecret' jest --maxWorkers 1 ",
 		"posttest": "docker compose down",
 		"test:nocoverage": "cross-env NODE_ENV=test jest",
 		"echo": "echo '\u001b[32mPrettier file formatting Completed\u001b[0m'"
