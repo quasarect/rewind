@@ -4,5 +4,5 @@ COPY . .
 
 RUN npm install
 
-RUN node db-init.js
-# CMD ["node","db-init.js"]
+# RUN node db-init.js
+CMD ["node","db-init.js"]
