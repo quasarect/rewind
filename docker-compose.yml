@@ -22,3 +22,5 @@ services:
     depends_on:
       - mongo
       - dbinit
+    env_file:
+      - ./backend/.env.test
