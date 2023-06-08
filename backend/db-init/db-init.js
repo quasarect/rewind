@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 const fs = require("fs");
 
 // MongoDB connection URL
-const url = 'mongodb://root:secret@mongo:27017';
+const url = 'mongodb://root:secret@mongo:27017/rewind-test?authSource=admin';
 
 // Database and collection names
 const dbName = 'rewind-test';
@@ -27,9 +27,10 @@ fs.readFile('dummy-database.json', 'utf8', (err, data) => {
 // Connect to MongoDB and insert the data
 async function insertData() {
     try {
+        console.log("Connecting to the server....");
         // Connect to the MongoDB server
         const client = await MongoClient.connect(url);
-
+        console.log("Connected");
         // Get the database instance
         const db = client.db(dbName);
 
