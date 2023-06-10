@@ -38,12 +38,3 @@ The primary target audience for this project is the young adults across the coun
 
 ● After reviewing the various technologies, the plan is to use the MERN stack with NextJS as the React framework to build the social platform.
 
-# Contributors
-
-Patankar Chinmayee Nilesh - 21BCS079 - [@pchinmayee](https://www.github.com/pchinmayee)
-
-Patil Smruti Milind - 21BCS082 - [@smrutipatil](https://www.github.com/smrutipatil)
-
-Pratik Prakash Pakhale - 21BCS085 - [@pratikpakhale](https://www.github.com/pratikpakhale)
-
-Shewale Chinmay Vijay - 21BCS109 - [@chinma-yyy](https://www.github.com/chinma-yyy)
