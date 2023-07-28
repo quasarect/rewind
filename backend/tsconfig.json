@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es6",
 		"module": "commonjs",
-		"rootDir": "./server",
+		// "rootDir": "./server",
 		"sourceMap": true,
 		"outDir": "./dist",
 		"removeComments": true,
@@ -15,5 +15,6 @@
 		"allowUnreachableCode": true,
 		"skipLibCheck": true
 	},
-	"exclude": ["node_modules", "./server/tests"]
+	"exclude": ["node_modules", "./server/tests","jest.config.ts"],
+	"include": ["server"]
 }
